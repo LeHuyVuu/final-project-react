@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import RootLayout from '../layouts/RootLayout'
-import Home from '../pages/Home/Home'
 import PageNotFound from '../layouts/PageNotFound/PageNotFound'
+import RootLayout from '../layouts/RootLayout'
+import Cart from '../pages/Cart/Cart'
+import Home from '../pages/Home/Home'
 
 
 
@@ -12,6 +13,7 @@ const MainRoutes = () => {
                 <Route path='/' element={<RootLayout />}>
                     <Route index element={<Home />} />
                     <Route path='*' element={<PageNotFound/>} />
+                    <Route path='/cart' element={<Cart/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>
