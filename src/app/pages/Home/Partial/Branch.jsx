@@ -38,20 +38,19 @@ export default function Branch() {
   console.log({branch})
 
   return (
-    <div className="mx-auto my-8">
-      <h2 className="text-2xl font-bold mb-6">Thương hiệu nổi bật</h2>
+    <div className="">
 
       <Swiper
-        slidesPerView={4} // 4 logo trên mỗi slide
+        slidesPerView={1} // 1 logo trên mỗi slide
         spaceBetween={20} // Khoảng cách giữa các item
         autoplay={{ delay: 2500, disableOnInteraction: false }} // Tự động trượt
         pagination={{ clickable: true }} // Hiển thị dot
         navigation={false} // Nút next/prev
         modules={[Autoplay, Pagination, Navigation]}
         breakpoints={{
-          1024: { slidesPerView: 4 },
-          768: { slidesPerView: 3 },
-          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 1 },
+          768: { slidesPerView: 1 },
+          640: { slidesPerView: 1 },
           320: { slidesPerView: 1 },
         }}
         className="mySwiper"

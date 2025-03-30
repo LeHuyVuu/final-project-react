@@ -12,7 +12,10 @@ const itemTemplate = (item) => {
             <img src={item.image} alt={item.title} className="w-full h-52 object-cover rounded-lg mb-4 " />
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis ">{item.title}</h4>
-                <div className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</div>
+                <div className='min-h-[25px]'>
+                   <span className="text-sm text-gray-500 line-through mb-2 " >{item.oldPrice} </span>
+                <span className="text-sm text-orange-600 mb-2 ">{item.discount}</span> 
+                </div>
                 <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
                 <div className="text-sm text-orange-600 mb-2">{item.discount} - {item.imported}</div>
                 {item.availability && <div className="text-sm text-green-500">Available: {item.availability}</div>}
@@ -73,8 +76,8 @@ export default function TopDeal() {
             <Carousel
                 value={topDealData}
                 itemTemplate={itemTemplate}
-                numVisible={6}
-                numScroll={6}
+                numVisible={5}
+                numScroll={5}
                 circular={true}
             />
         </div>
