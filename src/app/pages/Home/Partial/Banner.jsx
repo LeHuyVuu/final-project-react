@@ -27,7 +27,7 @@ const banners = [
     {
         id: 4,
         image: 'https://i.pinimg.com/736x/19/5c/2e/195c2e1cb4ae14837237fe846b757b9a.jpg',
-        title: 'Sản phẩm thuần chay\nChuẩn xanh lành tính',
+        title: 'Sản phẩm thuần chay\Chuẩn xanh lành tính',
         buttonText: 'Mua ngay',
         link: '#',
     }
@@ -35,9 +35,9 @@ const banners = [
 
 export default function Banner() {
     const bannerTemplate = (banner) => (
-        <div className="flex justify-center items-center">
+        <div className="flex p-2 ">
             
-            <img src={banner.image} alt={banner.title} className=" rounded-lg  shadow-lg" />
+            <img src={banner.image} alt={banner.title} className="  rounded-lg  shadow-lg" />
             </div>
     );
 

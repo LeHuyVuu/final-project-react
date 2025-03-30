@@ -11,8 +11,8 @@ const like = [
         image: "https://i.pinimg.com/736x/54/a4/86/54a48663639f4cb731f0946cfb287164.jpg",
         title: "Màn Hình Cong Samsung LC27R500FHEXVV 27 inch",
         price: "2.565.000đ",
-        oldPrice: "4.590.000đ",
-        discount: "-44%",
+        oldPrice: "",
+        discount: "",
         shipping: "Giao siêu tốc 2h"
     },
     {
@@ -69,9 +69,12 @@ const itemTemplate = (item) => {
             <img src={item.image} alt={item.title} className="w-full h-52 object-cover  rounded-lg mb-4 " />
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis ">{item.title}</h4>
-                <div className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</div>
+                <div className='min-h-[25px]'>
+                   <span className="text-sm text-gray-500 line-through mb-2 " >{item.oldPrice} </span>
+                <span className="text-sm text-orange-600 mb-2 ">{item.discount}</span> 
+                </div>
+                
                 <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                <div className="text-sm text-orange-600 mb-2">{item.discount}</div>
                 <div className="text-sm text-green-500">{item.shipping}</div>
             </div>
         </div>
@@ -91,8 +94,8 @@ export default function Like() {
             <Carousel
                 value={like}
                 itemTemplate={itemTemplate}
-                numVisible={6}
-                numScroll={6}
+                numVisible={5}
+                numScroll={5}
                 circular={true}
 
             />

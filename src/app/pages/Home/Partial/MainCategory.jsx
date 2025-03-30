@@ -38,9 +38,7 @@ const categories = [
 
 export default function CategoryCarousel() {
   return (
-    <div className=" mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Danh mục sản phẩm</h2>
-
+    <div className=" ">
       <Swiper
         slidesPerView={3} 
         grid={{ rows: 2, fill: "row" }}
@@ -48,9 +46,9 @@ export default function CategoryCarousel() {
         navigation={true}
         modules={[Grid, Navigation]}
         breakpoints={{
-          1024: { slidesPerView: 6, grid: { rows: 2 } },
-          768: { slidesPerView: 4, grid: { rows: 2 } },
-          480: { slidesPerView: 3, grid: { rows: 2 } },
+          1024: { slidesPerView: 5, grid: { rows: 2 } },
+          768: { slidesPerView: 3, grid: { rows: 2 } },
+          480: { slidesPerView: 2, grid: { rows: 2 } },
         }}
         className="mySwiper"
       >
@@ -59,7 +57,7 @@ export default function CategoryCarousel() {
             <div className="w-20 h-20 flex justify-center items-center">
               <img src={item.image} alt={item.title} className="w-14 h-14 object-contain" />
             </div>
-            <p className="mt-2 text-center text-sm font-medium">{item.title}</p>
+            <p className=" text-center text-sm font-medium">{item.title}</p>
           </SwiperSlide>
         ))}
       </Swiper>

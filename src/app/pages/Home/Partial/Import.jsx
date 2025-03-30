@@ -56,8 +56,8 @@ const Imports = [
         image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
         title: "Miếng Lót Chuột FIRO MXL800 EXTENDED",
         price: "115.000đ",
-        oldPrice: "229.000đ",
-        discount: "-50%",
+        oldPrice: "",
+        discount: "",
         shipping: "Giao siêu tốc 2h"
     }
 ];
@@ -65,13 +65,16 @@ const Imports = [
 // Template for each carousel item (sử dụng Tailwind để tạo kiểu)
 const itemTemplate = (item) => {
     return (
-        <div className="flex flex-col max-w-60 h-auto bg-slate-50 gap-2 p-4 rounded-lg shadow-lg">
+        <div className="flex flex-col max-w-60 justify-between h-auto bg-slate-50 gap-2 p-4 rounded-lg shadow-lg">
             <img src={item.image} alt={item.title} className="w-full h-52 object-cover  rounded-lg mb-4 " />
             <div className="text-left">
                 <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis ">{item.title}</h4>
-                <div className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</div>
+                <div className='min-h-[25px]'>
+                   <span className="text-sm text-gray-500 line-through mb-2 " >{item.oldPrice} </span>
+                <span className="text-sm text-orange-600 mb-2 ">{item.discount}</span> 
+                </div>
                 <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                <div className="text-sm text-orange-600 mb-2">{item.discount}</div>
+                
                 <div className="text-sm text-green-500">{item.shipping}</div>
             </div>
         </div>
@@ -80,7 +83,7 @@ const itemTemplate = (item) => {
 
 export default function Import() {
     return (
-        <div className="top-deal py-6">
+        <div className="top-deal ">
             <div className='flex justify-between'>
                 <h2 className="text-2xl font-bold text-center mb-4">Hàng ngoại giá hot</h2>
                 <a href="#" className=" text-blue-500">
@@ -91,8 +94,8 @@ export default function Import() {
             <Carousel
                 value={Imports}
                 itemTemplate={itemTemplate}
-                numVisible={6}
-                numScroll={6}
+                numVisible={5}
+                numScroll={5}
                 circular={true}
 
             />
