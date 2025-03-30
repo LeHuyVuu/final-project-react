@@ -34,7 +34,7 @@ export default function SmallCategory() {
                     image: item.thumbnail_url,
                     link: item.url,
                 }));
-                console.log({ simplified })
+                // console.log({ simplified })
                 setCategories(simplified);
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu danh mục:", err);
