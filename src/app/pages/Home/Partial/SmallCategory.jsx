@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getData } from '../../../context/api';
 
 const categories = [
     { id: 1, icon: 'pi pi-thumbs-up', label: 'TOP DEAL', link: '#' },
@@ -18,14 +19,52 @@ const categories = [
 ];
 
 export default function SmallCategory() {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await getData("https://api.tiki.vn/raiden/v3/widgets/quick_link_v2");
+                const items = res.data?.items || [];
+
+                // Lấy ra name, thumbnail_url và url
+                const simplified = items.map(item => ({
+                    name: item.name,
+                    image: item.thumbnail_url,
+                    link: item.url,
+                }));
+                console.log({ simplified })
+                setCategories(simplified);
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu danh mục:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    if (loading) return <div className="p-4">Đang tải danh mục...</div>;
+
     return (
-        <div className="flex overflow-x-auto space-x-4 p-4 justify-between shadow-xl rounded-lg">
-            {categories.map((category) => (
-                <a key={category.id} href={category.link} className="flex flex-col items-center min-w-[100px]">
-                    <i className={`${category.icon} text-2xl text-blue-500`} /> {/* thay bằng ảnh của tiki*/ }
-                    <span className="text-sm mt-2 text-center">{category.label}</span>
-                </a>
+        <div className="flex overflow-x-auto space-x-4 p-4 justify-between shadow-xl rounded-lg bg-white">
+            {categories.map((category, index) => (
+                <div
+                    key={index}
+                    className="flex flex-col items-center min-w-[100px] hover:scale-105 transition-transform duration-200"
+                >
+                    <img
+                        src={category.image}
+                        alt={category.name}
+                        className="w-12 h-12 object-contain"
+                    />
+                    <span className="text-sm mt-2 text-center">{category.name}</span>
+                </div>
             ))}
         </div>
+
     );
 }
+
