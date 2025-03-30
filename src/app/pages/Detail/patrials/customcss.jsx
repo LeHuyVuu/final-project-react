@@ -50,9 +50,10 @@ export const Breadcrumb = styled.div`
   padding: 8px 16px;
   font-size: 14px;
   align-items: center;
+  background-color: #ffffff;
 
   a {
-    color: #333;
+    color: #000000;
     text-decoration: none;
 
     &:hover {
@@ -61,7 +62,7 @@ export const Breadcrumb = styled.div`
   }
 
   span {
-    color: #777;
+    color: #555555;
   }
 `;
 
@@ -73,6 +74,7 @@ export const ProductContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   justify-content: space-between;
+  background-color: #ffffff;
 
   @media (max-width: 992px) {
     flex-direction: column;
@@ -83,6 +85,7 @@ export const ImageSection = styled.div`
   flex: 1;
   position: relative;
   max-width: 500px;
+  background-color: #ffffff;
 
   .main-image {
     width: 100%;
@@ -118,7 +121,7 @@ export const ImageSection = styled.div`
       transition: all 0.2s ease;
 
       i {
-        color: #666;
+        color: #333333;
         font-size: 16px;
       }
 
@@ -161,7 +164,7 @@ export const ImageSection = styled.div`
       transition: all 0.2s;
 
       &.selected {
-        border-color: #ee4d2d;
+        border-color: #2c2c2c;
       }
 
       &:hover {
@@ -194,7 +197,7 @@ export const ImageSection = styled.div`
       transition: all 0.2s;
 
       i {
-        color: #666;
+        color: #333333;
       }
 
       &:hover {
@@ -213,18 +216,20 @@ export const DetailsSection = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: #ffffff;
+  color: #000000;
 `;
 
 export const Brand = styled.div`
   font-size: 14px;
-  color: #666;
+  color: #333333;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 5px;
 
   b {
-    color: #333;
+    color: #000000;
     font-weight: 500;
   }
 `;
@@ -233,7 +238,7 @@ export const ProductTitle = styled.h1`
   font-size: 24px;
   font-weight: 600;
   margin: 0 0 16px 0;
-  color: #333;
+  color: #000000;
   line-height: 1.4;
 `;
 
@@ -244,7 +249,7 @@ export const PriceContainer = styled.div`
 
   .original-price {
     font-size: 16px;
-    color: #999;
+    color: #777777;
     text-decoration: line-through;
     margin-bottom: 4px;
   }
@@ -252,7 +257,7 @@ export const PriceContainer = styled.div`
   .current-price {
     font-size: 28px;
     font-weight: 600;
-    color: #ee4d2d;
+    color: #2c2c2c;
   }
 `;
 
@@ -262,7 +267,7 @@ export const SoldRating = styled.div`
   gap: 16px;
   margin-bottom: 20px;
   font-size: 14px;
-  color: #666;
+  color: #333333;
 
   .sold {
     display: flex;
@@ -289,24 +294,25 @@ export const SoldRating = styled.div`
     .rating-value {
       margin-left: 4px;
       font-weight: 500;
-      color: #333;
+      color: #000000;
     }
   }
 `;
 
 export const Description = styled.div`
   margin-bottom: 24px;
+  color: #000000;
 
   h3 {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: #333;
+    color: #000000;
   }
 
   p {
     font-size: 15px;
-    color: #333;
+    color: #000000;
     line-height: 1.6;
     margin-bottom: 8px;
   }
@@ -319,11 +325,12 @@ export const Description = styled.div`
   li {
     margin-bottom: 8px;
     line-height: 1.5;
+    color: #000000;
   }
 
   strong {
     font-weight: 600;
-    color: #222;
+    color: #000000;
   }
 
   .see-more {
@@ -343,12 +350,13 @@ export const Description = styled.div`
 // Style for specifications list
 export const SpecificationList = styled.div`
   margin-bottom: 24px;
+  background-color: #ffffff;
 
   h3 {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: #333;
+    color: #000000;
   }
 
   ul {
@@ -361,12 +369,13 @@ export const SpecificationList = styled.div`
     padding: 10px 0;
     border-bottom: 1px solid #f0f0f0;
     font-size: 15px;
+    color: #000000;
   }
 
   .spec-name {
     font-weight: 500;
     min-width: 200px;
-    color: #666;
+    color: #333333;
   }
 
   table {
@@ -379,6 +388,7 @@ export const SpecificationList = styled.div`
 
   td {
     padding: 12px 16px;
+    color: #000000;
   }
 
   tr:nth-child(even) {
@@ -394,81 +404,70 @@ export const QuantitySelector = styled.div`
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: #333;
+    color: #000000;
   }
 
   .quantity-controls {
     display: flex;
     align-items: center;
-    border-radius: 4px;
-    overflow: hidden;
-    width: fit-content;
-    border: 1px solid #e0e0e0;
-  }
+    gap: 8px;
 
-  button {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f5f5f5;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #333;
-    transition: all 0.2s;
+    button {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      cursor: pointer;
+      color: #000000;
 
-    &:hover {
-      background: #e0e0e0;
+      &:disabled {
+        color: #ccc;
+        cursor: not-allowed;
+      }
+
+      &:hover:not(:disabled) {
+        border-color: #2c2c2c;
+      }
     }
 
-    &:disabled {
-      color: #ccc;
-      cursor: not-allowed;
+    span {
+      width: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #000000;
     }
-  }
-
-  span {
-    min-width: 48px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    background: white;
-    border-left: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
   }
 `;
 
 // Style for benefits
 export const BenefitSection = styled.div`
-  margin: 24px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin: 20px 0;
   padding: 16px;
-  background-color: #f9f9f9;
   border-radius: 8px;
+  background-color: #ffffff;
 
   .benefit-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
+    gap: 12px;
+    margin-bottom: 12px;
 
     img {
-      height: 20px;
-      width: auto;
+      width: 24px;
+      height: 24px;
     }
 
     span {
-      color: #333;
+      font-size: 14px;
+      color: #000000;
 
       b {
         font-weight: 600;
-        color: #ee4d2d;
       }
     }
   }
@@ -584,8 +583,8 @@ export const ActionButtons = styled.div`
   }
 
   .add-to-cart {
-    background-color: #ff3945;
-    border-color: #ff3945;
+    background-color: #2c2c2c;
+    border-color: #2c2c2c;
     color: white;
     flex: 1;
     display: flex;
@@ -594,10 +593,10 @@ export const ActionButtons = styled.div`
     gap: 8px;
 
     &:hover {
-      background-color: #e52c37;
-      border-color: #e52c37;
+      background-color: #000000;
+      border-color: #000000;
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(229, 44, 55, 0.2);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .p-button-icon {
@@ -607,8 +606,8 @@ export const ActionButtons = styled.div`
   }
 
   .checkout-now {
-    border-color: #ff3945;
-    color: #ff3945;
+    border-color: #2c2c2c;
+    color: #2c2c2c;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -616,7 +615,7 @@ export const ActionButtons = styled.div`
     gap: 8px;
 
     &:hover {
-      background-color: rgba(255, 57, 69, 0.08);
+      background-color: rgba(0, 0, 0, 0.05);
       transform: translateY(-2px);
     }
 
@@ -629,10 +628,10 @@ export const ActionButtons = styled.div`
 
 export const DeliveryInfo = styled.div`
   font-size: 14px;
-  color: #666;
+  color: #000000;
 
   .link {
-    color: #333;
+    color: #000000;
     text-decoration: none;
     margin-left: 4px;
 
@@ -642,7 +641,7 @@ export const DeliveryInfo = styled.div`
   }
 
   i {
-    color: #666;
+    color: #000000;
     margin-right: 8px;
   }
 `;
@@ -819,21 +818,22 @@ export const RatingBar = styled.div`
 
   .bar-fill {
     height: 100%;
-    background-color: #333;
+    background-color: #000000;
     border-radius: 4px;
   }
 
   .count {
     width: 40px;
     font-size: 12px;
-    color: #666;
+    color: #000000;
   }
 `;
 
 export const FilterSection = styled.div`
   margin-top: 24px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #e0e0e0;
   padding-top: 16px;
+  background-color: #ffffff;
 `;
 
 export const FilterTitle = styled.div`
@@ -843,11 +843,11 @@ export const FilterTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #333;
+  color: #000000;
 
   i {
     font-size: 12px;
-    color: #666;
+    color: #000000;
     cursor: pointer;
   }
 `;
@@ -863,7 +863,7 @@ export const FilterOption = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #333;
+  color: #000000;
 
   .checkbox-wrapper {
     display: flex;
@@ -888,8 +888,8 @@ export const FilterOption = styled.div`
     border-radius: 3px;
 
     &.p-highlight {
-      border-color: #333;
-      background: #333;
+      border-color: #000000;
+      background: #000000;
     }
   }
 
@@ -900,6 +900,7 @@ export const FilterOption = styled.div`
 
 export const ReviewsList = styled.div`
   flex: 1;
+  background-color: #ffffff;
 `;
 
 export const ReviewsFilter = styled.div`
@@ -909,23 +910,24 @@ export const ReviewsFilter = styled.div`
 `;
 
 export const FilterButton = styled.button`
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   border-radius: 20px;
   padding: 6px 16px;
-  background: ${(props) => (props.active ? "#333" : "#fff")};
-  color: ${(props) => (props.active ? "#fff" : "#333")};
+  background: ${(props) => (props.active ? "#000000" : "#fff")};
+  color: ${(props) => (props.active ? "#fff" : "#000000")};
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: ${(props) => (props.active ? "#222" : "#f5f5f5")};
+    background: ${(props) => (props.active ? "#2c2c2c" : "#f5f5f5")};
   }
 `;
 
 export const ReviewCard = styled.div`
   padding: 24px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #ffffff;
 
   .review-rating {
     display: flex;
@@ -936,12 +938,12 @@ export const ReviewCard = styled.div`
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 4px;
-    color: #333;
+    color: #000000;
   }
 
   .review-date {
     font-size: 12px;
-    color: #666;
+    color: #000000;
     margin-bottom: 16px;
   }
 
@@ -961,7 +963,7 @@ export const ReviewCard = styled.div`
     .name {
       font-size: 14px;
       font-weight: 500;
-      color: #333;
+      color: #000000;
     }
   }
 
@@ -977,7 +979,7 @@ export const ReviewCard = styled.div`
       align-items: center;
       gap: 4px;
       cursor: pointer;
-      color: #666;
+      color: #000000;
       font-size: 14px;
 
       i {
@@ -985,7 +987,7 @@ export const ReviewCard = styled.div`
       }
 
       &:hover {
-        color: #333;
+        color: #2c2c2c;
       }
     }
   }
@@ -1012,7 +1014,7 @@ export const PaginationControls = styled.div`
     margin: 0 4px;
 
     &.p-highlight {
-      background: #333;
+      background: #000000;
       color: white;
     }
   }
