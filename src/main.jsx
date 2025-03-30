@@ -1,8 +1,13 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import MainRoutes from "./app/routes/MainRoutes.jsx";
-import "primereact/resources/themes/lara-light-indigo/theme.css"; // theme
-import "primereact/resources/primereact.min.css"; // core css
-import "primeicons/primeicons.css"; // icons
+import "primereact/resources/themes/lara-light-blue/theme.css"; // Chủ đề sáng
+import "primereact/resources/primereact.min.css"; /* Core CSS */
+import "primeicons/primeicons.css"; /* Bộ Icon */
+import { PrimeReactProvider } from "primereact/api";
 
-createRoot(document.getElementById("root")).render(<MainRoutes />);
+createRoot(document.getElementById("root")).render(
+  <PrimeReactProvider value={{ ripple: true, inputStyle: "outlined" }}>
+    <MainRoutes />
+  </PrimeReactProvider>
+);
