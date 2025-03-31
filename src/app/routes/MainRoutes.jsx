@@ -6,6 +6,8 @@ import PageNotFound from "../layouts/PageNotFound/PageNotFound";
 import ProductDetail from "../pages/Detail/patrials/ProductDetail";
 import Cart from "../pages/Cart/Cart";
 
+import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx'
+
 import Account from '../pages/User/Account.jsx'
 import AccountInformation from '../pages/User/AccountInformation/AccountInformation.jsx'
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx'
@@ -21,6 +23,8 @@ const MainRoutes = () => {
           <Route path="detail" element={<ProductDetail />} />
           <Route path='/cart' element={<Cart />} />
           <Route path="*" element={<PageNotFound />} />
+
+          <Route path='login' element={<SignInSignUp />} />
 
           <Route path='account' element={<Account />} >
             <Route path='information' element={<AccountInformation />} />

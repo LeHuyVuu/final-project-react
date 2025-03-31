@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
-import SignInImage from '../../assets/EarthMaterials/2k_earth_daymap.jpg';
-import SignUpImage from '../../assets/EarthMaterials/2k_earth_nightmap.jpg';
+import SignUpImage from './LeftImage.png';
+import SignInImage from './RightImage.png';
 
 export default function SignInSignUp() {
     const moveImage = () => {
@@ -301,60 +300,62 @@ export default function SignInSignUp() {
             <div className='signinsignup-container'>
                 <div className='card-box'>
                     <div className='card-side card-appear' id='card-signin'>
-                        <h1 className='title'>SIGN IN</h1>
-                        <Form className='form-box form-box1' onSubmit={handleSubmitSignIn}>
-                            <Form.Group controlId='SignInEmail' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-envelope' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='email' placeholder='Email đăng nhập' style={{ border: (SignInEmailError || errorSignIn) && '1px solid #dc3545', }} />
-                            </Form.Group>
-                            <Form.Group controlId='SignInPassword' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-key' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='password' placeholder='Mật khẩu đăng nhập' style={{ border: (SignInPasswordError || errorSignIn) && '1px solid #dc3545', }} />
-                            </Form.Group>
+                        <h1>ĐĂNG NHẬP</h1>
+                        <form className='form-box form-box1'>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-envelope'></i>
+                                <input className='input form-control' type='email' placeholder='Email đăng nhập' style={{ border: (SignInEmailError || errorSignIn) && '1px solid #dc3545', }} />
+                            </div>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-key'></i>
+                                <input className='input form-control' type='password' placeholder='Mật khẩu đăng nhập' style={{ border: (SignInPasswordError || errorSignIn) && '1px solid #dc3545', }} />
+                            </div>
                             <a href='#' className='forget-link'>Forgot password?</a>
                             {SignInEmailError && (<span className='error-message'>{SignInEmailError}</span>)}
                             {SignInPasswordError && (<span className='error-message'>{SignInPasswordError}</span>)}
                             {errorSignIn && (<span className='error-message'>Tài khoản hoặc mật khẩu không chính xác</span>)}
                             <div className='btn-box'>
-                                <Button type='submit' className='btn' id='btn-signin'>SIGN IN</Button>
-                                <Button type='reset' className='btn' id='btn-reset-signin' onClick={resetInputsBox1}>CLEAR</Button>
+                                <button type='submit' className='btn btn-submit' id='btn-signin'>ĐĂNG NHẬP</button>
+                                <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
                             </div>
-                            <hr />
-                            <Button id='btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</Button>
-                        </Form>
+                            <button id='btn btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
+                        </form>
                     </div>
 
                     <div className='card-side card-disappear' id='card-signup'>
-                        <h1 className='title'>SIGN UP</h1>
-                        <Form className='form-box form-box2' onSubmit={handleSubmitSignUp}>
-                            <Form.Group controlId='SignUpEmail' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-envelope' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='email' placeholder='Email đăng kí' style={{ border: (SignUpEmailError || errorSignUp) && '1px solid #dc3545', }} />
-                            </Form.Group>
-                            <Form.Group controlId='SignUpFullName' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-user' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='text' placeholder='Họ tên' style={{ border: (SignUpFullNameError || errorSignUp) && '1px solid #dc3545', }} />
-                            </Form.Group>
-                            <Form.Group controlId='SignUpPhoneNumber' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-phone' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='text' placeholder='Số điện thoại' style={{ border: (SignUpPhoneNumberError || errorSignUp) && '1px solid #dc3545', }} />
-                            </Form.Group>
-                            <Form.Group controlId='SignUpPassword' className='form-group form-input'>
-                                <span className='icon'><i className='fa-solid fa-key' style={{ fontSize: '25px', color: '#cccccc' }}></i></span>
-                                <Form.Control className='input' type='password' placeholder='Mật khẩu đăng kí' style={{ border: (SignUpPasswordError || errorSignUp) && '1px solid #dc3545', }} />
-                            </Form.Group>
-                            <Form.Group controlId='SignUpConfirm' className='form-group form-input'>
-                                <span className='dobble-icon'><i className='fa-solid fa-key' style={{ fontSize: '25px', color: '#cccccc' }}></i></span>
-                                <span className='icon'><i className='fa-solid fa-key' style={{ fontSize: '25px' }}></i></span>
-                                <Form.Control className='input' type='password' placeholder='Xác nhận mật khẩu' style={{ border: (SignUpConfirmError || errorSignUp) && '1px solid #dc3545', }} />
-                            </Form.Group>
+                        <h1 className='title'>ĐĂNG KÍ</h1>
+                        <form className='form-box form-box2'>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-envelope'></i>
+                                <input className='input form-control' type='email' placeholder='Email đăng kí' style={{ border: (SignUpEmailError || errorSignUp) && '1px solid #dc3545', }} />
+                            </div>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-user'></i>
+                                <input className='input form-control' type='text' placeholder='Họ tên' style={{ border: (SignUpFullNameError || errorSignUp) && '1px solid #dc3545', }} />
+                            </div>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-phone'></i>
+                                <input className='input form-control' type='text' placeholder='Số điện thoại' style={{ border: (SignUpPhoneNumberError || errorSignUp) && '1px solid #dc3545', }} />
+                            </div>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-key'></i>
+                                <input className='input form-control' type='password' placeholder='Mật khẩu đăng kí' style={{ border: (SignUpPasswordError || errorSignUp) && '1px solid #dc3545', }} />
+                            </div>
+                            <div className='form-group form-input'>
+                                <i className='fa-solid fa-key'></i>
+                                <i className='fa-solid fa-key double-icon'></i>
+                                <input className='input form-control' type='password' placeholder='Xác nhận mật khẩu' style={{ border: (SignUpConfirmError || errorSignUp) && '1px solid #dc3545', }} />
+                            </div>
 
                             <div className='accept-box'>
                                 <a href='https://docs.google.com/document/d/1gpc5I74B66ldC76mSZsafEXuumeYlhSbV1ocqHCrrR4/edit?tab=t.0' className='provision' target='_blank'><b>ĐIỀU KHOẢN</b></a>
 
-                                <Form.Group controlId='Accept' className='form-group form-check'>
-                                    <Form.Check type='checkbox' label='Đồng ý điều khoản' name='Accept' onChange={handleAccept} />
-                                </Form.Group>
+                                <div className='form-check'>
+                                    <label class='checkbox-item'>
+                                        <input type='checkbox' name='Accept' />
+                                        Đồng ý điều khoản
+                                    </label>
+                                </div>
                             </div>
 
                             {SignUpEmailError && (<span className='error-message'>{SignUpEmailError}</span>)}
@@ -366,12 +367,11 @@ export default function SignInSignUp() {
                             {errorSignUp && (<span className='error-message'>Đăng kí thất bại</span>)}
                             {successSignUp && (<span className='success-message'>{successSignUp}</span>)}
                             <div className='btn-box'>
-                                <Button type='submit' className='btn' id='btn-signup'>SIGN UP</Button>
-                                <Button type='reset' className='btn' id='btn-reset-signup' onClick={resetInputsBox2}>CLEAR</Button>
+                                <button type='submit' className='btn btn-submit' id='btn-signup'>ĐĂNG KÍ</button>
+                                <button type='reset' className='btn btn-reset' id='btn-reset-signup' onClick={resetInputsBox2}>XÓA</button>
                             </div>
-                            <hr />
-                            <Button id='btn-switch-signin' className='btn' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</Button>
-                        </Form>
+                            <button id='btn btn-switch-signin' className='btn' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
+                        </form>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>
