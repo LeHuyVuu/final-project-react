@@ -5,104 +5,74 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';  // Import icon sao từ react-icons
 import { Rating } from "primereact/rating";
+import { Link } from "react-router-dom";
 
 import { getData } from '../../../context/api';
 
-// const getStars = (rate) => {
-//     const roundedRate = Math.round(rate * 10) / 10; // Làm tròn đến 1 chữ số sau dấu thập phân
-
-//     const fullStars = Math.floor(roundedRate); // Số sao đầy đủ
-//     const halfStar = roundedRate % 1 !== 0; // Kiểm tra sao nửa
-//     const totalStars = 5; // Tổng số sao có thể
-
-//     let stars = [];
-
-//     for (let i = 0; i < totalStars; i++) {
-//         if (i < fullStars) {
-//             stars.push(<FaStar key={i} className="text-yellow-400" />);
-//         } else if (i === fullStars && halfStar) {
-//             stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
-//         } else {
-//             stars.push(<FaRegStar key={i} className="text-gray-300" />);
-//         }
-//     }
-
-//     return stars;
-// };
 
 
-// Template hiển thị từng sản phẩm
+
+
 const itemTemplate = (item) => {
     return (
-        <div className="flex flex-col max-w-60 justify-between h-auto bg-slate-50 gap-2 p-4 rounded-lg shadow-lg">
-            <div className="relative">
-        <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
-        <img src={item.image} alt={item.title} className="w-full h-52 object-cover rounded-lg mb-4" /> {/* Main image */}
-    </div>
-            <div className="text-left">
-                <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                    {item.title}
-                </h4>
-                <div className='text-sm text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'><b>{item.brand_name}</b></div>
-                {/* <div className='text-sm text-gray-500'>Mã thương hiệu: <b>{item.brand_id}</b></div> */}
-                <div className='min-h-[25px]'>
-                    <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
-                    <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
-                </div>
-                <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                <div>
-                    {item.rate}
-                </div>
-                <div className="card flex justify-content-center">
-            <Rating value={item.rate} disabled cancel={false} />
-        </div>
-                {/* <div className="flex items-center mt-2">
-                    {getStars(item.rate)}
-                   
-                </div> */}
-                {/* <div className="w-full h-px bg-gray-300 my-2"></div>
+        <Link to='*'>
+            <div className="flex flex-col bg-slate-400 justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+                <div className="  justify-center items-center ">
+                    <div className="relative">
+                        <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
+                        <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg " /> {/* Main image */}
+                    </div>
+                    <div className="text-left">
+                        <h4 className="text-lg  font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
+                            {item.title}
+                        </h4>
+                        <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'><b>{item.brand_name}</b></div>
+                        {/* <div className='text-sm text-gray-500'>Mã thương hiệu: <b>{item.brand_id}</b></div> */}
+                        <div className='min-h-[25px]'>
+                            <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
+                            <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
+                        </div>
+                        <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                        <div>
+                            {item.rate}
+                        </div>
+                        <div className="card flex justify-content-center">
+                            <Rating value={item.rate} disabled cancel={false} />
+                        </div>
+                        {/* <div className="w-full h-px bg-gray-300 my-2"></div>
                 <div className="text-sm text-green-500">{item.shipping}</div> */}
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </Link>
+
     );
 };
 
 export default function Import() {
-    // const responsiveOptions = [
-    //     {
-    //         breakpoint: '1400px',
-    //         numVisible: 2,
-    //         numScroll: 2
-    //     },
-    //     {
-    //         breakpoint: '1199px',
-    //         numVisible: 3,
-    //         numScroll: 3
-    //     },
-    //     {
-    //         breakpoint: '767px',
-    //         numVisible: 2,
-    //         numScroll: 2
-    //     },
-    //     {
-    //         breakpoint: '575px',
-    //         numVisible: 1,
-    //         numScroll: 1
-    //     }
-    // ];
-    const [items, setItems] = useState([]);
 
+    const [items, setItems] = useState([]);
+    const [title, setTitle] = useState([]);
     useEffect(() => {
         const fetchDataImport = async () => {
             try {
-                const res = await getData("https://api.tiki.vn/raiden/v3/widgets/imported_genuine?version=2&trackity_id=44658fd6-8dcf-fb8b-e548-529e90e5e33b&_rf=rotate_by_ctr");
+                const res = await getData("https://api.tiki.vn/raiden/v3/widgets/imported_genuine?version=2");
                 console.log(res)
 
                 // Tiến hành xử lý dữ liệu
+
+                const title = {
+                    title: res.data.header.title,
+                    // more_link: res.data.header.more_link,
+                    more_link_text: res.data.header.more_link_text,
+                };
+                setTitle(title);
+                console.log(title);
+
                 const extractedItems = res.data.items.map(item => ({
                     icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150",
                     image: item.thumbnail_url || "https://via.placeholder.com/150",
-                    // brand_id: item.brand_id || "Không có",
                     brand_name: item.name || "Không rõ",
                     price: item.price ? `${item.price.toLocaleString()}đ` : "",
                     oldPrice: item.original_price && item.original_price !== item.price ? `${item.original_price.toLocaleString()}đ` : "",
@@ -123,20 +93,22 @@ export default function Import() {
     }, []);
 
     return (
-        <div className="">
+        <div className=" bg-red-200  ">
             <div className='flex justify-between'>
-                <h2 className="text-2xl font-bold text-center mb-4">Hàng ngoại giá hot</h2>
-                <a href="#" className="text-blue-500">Xem tất cả</a>
+                <h2 className="text-2xl font-bold text-center mb-4">{title.title}</h2>
+                <Link to='/' className="text-blue-500">{title.more_link_text}</Link>
             </div>
+            <div>
 
-            <Carousel
-                value={items}
-                itemTemplate={itemTemplate}
-                numVisible={5}
-                numScroll={5}
-                // responsiveOptions={responsiveOptions}
-                circular={true}
-            />
+                <Carousel className=''
+                    value={items}
+                    itemTemplate={itemTemplate}
+                    numVisible={5}
+                    numScroll={2}
+                    // responsiveOptions={responsiveOptions}
+                    circular={true}
+                />
+            </div>
         </div>
     );
 }
