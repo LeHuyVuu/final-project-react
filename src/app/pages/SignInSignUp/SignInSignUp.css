@@ -1,0 +1,183 @@
+.signinsignup-container {
+    width: 100%;
+    min-height: 100vh;
+    margin: 40px 0;
+    text-align: center;
+    font-family: 'Quicksand', Arial, sans-serif;
+
+    .card-box {
+        position: relative;
+        width: 95%;
+        height: 600px;
+        max-width: 800px;
+        margin: 100px 0 180px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px #00000050;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        justify-self: center;
+
+        .card-side {
+            flex: 1;
+            width: 50%;
+            height: 600px;
+            padding: 40px;
+
+            .title {
+                margin: 0 0 30px;
+                display: flex;
+                justify-content: center;
+                font-weight: bold;
+            }
+
+            .form-box {
+                position: relative;
+
+                .form-input {
+                    margin: 5px 0 5px 40px;
+
+                    .icon {
+                        margin: 10px 0;
+                        left: 0;
+                        position: absolute;
+                    }
+
+                    .dobble-icon {
+                        margin: 10px 0;
+                        left: -8px;
+                        position: absolute;
+                    }
+
+                    input {
+                        width: 100%;
+                        margin: 0;
+                        box-sizing: border-box;
+                        outline: none;
+                    }
+
+                    input:focus {
+                        box-shadow: 0 0 0 0.25rem rgba(251, 139, 36, 0.25);
+                        border-color: #fdbc7f;
+                    }
+                }
+
+                .accept-box {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    a {
+                        padding: 0 5px;
+                        border-radius: 5px;
+                        color: #666666;
+                        border: 1px solid #cccccc;
+                        text-decoration: none;
+                        cursor: pointer;
+                    }
+
+                    .form-check {
+                        padding: 0;
+                        margin: 5px 0;
+                        display: flex;
+                        justify-content: end;
+                        align-items: center;
+
+                        input {
+                            margin: 0 5px;
+                            border-color: #fdbc7f;
+                        }
+
+                        input:focus {
+                            box-shadow: 0 0 0 0.25rem rgba(251, 139, 36, 0.25);
+                        }
+
+                        .form-check-input:checked {
+                            background-color: #fb8b24;
+                            border-color: #fb8b24;
+                        }
+
+                        label {
+                            color: #d97720;
+                            font-weight: bold;
+                        }
+                    }
+                }
+
+                .error-message {
+                    color: #dc3545;
+                }
+
+                .success-message {
+                    color: #28a745;
+                }
+
+                .forget-link {
+                    font-weight: bold;
+                    color: #ffc107;
+                    display: flex;
+                    justify-content: end;
+                    text-decoration: none;
+                }
+
+                .forget-link:hover {
+                    color: #dba506;
+                }
+            }
+        }
+
+        .movingImage {
+            width: 50%;
+            height: 100%;
+            background: url('../../assets/EarthMaterials/2k_earth_daymap.jpg') center;
+            position: absolute;
+            right: 0;
+            transition: all 0.5s ease;
+        }
+
+        .btn,
+        .btn:focus {
+            width: 100%;
+            color: #ffffff;
+            background-color: #fdbc7f;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .form-box {
+
+            .btn-box {
+                margin: 20px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            button[type="submit"] {
+                width: 65%;
+                background-color: #fb8b24;
+            }
+
+            button[type="reset"] {
+                width: 30%;
+                background-color: #feecd9;
+            }
+
+            .btn:hover {
+                background-color: #fb8b24;
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .movingImage {
+            display: none;
+        }
+
+        .card-disappear {
+            display: none;
+        }
+    }
+}
