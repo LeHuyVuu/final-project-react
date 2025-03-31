@@ -40,7 +40,7 @@ export default function Banner() {
 
 
     const bannerTemplate = (banner) => (
-        <div className="flex justify-center items-center">
+        <div className="p-2 flex justify-center items-center">
             <img src={banner.image_url} alt={banner.title} className="rounded-lg shadow-lg" />
         </div>
     );
