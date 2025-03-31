@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: '',
-    timeout: 10000, // Thời gian timeout mặc định
+    timeout: 100000, // Thời gian timeout mặc định
     headers: {
         'Content-Type': 'application/json',
     },
