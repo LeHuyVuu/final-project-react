@@ -3,18 +3,6 @@ import { Rating } from "primereact/rating";
 import { Checkbox } from "primereact/checkbox";
 import { Avatar } from "primereact/avatar";
 import { Paginator } from "primereact/paginator";
-import {
-  RatingBar,
-  FilterSection,
-  FilterTitle,
-  FilterOptions,
-  FilterOption,
-  ReviewsList,
-  ReviewsFilter,
-  FilterButton,
-  ReviewCard,
-  PaginationControls,
-} from "./customcss";
 
 const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
   const [activeFilter, setActiveFilter] = useState("All Reviews");
@@ -208,32 +196,16 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
   };
 
   return (
-    <div style={{ backgroundColor: "#ffffff", color: "#000000" }}>
-      <div style={{ padding: "24px 0" }}>
-        <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
-          <div style={{ flex: "0 0 280px" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                marginBottom: "24px",
-                backgroundColor: "#ffffff",
-                padding: "20px",
-                borderRadius: "8px",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "48px",
-                  fontWeight: "700",
-                  color: "#000000",
-                }}
-              >
+    <div className="bg-white text-black">
+      <div className="py-6">
+        <div className="flex gap-8 flex-wrap">
+          {/* Rating Summary Section */}
+          <div className="flex-none w-[280px]">
+            <div className="flex flex-col items-center mb-6 bg-white p-5 rounded-lg shadow-sm">
+              <div className="text-5xl font-bold text-black">
                 {reviewsData.averageRating.toFixed(1)}
               </div>
-              <div style={{ marginBottom: "16px" }}>
+              <div className="mb-4">
                 <Rating
                   value={reviewsData.averageRating}
                   readOnly
@@ -241,107 +213,151 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                   stars={5}
                 />
               </div>
-              <div style={{ fontSize: "14px", color: "#000000" }}>
+              <div className="text-sm text-black">
                 {reviewsData.totalReviews} đánh giá
               </div>
             </div>
-
+            {/* Rating Distribution */}
             {reviewsData.ratingDistribution && (
-              <div style={{ marginBottom: "24px" }}>
+              <div className="mb-6">
                 {reviewsData.ratingDistribution.map((item) => (
-                  <RatingBar key={item.stars}>
-                    <div className="stars">
-                      {item.stars} <i className="pi pi-star-fill"></i>
+                  <div
+                    key={item.stars}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <div className="flex items-center gap-1 w-16">
+                      {item.stars}{" "}
+                      <i className="pi pi-star-fill text-yellow-400"></i>
                     </div>
-                    <div className="bar-container">
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
-                        className="bar-fill"
+                        className="h-full bg-yellow-400"
                         style={{ width: `${item.percentage}%` }}
-                      ></div>
+                      />
                     </div>
-                    <div className="count">{item.count}</div>
-                  </RatingBar>
+                    <div className="w-8 text-sm text-gray-600">
+                      {item.count}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
 
-            <FilterSection>
-              <FilterTitle>
-                Filter by Rating
-                <i className="pi pi-refresh"></i>
-              </FilterTitle>
-              <FilterOptions>
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <FilterOption key={star}>
-                    <Checkbox
-                      inputId={`rating-${star}`}
-                      checked={filters.rating[star]}
-                      onChange={() => handleFilterChange("rating", star)}
-                    />
-                    <label htmlFor={`rating-${star}`}>
-                      {star}{" "}
-                      <i
-                        className="pi pi-star-fill"
-                        style={{ color: "#f7a928" }}
-                      ></i>
-                    </label>
-                  </FilterOption>
-                ))}
-              </FilterOptions>
-            </FilterSection>
+            {/* Filter Container */}
+            <div className="border border-dashed border-gray-300 rounded-lg p-4">
+              <h2 className="text-xl font-semibold mb-4">Reviews Filter</h2>
 
-            <FilterSection>
-              <FilterTitle>
-                Filter by Topics
-                <i className="pi pi-refresh"></i>
-              </FilterTitle>
-              <FilterOptions>
-                {Object.keys(filters.topics).map((topic) => (
-                  <FilterOption key={topic}>
-                    <Checkbox
-                      inputId={`topic-${topic}`}
-                      checked={filters.topics[topic]}
-                      onChange={() => handleFilterChange("topics", topic)}
-                    />
-                    <label htmlFor={`topic-${topic}`}>{topic}</label>
-                  </FilterOption>
-                ))}
-              </FilterOptions>
-            </FilterSection>
+              {/* Rating Filter Section */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-gray-800">Rating</h3>
+                  <i className="pi pi-chevron-up text-gray-400"></i>
+                </div>
+                <div className="space-y-3">
+                  {[5, 4, 3, 2, 1].map((star) => (
+                    <div key={star} className="flex items-center gap-3">
+                      <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center bg-gray-50">
+                        <Checkbox
+                          inputId={`rating-${star}`}
+                          checked={filters.rating[star]}
+                          onChange={() => handleFilterChange("rating", star)}
+                          className=""
+                        />
+                      </div>
+                      <label
+                        htmlFor={`rating-${star}`}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <i className="pi pi-star-fill text-yellow-400"></i>
+                        <span>{star}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Topics Filter Section */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-gray-800">Review Topics</h3>
+                  <i className="pi pi-chevron-up text-gray-400"></i>
+                </div>
+                <div className="space-y-3">
+                  {Object.keys(filters.topics).map((topic) => (
+                    <div key={topic} className="flex items-center gap-3">
+                      <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center bg-gray-50">
+                        <Checkbox
+                          inputId={`topic-${topic}`}
+                          checked={filters.topics[topic]}
+                          onChange={() => handleFilterChange("topics", topic)}
+                          className=""
+                        />
+                      </div>
+                      <label
+                        htmlFor={`topic-${topic}`}
+                        className="text-gray-500 cursor-pointer"
+                      >
+                        {topic}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div style={{ flex: "1" }}>
-            <ReviewsFilter>
-              <FilterButton
-                active={activeFilter === "All Reviews"}
+          {/* Reviews List Section */}
+          <div className="flex-1">
+            <div className="flex gap-2 mb-6">
+              <button
+                className={`px-4 py-2 rounded-lg border ${
+                  activeFilter === "All Reviews"
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
                 onClick={() => handleFilterButtonClick("All Reviews")}
               >
                 All Reviews
-              </FilterButton>
-              <FilterButton
-                active={activeFilter === "With Photos"}
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg border ${
+                  activeFilter === "With Photos"
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
                 onClick={() => handleFilterButtonClick("With Photos")}
               >
                 With Photos ({reviewsData.photoCount})
-              </FilterButton>
-              <FilterButton
-                active={activeFilter === "With Videos"}
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg border ${
+                  activeFilter === "With Videos"
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
                 onClick={() => handleFilterButtonClick("With Videos")}
               >
                 With Videos (0)
-              </FilterButton>
-              <FilterButton
-                active={activeFilter === "With Comments"}
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg border ${
+                  activeFilter === "With Comments"
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
                 onClick={() => handleFilterButtonClick("With Comments")}
               >
                 With Comments (4)
-              </FilterButton>
-            </ReviewsFilter>
+              </button>
+            </div>
 
-            <ReviewsList>
+            <div className="space-y-6">
               {reviewsData.reviews.slice(first, first + rows).map((review) => (
-                <ReviewCard key={review.id}>
-                  <div className="review-rating">
+                <div
+                  key={review.id}
+                  className="bg-white rounded-lg p-6 border border-gray-200"
+                >
+                  <div className="mb-2">
                     <Rating
                       value={review.rating}
                       readOnly
@@ -349,97 +365,55 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                       stars={5}
                     />
                   </div>
-                  <div className="review-title">{review.title}</div>
-                  <div className="review-date">{review.date}</div>
+                  <div className="font-semibold mb-1">{review.title}</div>
+                  <div className="text-sm text-gray-500 mb-4">
+                    {review.date}
+                  </div>
 
-                  <div className="review-author">
+                  <div className="flex items-center gap-3 mb-4">
                     <Avatar
                       image={review.authorImage}
                       shape="circle"
                       alt={review.author}
                     />
-                    <span className="name">{review.author}</span>
+                    <span className="font-medium">{review.author}</span>
                   </div>
 
-                  <div
-                    style={{
-                      fontSize: "15px",
-                      lineHeight: "1.5",
-                      marginBottom: "16px",
-                      color: "#000000",
-                    }}
-                  >
+                  <div className="text-[15px] leading-relaxed mb-4 text-black">
                     {review.content}
                   </div>
 
                   {review.images && review.images.length > 0 && (
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        marginBottom: "16px",
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    <div className="flex gap-2 mb-4 flex-wrap">
                       {review.images.map((image) => (
                         <img
                           key={image.id}
                           src={image.full_path}
                           alt="Review"
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            objectFit: "cover",
-                            borderRadius: "4px",
-                          }}
+                          className="w-20 h-20 object-cover rounded cursor-pointer hover:opacity-90 transition-opacity"
                         />
                       ))}
                     </div>
                   )}
 
                   {review.comments && review.comments.length > 0 && (
-                    <div
-                      style={{
-                        marginTop: "16px",
-                        padding: "16px",
-                        backgroundColor: "#f9f9f9",
-                        borderRadius: "8px",
-                      }}
-                    >
+                    <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                       {review.comments.map((comment) => (
-                        <div
-                          key={comment.id}
-                          style={{
-                            display: "flex",
-                            gap: "12px",
-                          }}
-                        >
+                        <div key={comment.id} className="flex gap-3">
                           <Avatar
                             image={comment.avatar_url}
                             shape="circle"
                             alt={comment.fullname}
-                            style={{ width: "36px", height: "36px" }}
+                            className="w-9 h-9"
                           />
                           <div>
-                            <div
-                              style={{
-                                fontWeight: "500",
-                                marginBottom: "4px",
-                                color: "#000000",
-                              }}
-                            >
+                            <div className="font-medium mb-1 text-black">
                               {comment.fullname}
                             </div>
-                            <div style={{ fontSize: "14px", color: "#000000" }}>
+                            <div className="text-sm text-black">
                               {comment.content}
                             </div>
-                            <div
-                              style={{
-                                fontSize: "12px",
-                                color: "#555555",
-                                marginTop: "4px",
-                              }}
-                            >
+                            <div className="text-xs text-gray-500 mt-1">
                               {formatDate(comment.create_at)}
                             </div>
                           </div>
@@ -448,19 +422,19 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                     </div>
                   )}
 
-                  <div className="review-actions">
-                    <button>
+                  <div className="flex gap-4 mt-4">
+                    <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900">
                       <i className="pi pi-thumbs-up"></i> Hữu ích (
                       {review.likes})
                     </button>
-                    <button>
+                    <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900">
                       <i className="pi pi-flag"></i> Báo cáo
                     </button>
                   </div>
-                </ReviewCard>
+                </div>
               ))}
 
-              <PaginationControls>
+              <div className="mt-6">
                 <Paginator
                   first={first}
                   rows={rows}
@@ -468,8 +442,8 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                   onPageChange={onPageChange}
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 />
-              </PaginationControls>
-            </ReviewsList>
+              </div>
+            </div>
           </div>
         </div>
       </div>
