@@ -102,6 +102,50 @@ export default function Footer() {
         </div>
 
         {/* Các phần khác */}
+        {/* Links Sections */}
+        <div>
+          <h3 className="font-bold">Company</h3>
+          <ul className="mt-2 space-y-2 text-sm">
+            <li><a href="#" className="hover:underline">About Us</a></li>
+            <li><a href="#" className="hover:underline">Community</a></li>
+            <li><a href="#" className="hover:underline">Services</a></li>
+            <li><a href="#" className="hover:underline">Testimonials</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-bold">Support</h3>
+          <ul className="mt-2 space-y-2 text-sm">
+            <li><a href="#" className="hover:underline">Help Center</a></li>
+            <li><a href="#" className="hover:underline">Contact Us</a></li>
+            <li><a href="#" className="hover:underline">Websites</a></li>
+            <li><a href="#" className="hover:underline">Feedback</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-bold">Links</h3>
+          <ul className="mt-2 space-y-2 text-sm">
+            <li><a href="#" className="hover:underline">Plans</a></li>
+            <li><a href="#" className="hover:underline">Membership</a></li>
+            <li><a href="#" className="hover:underline">Become a Trainer</a></li>
+            <li><a href="#" className="hover:underline">Diet Plan</a></li>
+          </ul>
+        </div>
+
+        {/* Contact Info */}
+       
+      </div>
+
+      {/* Bottom Section */}
+      <div className="border-t py-4 text-center text-sm text-gray-500">
+        <p>©Copyright 2025 by Leo-UI. All rights reserved</p>
+        <div className="mt-2 flex justify-center space-x-6">
+          <a href="#" className="hover:underline">Privacy Policy</a>
+          <a href="#" className="hover:underline">Terms of Use</a>
+          <a href="#" className="hover:underline">Sitemap</a>
+        </div>
+
       </div>
 
       {/* Footer */}
