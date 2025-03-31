@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { getData } from "../../../context/api";
 
 export default function Branch() {
+  const [branch, setBranch] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   // Danh sách thương hiệu nổi bật
-  const featuredBrands = [
-    { id: 1, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 2, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 3, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 4, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 5, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 6, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 7, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-    { id: 8, image: "https://salt.tikicdn.com/ts/tikimsp/9b/27/62/2bf1fad2b1b4e64b89c37de7275d246d.png" },
-  ];
+  useEffect(() => {
+    const fetchBranches = async () => {
+      setLoading(true);
+      try {
+        const res = await getData("https://tka.tiki.vn/widget/api/v1/banners-group?group=msp_widget_banner_premium");
+        console.log(res.data.data);
+
+        // Lấy image_url từ tất cả các phần tử trong mảng banners
+        const data = res.data.data.map((item) => ({
+          title: item.title,
+          imageUrls: item.banners.map((banner) => banner.image_url),  // Lấy image_url từ từng banner
+        }));
+        setBranch(data);
+
+      } catch (err) {
+        console.error("Lỗi khi tải dữ liệu danh mục:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  console.log({branch})
 
   return (
     <div className="">
@@ -36,12 +55,14 @@ export default function Branch() {
         }}
         className="mySwiper"
       >
-        {featuredBrands.map((brand) => (
-          <SwiperSlide key={brand.id}>
-            <div className="flex justify-center items-center   rounded-lg shadow-md">
-              <img src={brand.image} alt="Brand" className=" h-80 w-auto object-contain" />
-            </div>
-          </SwiperSlide>
+        {branch.map((brand, index) => (
+          brand.imageUrls.map((imgUrl, idx) => (
+            <SwiperSlide key={index + '-' + idx}>
+              <div className="flex justify-center items-center p-4 bg-gray-200 rounded-lg shadow-md">
+                <img src={imgUrl} className="w-28 h-auto object-contain" />
+              </div>
+            </SwiperSlide>
+          ))
         ))}
       </Swiper>
     </div>
