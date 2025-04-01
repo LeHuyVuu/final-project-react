@@ -32,7 +32,6 @@ const banners = [
         link: '#',
     }
 ];
-import axios from 'axios';
 import { getData } from '../../../context/api';
 
 export default function Banner() {
