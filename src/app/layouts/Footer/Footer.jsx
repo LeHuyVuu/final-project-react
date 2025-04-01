@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FaFacebook, FaInstagram, FaEnvelope, FaWhatsapp, FaYoutube, FaPhone } from "react-icons/fa";
 import emailjs from 'emailjs-com';
-
+import { Toast } from "primereact/toast";
 export default function Footer() {
   const [email, setEmail] = useState('');
-
+  const toast = useRef(null);
   // Hàm gửi email
   const sendEmail = (e) => {
     e.preventDefault(); // Ngừng hành động mặc định của form (submit)
@@ -21,16 +21,27 @@ export default function Footer() {
       'PL8gMYLSA7J6k-atS' // User ID của bạn
     ).then((response) => {
       console.log('Email sent successfully', response);
-      alert('Đăng ký thành công! Chúng tôi sẽ gửi email cho bạn.');
+      toast.current.show({
+        severity: "success",
+        detail: "Đăng ký thành công! Chúng tôi sẽ gửi email cho bạn.",
+        life: 3000,
+      });
       setEmail(''); // Reset email input
     }, (err) => {
       console.error('Error sending email', err);
-      alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      alert('');
+      toast.current.show({
+        severity: "danger",
+        summary: "Error",
+        detail: "Có lỗi xảy ra. Vui lòng thử lại sau.",
+        life: 3000,
+      });
     });
   };
 
   return (
     <footer className="text-gray-800 relative mt-48">
+      <Toast ref={toast} />
       {/* Subscription Section */}
       <div className="bg-slate-500 text-white max-w-5xl mx-auto py-10 px-6 md:px-20 rounded-3xl absolute top-[-140px] left-0 right-0 z-10">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -55,7 +66,7 @@ export default function Footer() {
                 placeholder="Nhập Email của bạn"
                 className="p-2 w-60 rounded-l-lg text-gray-700"
               />
-              <button 
+              <button
                 onClick={sendEmail} // Gọi hàm gửi email khi nhấn nút
                 className="bg-white text-blue-600 px-4 py-2 rounded-r-lg font-semibold">
                 Đăng ký

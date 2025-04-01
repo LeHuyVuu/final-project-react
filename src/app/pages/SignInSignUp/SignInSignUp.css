@@ -7,9 +7,9 @@
 
     .card-box {
         position: relative;
+        max-width: 800px;
         width: 95%;
         height: 600px;
-        max-width: 800px;
         margin: 100px 0 180px;
         border-radius: 20px;
         box-shadow: 0 0 10px #00000050;
@@ -21,45 +21,53 @@
 
         .card-side {
             flex: 1;
-            width: 50%;
             height: 600px;
             padding: 40px;
 
-            .title {
-                margin: 0 0 30px;
-                display: flex;
-                justify-content: center;
+            h1 {
+                margin: 0 0 24px;
+                font-size: 32px;
                 font-weight: bold;
+                color: #0055b1;
             }
 
-            .form-box {
+            form {
                 position: relative;
 
                 .form-input {
-                    margin: 5px 0 5px 40px;
+                    width: 100%;
+                    margin: 16px 0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
 
-                    .icon {
-                        margin: 10px 0;
-                        left: 0;
-                        position: absolute;
+                    i {
+                        width: 40px;
+                        font-size: 24px;
+                        text-align: start;
                     }
 
-                    .dobble-icon {
+                    .double-icon {
+                        color: #999;
                         margin: 10px 0;
                         left: -8px;
                         position: absolute;
+                        z-index: -1;
                     }
 
                     input {
-                        width: 100%;
+                        flex: 1;
                         margin: 0;
+                        padding: 8px 12px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
                         box-sizing: border-box;
                         outline: none;
                     }
 
                     input:focus {
-                        box-shadow: 0 0 0 0.25rem rgba(251, 139, 36, 0.25);
-                        border-color: #fdbc7f;
+                        box-shadow: 0 0 0 0.25rem #007bff40;
+                        border-color: #007bff80;
                     }
                 }
 
@@ -67,6 +75,7 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    margin: 28px 0;
 
                     a {
                         padding: 0 5px;
@@ -79,27 +88,27 @@
 
                     .form-check {
                         padding: 0;
-                        margin: 5px 0;
                         display: flex;
                         justify-content: end;
                         align-items: center;
 
+
+                        .checkbox-item {
+                            display: flex;
+                            align-items: center;
+                        }
+
                         input {
-                            margin: 0 5px;
-                            border-color: #fdbc7f;
-                        }
-
-                        input:focus {
-                            box-shadow: 0 0 0 0.25rem rgba(251, 139, 36, 0.25);
-                        }
-
-                        .form-check-input:checked {
-                            background-color: #fb8b24;
-                            border-color: #fb8b24;
+                            border-color: #3396ff;
+                            margin-right: 5px;
+                            transform: scale(1.2);
+                            cursor: pointer;
                         }
 
                         label {
-                            color: #d97720;
+                            user-select: none;
+                            cursor: pointer;
+                            color: #0055b1;
                             font-weight: bold;
                         }
                     }
@@ -114,15 +123,15 @@
                 }
 
                 .forget-link {
+                    width: fit-content;
                     font-weight: bold;
-                    color: #ffc107;
+                    color: #3396ff;
                     display: flex;
-                    justify-content: end;
-                    text-decoration: none;
+                    justify-self: end;
                 }
 
                 .forget-link:hover {
-                    color: #dba506;
+                    color: #007bff;
                 }
             }
         }
@@ -130,7 +139,9 @@
         .movingImage {
             width: 50%;
             height: 100%;
-            background: url('../../assets/EarthMaterials/2k_earth_daymap.jpg') center;
+            background: url('./RightImage.png') center;
+            object-fit: cover;
+            object-position: center;
             position: absolute;
             right: 0;
             transition: all 0.5s ease;
@@ -139,8 +150,8 @@
         .btn,
         .btn:focus {
             width: 100%;
-            color: #ffffff;
-            background-color: #fdbc7f;
+            color: #fff;
+            background-color: #0055b1;
             border: none;
             border-radius: 5px;
             font-weight: bold;
@@ -153,20 +164,26 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                gap: 10px;
             }
 
-            button[type="submit"] {
-                width: 65%;
-                background-color: #fb8b24;
+            .btn {
+                padding: 6px 12px;
+                outline: none;
             }
 
-            button[type="reset"] {
-                width: 30%;
-                background-color: #feecd9;
+            .btn-submit {
+                flex: 2;
+                background-color: #007bff;
+            }
+
+            .btn-reset {
+                flex: 1;
+                background-color: #a2cfff;
             }
 
             .btn:hover {
-                background-color: #fb8b24;
+                background-color: #0055b1;
             }
         }
     }

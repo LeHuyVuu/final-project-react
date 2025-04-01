@@ -1,38 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
 import { Divider } from "primereact/divider";
 import { Tag } from "primereact/tag";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Dialog } from "primereact/dialog";
+import { BreadCrumb } from "primereact/breadcrumb";
 import "./styleDetail.css";
-
-import {
-  StyledBreadCrumb,
-  ProductContainer,
-  ImageSection,
-  DetailsSection,
-  Brand,
-  ProductTitle,
-  PriceContainer,
-  SoldRating,
-  Description,
-  ActionButtons,
-  DeliveryInfo,
-  SpecificationList,
-  QuantitySelector,
-  BenefitSection,
-  RelatedProduct,
-} from "./customcss";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
-// import { BreadCrumb } from "primereact/breadcrumb";
 
 // Define custom colors
 const COLORS = {
   background: "#ffffff",
   text: "#000000",
-  accentBlue: "#4dabf7", // Changed to a more vibrant blue
+  accentBlue: "#4dabf7",
   lightGray: "#f8f9fa",
   mediumGray: "#e0e0e0",
   darkGray: "#666666",
@@ -265,66 +247,32 @@ const ProductDetail = () => {
 
   return (
     <>
-      <div style={{ backgroundColor: COLORS.background, color: COLORS.text }}>
-        <StyledBreadCrumb
-          model={breadcrumbItems}
-          home={breadcrumbHome}
-          end={lastItem}
-          className="product-breadcrumb"
-        />
+      <div className="bg-white text-black">
+        <div className="p-4 mb-2">
+          <BreadCrumb
+            model={breadcrumbItems}
+            home={breadcrumbHome}
+            end={lastItem}
+            className="bg-transparent border-none p-2"
+          />
+        </div>
 
-        <ProductContainer>
-          <ImageSection>
-            <div
-              className="image-gallery-container"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                background: COLORS.background,
-                position: "sticky",
-                top: "12px",
-                gap: "16px",
-                padding: "16px",
-                border: `1px solid ${COLORS.border}`,
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-              }}
-            >
+        <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
+          {/* Image Section */}
+          <div className="flex-1 max-w-lg lg:max-w-xl">
+            <div className="flex flex-col w-full bg-white sticky top-3 gap-4 p-4 border border-gray-200 rounded-xl shadow-sm">
               <div
-                style={{
-                  position: "relative",
-                  cursor: "zoom-in",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                }}
+                className="relative cursor-zoom-in overflow-hidden rounded-lg"
                 onClick={() => setImageModalVisible(true)}
-                className="main-image-container"
               >
                 <img
                   src={product.images[selectedImage].large_url}
                   alt={product.name}
-                  className="main-image"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "contain",
-                    transition: "transform 0.3s ease",
-                    borderRadius: "8px",
-                  }}
+                  className="w-full h-auto object-contain transition-transform duration-300 rounded-lg"
                 />
 
                 {product.badges_new && product.badges_new.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "12px",
-                      left: "12px",
-                      display: "flex",
-                      gap: "8px",
-                      zIndex: 2,
-                    }}
-                  >
+                  <div className="absolute top-3 left-3 flex gap-2 z-10">
                     {product.badges_new.map(
                       (badge, idx) =>
                         badge.icon && (
@@ -332,111 +280,38 @@ const ProductDetail = () => {
                             key={idx}
                             src={badge.icon}
                             alt={badge.text || "badge"}
-                            style={{
-                              height: "24px",
-                              filter:
-                                "drop-shadow(0px 1px 2px rgba(0,0,0,0.2))",
-                            }}
+                            className="h-6 drop-shadow-md"
                           />
                         )
                     )}
                   </div>
                 )}
 
-                <div
-                  className="action-buttons"
-                  style={{
-                    position: "absolute",
-                    top: "12px",
-                    right: "12px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    zIndex: 2,
-                  }}
-                >
+                <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
                   <button
                     aria-label="Share"
-                    style={{
-                      background: `${COLORS.background}ee`,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: "50%",
-                      width: "40px",
-                      height: "40px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "all 0.2s ease",
-                    }}
+                    className="bg-white/90 border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-sm hover:bg-white transition-all duration-200"
                   >
-                    <i
-                      className="pi pi-share-alt"
-                      style={{ color: COLORS.text }}
-                    ></i>
+                    <i className="pi pi-share-alt text-gray-800"></i>
                   </button>
                   <button
                     aria-label="Favorite"
-                    style={{
-                      background: `${COLORS.background}ee`,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: "50%",
-                      width: "40px",
-                      height: "40px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      transition: "all 0.2s ease",
-                    }}
+                    className="bg-white/90 border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-sm hover:bg-white transition-all duration-200"
                   >
-                    <i
-                      className="pi pi-heart"
-                      style={{ color: COLORS.text }}
-                    ></i>
+                    <i className="pi pi-heart text-gray-800"></i>
                   </button>
                 </div>
 
-                <div
-                  className="image-navigation"
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    transform: "translateY(-50%)",
-                    padding: "0 8px",
-                    pointerEvents: "none",
-                  }}
-                >
+                <div className="absolute top-1/2 w-full flex justify-between transform -translate-y-1/2 px-2 pointer-events-none">
                   <button
                     aria-label="Previous"
                     onClick={(e) => {
                       e.stopPropagation();
                       prevImage();
                     }}
-                    style={{
-                      background: `${COLORS.background}dd`,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: "50%",
-                      width: "40px",
-                      height: "40px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-                      transition: "all 0.2s ease",
-                      pointerEvents: "auto",
-                    }}
+                    className="bg-white/90 border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md hover:bg-white transition-all duration-200 pointer-events-auto"
                   >
-                    <i
-                      className="pi pi-chevron-left"
-                      style={{ color: COLORS.text }}
-                    ></i>
+                    <i className="pi pi-chevron-left text-gray-800"></i>
                   </button>
                   <button
                     aria-label="Next"
@@ -444,290 +319,113 @@ const ProductDetail = () => {
                       e.stopPropagation();
                       nextImage();
                     }}
-                    style={{
-                      background: `${COLORS.background}dd`,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: "50%",
-                      width: "40px",
-                      height: "40px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-                      transition: "all 0.2s ease",
-                      pointerEvents: "auto",
-                    }}
+                    className="bg-white/90 border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md hover:bg-white transition-all duration-200 pointer-events-auto"
                   >
-                    <i
-                      className="pi pi-chevron-right"
-                      style={{ color: COLORS.text }}
-                    ></i>
+                    <i className="pi pi-chevron-right text-gray-800"></i>
                   </button>
                 </div>
               </div>
 
-              <div
-                className="thumbnails"
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  overflowX: "auto",
-                  padding: "8px 4px",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: `${COLORS.mediumGray} transparent`,
-                }}
-              >
+              <div className="flex gap-2.5 overflow-x-auto py-2 px-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                 {product.images.map((image, index) => (
                   <div
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    style={{
-                      position: "relative",
-                      cursor: "pointer",
-                    }}
+                    className="relative cursor-pointer"
                   >
                     <img
                       src={image.base_url}
                       alt={`Thumbnail ${index + 1}`}
-                      style={{
-                        border:
-                          selectedImage === index
-                            ? `2px solid ${COLORS.accentBlue}`
-                            : `1px solid ${COLORS.mediumGray}`,
-                        borderRadius: "8px",
-                        width: "64px",
-                        height: "64px",
-                        objectFit: "cover",
-                        transition: "all 0.2s ease",
-                        opacity: selectedImage === index ? 1 : 0.8,
-                      }}
+                      className={`w-16 h-16 object-cover rounded-lg transition-all duration-200 ${
+                        selectedImage === index
+                          ? "border-2 border-blue-500 opacity-100"
+                          : "border border-gray-300 opacity-80"
+                      }`}
                     />
                     {selectedImage === index && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: "-2px",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          width: "24px",
-                          height: "2px",
-                          backgroundColor: COLORS.accentBlue,
-                          borderRadius: "2px",
-                        }}
-                      />
+                      <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full" />
                     )}
                   </div>
                 ))}
               </div>
+
               {/* Features */}
-              <div
-                className="features-container"
-                style={{ marginBottom: "28px" }}
-              >
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    marginBottom: "16px",
-                    color: COLORS.text,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <i
-                    className="pi pi-star"
-                    style={{ color: COLORS.accentBlue }}
-                  ></i>
+              <div className="mb-7">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                  <i className="pi pi-star text-blue-500"></i>
                   Điểm nổi bật:
                 </h3>
-                <ul
-                  style={{
-                    paddingLeft: "24px",
-                    marginTop: "0",
-                    color: COLORS.text,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
+                <ul className="pl-6 text-gray-900 flex flex-col gap-2.5">
                   {features.map((feature, index) => (
-                    <li
-                      key={index}
-                      style={{
-                        fontSize: "15px",
-                        lineHeight: "1.5",
-                      }}
-                    >
+                    <li key={index} className="text-[15px] leading-relaxed">
                       {feature}
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-          </ImageSection>
+          </div>
 
-          <DetailsSection
-            style={{ backgroundColor: COLORS.background, color: COLORS.text }}
-          >
+          {/* Details Section */}
+          <div className="flex-1 flex flex-col bg-white text-gray-900">
             {/* Brand & SKU */}
-            <div
-              className="product-metadata"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                marginBottom: "8px",
-              }}
-            >
-              <Brand>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="text-sm text-gray-700">
                 Thương hiệu:{" "}
-                <b style={{ color: COLORS.accentBlue, fontWeight: "600" }}>
+                <b className="text-blue-500 font-semibold">
                   {product.brand.name}
                 </b>
-              </Brand>
-              <div
-                style={{
-                  height: "16px",
-                  width: "1px",
-                  backgroundColor: COLORS.mediumGray,
-                }}
-              ></div>
-              <span style={{ fontSize: "14px", color: COLORS.darkGray }}>
-                SKU: <span style={{ fontWeight: "500" }}>{product.sku}</span>
+              </div>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <span className="text-sm text-gray-600">
+                SKU: <span className="font-medium">{product.sku}</span>
               </span>
             </div>
 
             {/* Product Title */}
-            <ProductTitle
-              style={{
-                color: COLORS.text,
-                fontSize: "28px",
-                lineHeight: "1.3",
-                letterSpacing: "-0.02em",
-                marginBottom: "16px",
-              }}
-            >
+            <h1 className="text-2xl font-semibold mb-4 text-gray-900 leading-tight tracking-tight">
               {product.name}
-            </ProductTitle>
+            </h1>
 
             {/* Ratings & Reviews */}
-            <div
-              className="ratings-container"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                marginBottom: "20px",
-                background: COLORS.lightGray,
-                padding: "8px 12px",
-                borderRadius: "8px",
-              }}
-            >
-              <div
-                className="rating-stars"
-                style={{ display: "flex", alignItems: "center" }}
-              >
+            <div className="flex items-center gap-3 mb-5 bg-gray-50 p-3 rounded-lg">
+              <div className="flex items-center">
                 <Rating
                   value={product.rating_average}
                   readOnly
+                  disabled
                   stars={5}
                   cancel={false}
                   className="p-rating-sm"
                 />
-                <span
-                  className="rating-value"
-                  style={{
-                    marginLeft: "8px",
-                    fontSize: "15px",
-                    fontWeight: "600",
-                    color: COLORS.accentBlue,
-                  }}
-                >
+                <span className="ml-2 text-[15px] font-semibold text-blue-500">
                   {product.rating_average}
                 </span>
               </div>
-              <div
-                style={{
-                  height: "16px",
-                  width: "1px",
-                  backgroundColor: COLORS.mediumGray,
-                }}
-              ></div>
-              <span style={{ fontSize: "14px", color: COLORS.darkGray }}>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <span className="text-sm text-gray-600">
                 <b>{product.review_count}</b> đánh giá
               </span>
-              <div
-                style={{
-                  height: "16px",
-                  width: "1px",
-                  backgroundColor: COLORS.mediumGray,
-                }}
-              ></div>
-              <span
-                className="sold"
-                style={{
-                  fontSize: "14px",
-                  color: COLORS.darkGray,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
-              >
-                <i
-                  className="pi pi-shopping-cart"
-                  style={{ fontSize: "14px" }}
-                ></i>
+              <div className="h-4 w-px bg-gray-300"></div>
+              <span className="text-sm text-gray-600 flex items-center gap-1">
+                <i className="pi pi-shopping-cart text-sm"></i>
                 Đã bán <b>{product.all_time_quantity_sold.toLocaleString()}</b>
               </span>
             </div>
 
             {/* Price Info */}
-            <div
-              className="price-container"
-              style={{
-                backgroundColor: COLORS.lightGray,
-                borderRadius: "12px",
-                padding: "20px",
-                marginBottom: "24px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                border: `1px solid ${COLORS.border}`,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                }}
-              >
-                <PriceContainer>
+            <div className="bg-gray-50 rounded-xl p-5 mb-6 shadow-sm border border-gray-200">
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col">
                   {product.discount_rate > 0 && (
-                    <span
-                      className="original-price"
-                      style={{
-                        color: COLORS.darkGray,
-                        textDecoration: "line-through",
-                        fontSize: "16px",
-                        marginBottom: "4px",
-                      }}
-                    >
+                    <span className="text-gray-600 line-through text-base mb-1">
                       {formatPrice(product.list_price)}
                     </span>
                   )}
-                  <span
-                    className="current-price"
-                    style={{
-                      fontSize: "32px",
-                      color: COLORS.accentBlue,
-                      fontWeight: "700",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
+                  <span className="text-3xl text-blue-500 font-bold tracking-tight">
                     {formatPrice(product.price)}
                   </span>
-                </PriceContainer>
+                </div>
 
                 <Tag
                   value={
@@ -740,37 +438,17 @@ const ProductDetail = () => {
                       ? "success"
                       : "danger"
                   }
-                  style={{
-                    fontSize: "13px",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                    fontWeight: "600",
-                  }}
+                  className="text-sm px-3 py-1.5 rounded-lg font-semibold"
                 />
               </div>
 
               {product.current_seller && (
-                <div
-                  style={{
-                    marginTop: "16px",
-                    fontSize: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  <i
-                    className="pi pi-store"
-                    style={{ fontSize: "14px", color: COLORS.darkGray }}
-                  ></i>
-                  <span style={{ color: COLORS.text }}>Cung cấp bởi: </span>
+                <div className="mt-4 text-sm flex items-center gap-1.5">
+                  <i className="pi pi-store text-sm text-gray-600"></i>
+                  <span className="text-gray-900">Cung cấp bởi: </span>
                   <a
                     href={product.current_seller.link}
-                    style={{
-                      color: COLORS.accentBlue,
-                      textDecoration: "none",
-                      fontWeight: "600",
-                    }}
+                    className="text-blue-500 font-semibold hover:underline"
                   >
                     {product.current_seller.name}
                   </a>
@@ -779,135 +457,44 @@ const ProductDetail = () => {
             </div>
 
             {/* Gift Box */}
-            <div
-              className="gift-box"
-              style={{
-                marginBottom: "28px",
-                border: `1px solid ${COLORS.border}`,
-                borderRadius: "12px",
-                padding: "20px",
-                backgroundColor: COLORS.background,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  marginBottom: "16px",
-                  color: COLORS.text,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <i
-                  className="pi pi-gift"
-                  style={{ color: COLORS.accentBlue }}
-                ></i>
+            <div className="mb-7 border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                <i className="pi pi-gift text-blue-500"></i>
                 Quà tặng kèm
               </h3>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                  background: COLORS.lightGray,
-                  padding: "12px",
-                  borderRadius: "8px",
-                }}
-              >
+              <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
                 <img
                   src="https://salt.tikicdn.com/ts/product/1e/d6/5f/dea185fcc72b26b6314f8d3f1f27a948.png"
                   alt="Quà tặng"
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    objectFit: "contain",
-                    border: `1px solid ${COLORS.mediumGray}`,
-                    borderRadius: "8px",
-                    padding: "4px",
-                    background: COLORS.background,
-                  }}
+                  className="w-[70px] h-[70px] object-contain border border-gray-300 rounded-lg p-1 bg-white"
                 />
                 <div>
-                  <p
-                    style={{
-                      margin: "0 0 8px 0",
-                      fontSize: "15px",
-                      fontWeight: "600",
-                      color: COLORS.text,
-                    }}
-                  >
+                  <p className="m-0 mb-2 text-[15px] font-semibold text-gray-900">
                     Bộ 4 ly thủy tinh Nescafe
                   </p>
                   <Tag
                     value="MIỄN PHÍ"
                     severity="info"
-                    style={{
-                      fontSize: "12px",
-                      backgroundColor: COLORS.accentBlue,
-                      color: COLORS.background,
-                      borderRadius: "4px",
-                      fontWeight: "600",
-                    }}
+                    className="text-xs bg-blue-500 text-white rounded px-2 py-0.5 font-semibold"
                   />
                 </div>
               </div>
             </div>
 
             {/* Quantity Selector */}
-            <QuantitySelector
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "28px",
-                padding: "16px",
-                backgroundColor: COLORS.lightGray,
-                borderRadius: "12px",
-              }}
-            >
-              <h3
-                style={{
-                  color: COLORS.text,
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  margin: 0,
-                }}
-              >
+            <div className="flex items-center gap-4 mb-7 p-4 bg-gray-50 rounded-xl">
+              <h3 className="text-gray-900 text-base font-semibold m-0">
                 Số lượng:
               </h3>
-              <div
-                className="quantity-controls"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  background: COLORS.background,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
-              >
+              <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: COLORS.background,
-                    border: "none",
-                    borderRight: `1px solid ${COLORS.border}`,
-                    cursor: quantity <= 1 ? "not-allowed" : "pointer",
-                    color: quantity <= 1 ? COLORS.mediumGray : COLORS.text,
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    transition: "background-color 0.2s",
-                  }}
+                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${
+                    quantity <= 1
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-900 cursor-pointer"
+                  }`}
                 >
                   -
                 </button>
@@ -915,343 +502,136 @@ const ProductDetail = () => {
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                  style={{
-                    width: "50px",
-                    textAlign: "center",
-                    border: "none",
-                    outline: "none",
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    padding: "8px 0",
-                  }}
+                  className="w-[50px] text-center border-none outline-none text-base font-medium py-2"
                 />
                 <button
                   onClick={increaseQuantity}
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: COLORS.background,
-                    border: "none",
-                    borderLeft: `1px solid ${COLORS.border}`,
-                    cursor: "pointer",
-                    color: COLORS.text,
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    transition: "background-color 0.2s",
-                  }}
+                  className="w-10 h-10 flex items-center justify-center bg-white border-l border-gray-200 text-gray-900 text-lg font-bold cursor-pointer transition-colors duration-200"
                 >
                   +
                 </button>
               </div>
-            </QuantitySelector>
+            </div>
 
             {/* Action Buttons */}
-            <ActionButtons
-              style={{
-                display: "flex",
-                gap: "16px",
-                marginBottom: "28px",
-              }}
-            >
+            <div className="flex gap-4 mb-7">
               <Button
-                className="p-button-raised add-to-cart"
+                className="p-button-raised flex-1 bg-white border-2 border-blue-500 text-blue-500 font-semibold rounded-lg px-5 py-3 text-base transition-all duration-200"
                 label="Thêm vào giỏ hàng"
                 icon="pi pi-shopping-cart"
-                style={{
-                  backgroundColor: COLORS.background,
-                  borderColor: COLORS.accentBlue,
-                  color: COLORS.accentBlue,
-                  fontWeight: "600",
-                  border: `2px solid ${COLORS.accentBlue}`,
-                  borderRadius: "8px",
-                  padding: "12px 20px",
-                  flex: 1,
-                  fontSize: "16px",
-                  transition: "all 0.2s ease",
-                }}
               />
               <Button
-                className="p-button-outlined checkout-now"
+                className="p-button-outlined flex-1 bg-blue-500 border-2 border-blue-500 text-white font-semibold rounded-lg px-5 py-3 text-base shadow-md transition-all duration-200"
                 label="Mua ngay"
                 icon="pi pi-check"
-                style={{
-                  borderColor: COLORS.accentBlue,
-                  color: COLORS.background,
-                  backgroundColor: COLORS.accentBlue,
-                  fontWeight: "600",
-                  border: `2px solid ${COLORS.accentBlue}`,
-                  borderRadius: "8px",
-                  padding: "12px 20px",
-                  flex: 1,
-                  fontSize: "16px",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s ease",
-                }}
               />
-            </ActionButtons>
+            </div>
 
-            <Divider style={{ margin: "0 0 24px 0" }} />
+            <Divider className="mb-6" />
 
             {/* Benefits Section */}
-            <BenefitSection
-              style={{
-                backgroundColor: COLORS.lightGray,
-                borderRadius: "12px",
-                padding: "20px",
-                marginBottom: "28px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-              }}
-            >
+            <div className="bg-gray-50 rounded-xl p-5 mb-7 flex flex-col gap-4">
               {product.benefits.map((benefit, index) => (
                 <div
                   key={index}
-                  className="benefit-item"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "10px",
-                    backgroundColor: COLORS.background,
-                    borderRadius: "8px",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                  }}
+                  className="flex items-center gap-3 p-2.5 bg-white rounded-lg shadow-sm"
                 >
                   <img
                     src={benefit.icon}
                     alt="Benefit icon"
-                    style={{
-                      width: "28px",
-                      height: "28px",
-                      objectFit: "contain",
-                    }}
+                    className="w-7 h-7 object-contain"
                   />
                   <span
                     dangerouslySetInnerHTML={{ __html: benefit.text }}
-                    style={{
-                      color: COLORS.text,
-                      fontSize: "14px",
-                      lineHeight: "1.4",
-                    }}
+                    className="text-gray-900 text-sm leading-relaxed"
                   ></span>
                 </div>
               ))}
-            </BenefitSection>
+            </div>
 
             {/* Delivery Information */}
-            <DeliveryInfo
-              style={{
-                marginBottom: "28px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-                color: COLORS.text,
-                padding: "20px",
-                border: `1px solid ${COLORS.border}`,
-                borderRadius: "12px",
-                backgroundColor: COLORS.background,
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  margin: "0 0 8px 0",
-                  color: COLORS.text,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <i
-                  className="pi pi-truck"
-                  style={{ color: COLORS.accentBlue }}
-                ></i>
+            <div className="mb-7 flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
+              <h3 className="text-lg font-semibold m-0 mb-2 text-gray-900 flex items-center gap-2">
+                <i className="pi pi-truck text-blue-500"></i>
                 Thông tin vận chuyển
               </h3>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "12px",
-                  backgroundColor: COLORS.lightGray,
-                  borderRadius: "8px",
-                }}
-              >
-                <i
-                  className="pi pi-truck"
-                  style={{ fontSize: "18px", color: COLORS.accentBlue }}
-                ></i>
-                <div style={{ fontSize: "15px" }}>
-                  <span style={{ fontWeight: "600" }}>Giao hàng miễn phí</span>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: COLORS.darkGray,
-                      marginTop: "4px",
-                    }}
-                  >
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <i className="pi pi-truck text-lg text-blue-500"></i>
+                <div className="text-[15px]">
+                  <span className="font-semibold">Giao hàng miễn phí</span>
+                  <div className="text-sm text-gray-600 mt-1">
                     Áp dụng cho đơn hàng từ 500,000₫
                   </div>
                 </div>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  padding: "12px",
-                  backgroundColor: COLORS.lightGray,
-                  borderRadius: "8px",
-                }}
-              >
-                <i
-                  className="pi pi-shield"
-                  style={{ fontSize: "18px", color: COLORS.accentBlue }}
-                ></i>
-                <div style={{ fontSize: "15px" }}>
-                  <span style={{ fontWeight: "600" }}>Chính sách đổi trả</span>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <i className="pi pi-shield text-lg text-blue-500"></i>
+                <div className="text-[15px]">
+                  <span className="font-semibold">Chính sách đổi trả</span>
                   <div
                     dangerouslySetInnerHTML={{
                       __html: product.return_and_exchange_policy,
                     }}
-                    style={{
-                      fontSize: "13px",
-                      color: COLORS.darkGray,
-                      marginTop: "4px",
-                    }}
+                    className="text-sm text-gray-600 mt-1"
                   ></div>
                 </div>
               </div>
-            </DeliveryInfo>
-          </DetailsSection>
-        </ProductContainer>
+            </div>
+          </div>
+        </div>
 
         {/* Product Tabs */}
-        <div
-          className="product-tabs-container"
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto 40px auto",
-            padding: "0 16px",
-            backgroundColor: COLORS.background,
-          }}
-        >
+        <div className="max-w-7xl mx-auto px-4 mb-10 bg-white">
           <TabView
             activeIndex={activeTab}
             onTabChange={(e) => setActiveTab(e.index)}
-            style={{
-              color: COLORS.text,
-              boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-              borderRadius: "12px",
-              overflow: "hidden",
-            }}
+            className="text-gray-900 shadow-sm rounded-xl overflow-hidden"
           >
             <TabPanel
               header={
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 0",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                  }}
-                >
+                <span className="flex items-center gap-2 py-2 text-base font-semibold">
                   <i className="pi pi-info-circle"></i>
                   Mô tả sản phẩm
                 </span>
               }
             >
-              <div
-                style={{
-                  padding: "32px 24px",
-                  color: COLORS.text,
-                  lineHeight: "1.6",
-                }}
-              >
+              <div className="p-8 text-gray-900 leading-relaxed">
                 <div
                   dangerouslySetInnerHTML={createMarkup(product.description)}
-                  className="product-description"
-                  style={{
-                    fontSize: "15px",
-                  }}
+                  className="text-[15px]"
                 ></div>
               </div>
             </TabPanel>
 
             <TabPanel
               header={
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 0",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                  }}
-                >
+                <span className="flex items-center gap-2 py-2 text-base font-semibold">
                   <i className="pi pi-list"></i>
                   Thông số kỹ thuật
                 </span>
               }
             >
-              <div style={{ padding: "32px 24px" }}>
-                <SpecificationList>
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
-                      backgroundColor: COLORS.background,
-                      color: COLORS.text,
-                      border: `1px solid ${COLORS.border}`,
-                      borderRadius: "8px",
-                      overflow: "hidden",
-                    }}
-                  >
+              <div className="p-8">
+                <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="w-full">
                     <tbody>
                       {product.specifications[0].attributes.map(
                         (attr, index) => (
                           <tr
                             key={index}
-                            style={{
-                              borderBottom:
-                                index <
-                                product.specifications[0].attributes.length - 1
-                                  ? `1px solid ${COLORS.border}`
-                                  : "none",
-                            }}
+                            className={`${
+                              index <
+                              product.specifications[0].attributes.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
                           >
-                            <td
-                              style={{
-                                padding: "14px 20px",
-                                width: "30%",
-                                backgroundColor: COLORS.lightGray,
-                                fontWeight: "600",
-                                color: COLORS.text,
-                                borderRight: `1px solid ${COLORS.border}`,
-                                fontSize: "15px",
-                              }}
-                            >
+                            <td className="p-5 w-[30%] bg-gray-50 font-semibold text-gray-900 border-r border-gray-200 text-[15px]">
                               {attr.name}
                             </td>
-                            <td
-                              style={{
-                                padding: "14px 20px",
-                                color: COLORS.text,
-                                fontSize: "15px",
-                                lineHeight: "1.5",
-                              }}
-                            >
+                            <td className="p-5 text-gray-900 text-[15px] leading-relaxed">
                               {attr.value}
                             </td>
                           </tr>
@@ -1259,22 +639,13 @@ const ProductDetail = () => {
                       )}
                     </tbody>
                   </table>
-                </SpecificationList>
+                </div>
               </div>
             </TabPanel>
 
             <TabPanel
               header={
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 0",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                  }}
-                >
+                <span className="flex items-center gap-2 py-2 text-base font-semibold">
                   <i className="pi pi-star"></i>
                   Đánh giá sản phẩm
                 </span>
@@ -1289,7 +660,7 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products Section */}
-        <div style={{ padding: "0 16px 40px 16px" }}>
+        <div className="px-4 pb-10">
           <RelatedProducts />
         </div>
       </div>
@@ -1298,11 +669,7 @@ const ProductDetail = () => {
       <Dialog
         visible={imageModalVisible}
         onHide={() => setImageModalVisible(false)}
-        style={{
-          width: "90vw",
-          maxWidth: "1200px",
-          maxHeight: "90vh",
-        }}
+        className="w-[90vw] max-w-7xl max-h-[90vh]"
         header={null}
         dismissableMask
         maximizable
@@ -1310,143 +677,52 @@ const ProductDetail = () => {
           padding: 0,
           overflow: "hidden",
           borderRadius: "12px",
-          backgroundColor: `${COLORS.background}`,
+          backgroundColor: COLORS.background,
         }}
         showHeader={false}
-        className="image-zoom-dialog"
       >
-        <div
-          className="image-modal-content"
-          style={{
-            textAlign: "center",
-            position: "relative",
-            backgroundColor: COLORS.background,
-            minHeight: "85vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "40px 0",
-          }}
-        >
+        <div className="text-center relative bg-white min-h-[85vh] flex flex-col justify-center py-10">
           {/* Close Button */}
           <button
             onClick={() => setImageModalVisible(false)}
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              background: COLORS.accentBlue,
-              border: "none",
-              borderRadius: "50%",
-              width: "44px",
-              height: "44px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 5,
-              boxShadow: "0 3px 8px rgba(0,0,0,0.2)",
-              transition: "all 0.2s ease",
-            }}
+            className="absolute top-5 right-5 bg-blue-500 border-none rounded-full w-11 h-11 flex items-center justify-center cursor-pointer z-10 shadow-lg transition-all duration-200"
           >
-            <i
-              className="pi pi-times"
-              style={{ color: COLORS.background, fontSize: "20px" }}
-            ></i>
+            <i className="pi pi-times text-white text-xl"></i>
           </button>
 
           {/* Main Image */}
-          <div
-            className="modal-image-container"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 1,
-            }}
-          >
+          <div className="flex justify-center items-center flex-1">
             <img
               src={product.images[selectedImage].large_url}
               alt={product.name}
-              style={{
-                maxWidth: "90%",
-                maxHeight: "70vh",
-                objectFit: "contain",
-                margin: "0 auto",
-                boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
-                transition: "transform 0.3s ease",
-                borderRadius: "8px",
-              }}
+              className="max-w-[90%] max-h-[70vh] object-contain mx-auto shadow-lg transition-transform duration-300 rounded-lg"
             />
           </div>
 
           {/* Thumbnails Navigation */}
-          <div
-            className="modal-navigation"
-            style={{
-              marginTop: "30px",
-              display: "flex",
-              justifyContent: "center",
-              gap: "20px",
-              alignItems: "center",
-              padding: "0 20px",
-            }}
-          >
+          <div className="mt-8 flex justify-center gap-5 items-center px-5">
             <Button
               icon="pi pi-chevron-left"
               onClick={prevImage}
               rounded
-              style={{
-                backgroundColor: COLORS.accentBlue,
-                color: COLORS.background,
-                width: "44px",
-                height: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.15)",
-              }}
+              className="bg-blue-500 text-white w-11 h-11 shadow-md"
             />
 
-            <div
-              className="modal-thumbnails"
-              style={{
-                display: "flex",
-                gap: "12px",
-                backgroundColor: COLORS.lightGray,
-                padding: "12px 20px",
-                borderRadius: "12px",
-                alignItems: "center",
-                overflowX: "auto",
-                maxWidth: "70vw",
-                scrollbarWidth: "thin",
-                scrollbarColor: `${COLORS.mediumGray} transparent`,
-              }}
-            >
+            <div className="flex gap-3 bg-gray-50 p-3 px-5 rounded-xl items-center overflow-x-auto max-w-[70vw] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {product.images.map((image, index) => (
                 <div
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  style={{
-                    width: "70px",
-                    height: "70px",
-                    border:
-                      selectedImage === index
-                        ? `3px solid ${COLORS.accentBlue}`
-                        : `3px solid transparent`,
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    opacity: selectedImage === index ? 1 : 0.7,
-                    transition: "all 0.2s ease",
-                    flexShrink: 0,
-                  }}
+                  className={`w-[70px] h-[70px] rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${
+                    selectedImage === index
+                      ? "border-3 border-blue-500 opacity-100"
+                      : "border-3 border-transparent opacity-70"
+                  }`}
                 >
                   <img
                     src={image.base_url}
                     alt={`Thumbnail ${index + 1}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}
@@ -1456,32 +732,12 @@ const ProductDetail = () => {
               icon="pi pi-chevron-right"
               onClick={nextImage}
               rounded
-              style={{
-                backgroundColor: COLORS.accentBlue,
-                color: COLORS.background,
-                width: "44px",
-                height: "44px",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.15)",
-              }}
+              className="bg-blue-500 text-white w-11 h-11 shadow-md"
             />
           </div>
 
           {/* Image Counter */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "20px",
-              left: "0",
-              width: "100%",
-              textAlign: "center",
-              color: COLORS.background,
-              fontSize: "15px",
-              fontWeight: "600",
-              backgroundColor: COLORS.accentBlue,
-              padding: "10px 0",
-              opacity: 0.9,
-            }}
-          >
+          <div className="absolute bottom-5 left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
             {selectedImage + 1} / {product.images.length}
           </div>
         </div>
