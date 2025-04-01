@@ -33,28 +33,27 @@ export default function CategoryCarousel() {
   }, []);
 
   return (
-    <div className="mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Danh mục sản phẩm</h2>
+    <div className="mx-auto p-4 text-right">
 
       <Swiper
-        slidesPerView={3}
-        grid={{ rows: 2, fill: "row" }}
+        slidesPerView={4}
+        grid={{ rows: 3, fill: "row" }}
         spaceBetween={10}
         navigation={true}
         modules={[Grid, Navigation]}
         breakpoints={{
-          1024: { slidesPerView: 5, grid: { rows: 2 } },
-          768: { slidesPerView: 3, grid: { rows: 2 } },
-          480: { slidesPerView: 2, grid: { rows: 2 } },
+          1024: { slidesPerView: 4, grid: { rows: 3 } },
+          768: { slidesPerView: 3, grid: { rows: 3 } },
+          480: { slidesPerView: 2, grid: { rows: 3 } },
         }}
-        className="mySwiper"
+        className=""
       >
         {categories.map((item) => (
-          <SwiperSlide key={item.id} className="flex flex-col items-center">
+          <SwiperSlide key={item.id} className="  ">
             <div className="w-20 h-20 flex justify-center items-center">
-              <img src={item.image} alt={item.title} className="w-14 h-14 object-contain" />
+              <img src={item.image} alt={item.title} className=" " />
             </div>
-            <p className=" text-center text-sm font-medium">{item.title}</p>
+            <div className="  text-sm font-medium ">{item.title}</div>
           </SwiperSlide>
         ))}
       </Swiper>

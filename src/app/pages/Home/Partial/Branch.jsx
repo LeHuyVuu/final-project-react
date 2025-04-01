@@ -58,8 +58,8 @@ export default function Branch() {
         {branch.map((brand, index) => (
           brand.imageUrls.map((imgUrl, idx) => (
             <SwiperSlide key={index + '-' + idx}>
-              <div className="flex justify-center items-center p-4 bg-gray-200 rounded-lg shadow-md">
-                <img src={imgUrl} className="w-28 h-auto object-contain" />
+              <div className="flex justify-center items-center  bg-gray-200 rounded-lg shadow-md">
+                <img src={imgUrl} className=" h-auto object-contain" />
               </div>
             </SwiperSlide>
           ))
