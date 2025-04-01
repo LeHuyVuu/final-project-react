@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getData } from '../../../context/api';
 import { TabView, TabPanel } from 'primereact/tabview';
+import Like from './Like';
 
 export default function Trending() {
     const [trending, setTrending] = useState([]);
@@ -35,30 +36,31 @@ export default function Trending() {
 
     return (
         <>
-            <div className="sticky top-0 flex overflow-x-auto space-x-4 p-4 justify-between shadow-xl rounded-lg bg-white">
-                <TabView className="w-full">
+            <div className="sticky top-0 p-4 shadow-xl rounded-lg bg-white  ">
+                <TabView className="  w-full flex justify-around">
                     {trending.map((category, index) => (
-                        <TabPanel 
+                        <TabPanel
                             header={
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center justify-between space-x-2">
                                     <img
                                         src={category.image}
                                         alt={category.name}
-                                        className="w-6 h-6 object-contain"
+                                        className="flex justify-between h-6 object-contain"
+                                        on
                                     />
                                     <span>{category.name}</span>
                                 </div>
                             }
                             key={index}
                         >
-                            <div className="flex flex-col items-center">
-                                <a href={category.link} className="text-blue-500 text-sm">
-                                    Xem thêm
-                                </a>{/*nội dung từng tab */}
-                            </div>
+
                         </TabPanel>
                     ))}
                 </TabView>
+
+            </div>
+            <div className="">
+               
             </div>
         </>
     );

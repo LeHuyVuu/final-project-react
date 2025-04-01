@@ -4,6 +4,7 @@ import './SignInSignUp.css';
 
 import SignUpImage from './LeftImage.png';
 import SignInImage from './RightImage.png';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 
 export default function SignInSignUp() {
     const moveImage = () => {
@@ -56,7 +57,6 @@ export default function SignInSignUp() {
         setSignUpPasswordError(null);
         setSignUpConfirmError(null);
     };
-
 
     const navigate = useNavigate();
 
@@ -319,6 +319,18 @@ export default function SignInSignUp() {
                                 <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
                             </div>
                             <button id='btn btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
+                            {/* Google Login Button */}
+                            <GoogleLogin
+                                onSuccess={(response) => {
+                                    console.log('Google Login Success:', response);
+                                    // Handle the Google Login success logic here
+                                }}
+                                onError={(error) => {
+                                    console.error('Google Login Error:', error);
+                                }}
+                                useOneTap
+                                clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
+                            />
                         </form>
                     </div>
 
