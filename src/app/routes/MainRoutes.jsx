@@ -21,6 +21,8 @@ const MainRoutes = () => {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
+          <Route path="detail/:id" element={<ProductDetail />} />
+          <Route path='/cart' element={<Cart />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path='/cart' element={<Cart/>}/>
           <Route path="*" element={<PageNotFound />} />
