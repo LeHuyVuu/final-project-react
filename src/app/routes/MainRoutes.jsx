@@ -5,6 +5,7 @@ import Home from "../pages/Home/Home";
 import PageNotFound from "../layouts/PageNotFound/PageNotFound";
 import ProductDetail from "../pages/Detail/patrials/ProductDetail";
 import Cart from "../pages/Cart/Cart";
+import Category from "../pages/Category/Category";
 
 import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx'
 
@@ -22,6 +23,9 @@ const MainRoutes = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<ProductDetail />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path="detail" element={<ProductDetail />} />
+          <Route path="category" element={<Category />} />
+          <Route path='/cart' element={<Cart/>}/>
           <Route path="*" element={<PageNotFound />} />
 
           <Route path='login' element={<SignInSignUp />} />
