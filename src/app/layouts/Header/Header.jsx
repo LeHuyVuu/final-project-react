@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Menu from "../../pages/MenuHeader/Menu.jsx";
 
 export default function Header() {
   return (
@@ -118,9 +119,12 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="container mx-auto flex justify-center items-center px-10 py-2">
+      <div className="container mx-auto flex justify-center items-center gap-8 px-10 py-4">
+
+        <Menu />
+
         <nav className="block">
-          <ul className="flex justify-center space-x-6 mt-2 items-center text-gray-500 text-sm font-semibold">
+          <ul className="flex justify-center gap-6 items-center text-gray-500 text-sm font-semibold">
             <li className="relative group">
               <div className="hover:text-blue-500 cursor-pointer transition-colors duration-300 flex items-center">
                 <span>Điện gia dụng</span>
@@ -517,7 +521,7 @@ export default function Header() {
         </nav>
       </div>
 
-      <div className="flex justify-between items-center mt-2 p-[1px] bg-gray-100"></div>
+      {/* <div className="flex justify-between items-center mt-2 p-[1px] bg-gray-100"></div> */}
     </header>
   );
 }

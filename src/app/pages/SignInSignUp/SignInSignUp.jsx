@@ -80,9 +80,9 @@ export default function SignInSignUp() {
             return;
         }
 
-        const isExistPhoneNumber = localStorage.getItem(`phoneNumber${SignInPhoneNumber}`);
+        const isExistId = localStorage.getItem(`id${SignInPhoneNumber}`);
         const isExistPassword = localStorage.getItem(`password${SignInPhoneNumber}`);
-        if (isExistPhoneNumber == SignInPhoneNumber && isExistPassword == SignInPassword) {
+        if (isExistId == SignInPhoneNumber && isExistPassword == SignInPassword) {
             localStorage.removeItem('LoginUser');
             localStorage.setItem('LoginUser', SignInPhoneNumber);
             navigate('/');
@@ -190,6 +190,7 @@ export default function SignInSignUp() {
         }
 
         const signupData = {
+            id: SignUpPhoneNumber,
             phoneNumber: SignUpPhoneNumber,
             password: SignUpPassword,
             name: SignUpFullName,
@@ -208,12 +209,13 @@ export default function SignInSignUp() {
         };
         console.log('Sign Up Data:', signupData);
 
-        const isExist = localStorage.getItem(`phoneNumber${SignUpPhoneNumber}`);
+        const isExist = localStorage.getItem(`id${SignUpPhoneNumber}`);
         if (isExist == SignUpPhoneNumber) {
             setErrorSignUp('Tài khoản đã tồn tại');
             return;
         }
 
+        localStorage.setItem(`id${SignUpPhoneNumber}`, signupData.id);
         localStorage.setItem(`phoneNumber${SignUpPhoneNumber}`, signupData.phoneNumber);
         localStorage.setItem(`password${SignUpPhoneNumber}`, signupData.password);
         localStorage.setItem(`name${SignUpPhoneNumber}`, signupData.name);

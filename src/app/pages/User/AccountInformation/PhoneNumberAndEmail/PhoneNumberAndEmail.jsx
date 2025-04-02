@@ -4,12 +4,14 @@ import './PhoneNumberAndEmail.css';
 
 export default function PhoneNumberAndEmail() {
 
+    const LoginUser = localStorage.getItem('LoginUser');
+
     const ListPhoneNumberAndEmail = [
         {
             heading: 'Số điện thoại và Email',
             items: [
-                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: '0123456789', button: 'Cập nhật' },
-                { icon: 'fa-solid fa-envelope', label: 'Địa chỉ email', value: 'abc123@gmail.com', button: 'Cập nhật' },
+                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: localStorage.getItem(`phoneNumber${LoginUser}`), button: 'Cập nhật' },
+                { icon: 'fa-solid fa-envelope', label: 'Địa chỉ email', value: localStorage.getItem(`email${LoginUser}`), button: 'Cập nhật' },
             ]
         },
         {
@@ -41,9 +43,9 @@ export default function PhoneNumberAndEmail() {
                         <div key={i} className='content'>
                             <div className='left-content'>
                                 {item.icon && <i className={item.icon}></i>}
-                                <div>
+                                <div className='item'>
                                     <span>{item.label}</span>
-                                    <div>{item.value}</div>
+                                    <div className='value-text'>{item.value}</div>
                                 </div>
                             </div>
                             <button>{item.button}</button>
