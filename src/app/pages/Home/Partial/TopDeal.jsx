@@ -10,28 +10,30 @@ import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.js
 // Template hiển thị từng sản phẩm
 const itemTemplate = (item) => {
     return (
-        <div className="flex flex-col max-w-60 justify-between h-auto bg-slate-50 gap-2 p-4 rounded-lg shadow-lg">
-            <div className="relative">
-                <img src={item.icon} alt="icon" className="absolute bottom-0 left-0" /> {/* Icon */}
-                <img src={item.image} alt={item.title} className="w-full h-52 object-cover rounded-lg mb-4" /> {/* Main image */}
-            </div>
-            <div className="text-left">
-                <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                    {item.title}
-                </h4>
-                <div className='text-sm text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'>
-                    <b>{item.brand_name}</b>
+        <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+            <div  className="  justify-center items-center ">
+                <div className="relative">
+                    <img src={item.icon} alt="icon" className="absolute bottom-0 left-0" /> {/* Icon */}
+                    <img src={item.image} alt={item.title} className="h-full object-cover rounded-lg mb-4" /> {/* Main image */}
                 </div>
-                <div className='min-h-[25px]'>
-                    <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
-                    <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
-                </div>
-                <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                <div>
-                    {item.rate}
-                </div>
-                <div className="card flex justify-content-center">
-                    <Rating value={item.rate} disabled cancel={false} />
+                <div className="text-left">
+                    <h4 className="text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
+                        <b>{item.title}</b>
+                    </h4>
+                    {/* <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'>
+                        <b>{item.brand_name}</b>
+                    </div> */}
+                    <div className='min-h-[25px]'>
+                        <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
+                        <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
+                    </div>
+                    <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                    <div>
+                        {item.rate}
+                    </div>
+                    <div className="card flex justify-content-center">
+                        <Rating value={item.rate} disabled cancel={false} />
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,7 +84,7 @@ export default function TopDeal() {
 
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">
-                    <SkeletonLoader type="card" count={5} width = '100%' height = '300px'/>
+                    <SkeletonLoader type="card" count={5} width='100%' height='300px' />
                 </div>
             ) : (
                 <Carousel

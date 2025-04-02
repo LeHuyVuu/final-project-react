@@ -27,9 +27,9 @@ export default function Home() {
       <div className="mt-5">
         <TopDeal />
       </div>
-      {/* <div className="mt-5">
+      <div className="mt-5">
         <FlashSale />
-      </div> */}
+      </div>
       <div>
         <h2 className="text-2xl font-bold  mb-4">Khám phá mua sắm</h2>
 

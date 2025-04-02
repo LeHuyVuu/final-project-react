@@ -13,7 +13,7 @@ import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.js
 const itemTemplate = (item) => {
 
     return (
-        <Link to='*'>
+          <Link to={`/detail/${item.id}`} >
             <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
                 <div className="  justify-center items-center ">
                     <div className="relative">
@@ -24,7 +24,8 @@ const itemTemplate = (item) => {
                         <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
                             {item.title}
                         </h4>
-                        <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'><b>{item.brand_name}</b></div>
+                        <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'>
+                            <b>{item.brand_name}</b></div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
                             <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
