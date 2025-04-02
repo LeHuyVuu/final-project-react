@@ -9,7 +9,6 @@ import MainCategory from "./Partial/MainCategory";
 import Import from './Partial/Import'
 import Like from './Partial/Like'
 import Trending from "./Partial/Trending";
-import Product from "./Partial/Product";
 import FlashSale from "./Partial/FlashSale";
 
 export default function Home() {

@@ -27,9 +27,7 @@ const itemTemplate = (item) => {
                             <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
                         </div>
                         <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                        <div>
-                            {item.rate}
-                        </div>
+                        
                         <div className="card flex justify-content-center">
                             <Rating value={item.rate} disabled cancel={false} />
                         </div>

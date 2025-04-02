@@ -58,6 +58,7 @@ export default function Like() {
                 setTitle(title);
 
                 const extractedItems = res.data.items.map(item => ({
+                    id: item.id,
                     icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150",
                     image: item.thumbnail_url || "https://via.placeholder.com/150",
                     brand_name: item.name || "Không rõ",
