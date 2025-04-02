@@ -31,13 +31,13 @@ const COLORS = {
 const ProductDetail = () => {
   const { id } = useParams();  // Lấy productID từ URL
   const [productRes, setProductRes] = useState({});
-  console.log({id})
+  console.log({ id })
   // Gọi API khi component được render
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getData(`https://tiki.vn/api/v2/products/${id}`);
-        setProductRes(res.data);  
+        setProductRes(res.data);  // Lưu dữ liệu vào state
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
       }
@@ -52,7 +52,7 @@ const ProductDetail = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: "VND",  
+      currency: "VND",
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -91,6 +91,16 @@ const ProductDetail = () => {
     "Tặng kèm Bộ 4 ly thủy tinh Nescafe cao cấp",
   ];
 
+  const [review, setReview] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getData(`https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`);
+      setReview(res.data);
+      console.log(res.data);
+    }
+
+    fetchData();
+  }, [id])
 
 
   return (
@@ -204,11 +214,7 @@ const ProductDetail = () => {
                   Điểm nổi bật:
                 </h3>
                 <ul className="pl-6 text-gray-900 flex flex-col gap-2.5">
-                  {features.map((feature, index) => (
-                    <li key={index} className="text-[15px] leading-relaxed">
-                      {feature}
-                    </li>
-                  ))}
+                  {productRes?.short_description}
                 </ul>
               </div>
             </div>
@@ -497,8 +503,10 @@ const ProductDetail = () => {
               }
             >
               <ProductReviews
+                id={productRes?.id}
                 rating={productRes?.rating_average}
                 reviewCount={productRes?.review_count}
+                review={review}
               />
             </TabPanel>
           </TabView>
