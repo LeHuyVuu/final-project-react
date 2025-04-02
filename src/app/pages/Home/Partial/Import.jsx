@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
 import { getData } from '../../../context/api';
+import FormattedSold from '../FormattedSold.jsx';
 
 
 
@@ -21,15 +22,19 @@ const itemTemplate = (item) => {
                         <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg mb-2 " /> {/* Main image */}
                     </div>
                     <div className="text-left">
-                        <div className='text-sm max-w-60 min-h-10 text-gray-600 line-clamp-2 overflow-hidden text-ellipsis mb-2'><b>{item.brand_name}</b></div>
+                        <div className='max-w-60 min-h-12  line-clamp-2 overflow-hidden text-ellipsis mb-2'>
+                            {item.brand_name}</div>
                         <div className='min-h-[25px]'>
-                            <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
-                            <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
+                            <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
+                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-sm text-white' : 'bg-transparent'}`}>
+                                {item.discount}
+                            </span>
                         </div>
-                        <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                        
-                        <div className="card flex justify-content-center">
+                        <div className="text-xl font-bold text-[#ff424e] mb-2">{item.price}</div>
+
+                        <div className="card flex justify-between">
                             <Rating value={item.rate} disabled cancel={false} />
+                            <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>
                         </div>
                         {/* <div className="w-full h-px bg-gray-300 my-2"></div>
                 <div className="text-sm text-green-500">{item.shipping}</div> */}
@@ -53,7 +58,7 @@ export default function Import() {
 
             try {
                 const res = await getData("https://api.tiki.vn/raiden/v3/widgets/imported_genuine?version=2");
-                // console.log(res)
+                console.log(res)
 
                 const title = {
                     title: res.data.header.title,
@@ -72,9 +77,10 @@ export default function Import() {
                     discount: item.discount ? `-${item.discount_rate}%` : "",
                     rate: item.rating_average,
                     shipping: item.badges_new?.find(b => b.code === "delivery_info_badge")?.text || "Giao hàng tiêu chuẩn",
+                    sold: item.quantity_sold?.value,
                 }));
                 setItems(extractedItems);
-                // console.log(extractedItems);
+                console.log(extractedItems);
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
             } finally {
@@ -88,7 +94,8 @@ export default function Import() {
     return (
         <div className="   ">
             <div className='flex justify-between'>
-                <h2 className="text-2xl font-bold text-center mb-4">{title.title}</h2>
+            <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+            {title.title}</h2>
                 <Link to='/' className="text-blue-500">{title.more_link_text}</Link>
             </div>
             <div>
