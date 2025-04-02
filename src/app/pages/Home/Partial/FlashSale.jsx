@@ -39,32 +39,32 @@ export default function FlashSale() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [time, setTime] = useState(0);  
+    const fetchDataFlashSale = async () => {
+        setLoading(true);
 
+        try {
+            const res = await getData("https://api.tiki.vn/flashsale/v2/widget/deals/collection?per_page=20&_rf=rotate_by_ctr&trackity_id=44658fd6-8dcf-fb8b-e548-529e90e5e33b");
+            console.log(res);
+
+            const extractedItems = res?.data?.data?.map(item => ({
+                id: item.product.master_id,
+                image: item.product.thumbnail_url, 
+                brand_name: item.product.name || "Không rõ",  
+                price: item.product.price ? `${item.product.price.toLocaleString()}đ` : "",
+                oldPrice: item.product.original_price && item.product.original_price !== item.product.price ? `${item.product.original_price.toLocaleString()}đ` : "",
+                discount: item.product.discount ? `-${item.product.discount_rate}%` : "",
+                rate: item.product.rating_average,  
+            }));
+            setItems(extractedItems);
+            console.log(extractedItems);
+            setTime(res?.data?.data?.[0]?.special_to_date); 
+        } catch (error) {
+            console.error("Lỗi khi tải dữ liệu:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchDataFlashSale = async () => {
-            setLoading(true);
-
-            try {
-                const res = await getData("https://api.tiki.vn/flashsale/v2/widget/deals/collection?per_page=20&_rf=rotate_by_ctr&trackity_id=44658fd6-8dcf-fb8b-e548-529e90e5e33b");
-                console.log(res);
-
-                const extractedItems = res?.data?.data?.map(item => ({
-                    image: item.product.thumbnail_url, 
-                    brand_name: item.product.name || "Không rõ",  
-                    price: item.product.price,  
-                    oldPrice: item.product.original_price,  
-                    discount: item.product.discount_rate + "%",  
-                    rate: item.product.rating_average,  
-                }));
-                setItems(extractedItems);
-                setTime(res?.data?.data?.[0]?.special_to_date); 
-            } catch (error) {
-                console.error("Lỗi khi tải dữ liệu:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchDataFlashSale();
     }, []);
 
@@ -73,7 +73,7 @@ export default function FlashSale() {
             <div className='flex justify-between'>
                 <div className='flex justify-between'>
                     <h2 className="text-2xl font-bold text-center ">Flash Sale</h2>
-                    {time > 0 && <CountTime targetTime={time} onExpire={() => console.log("Flash Sale Ended!")} />} 
+                    {time > 0 && <CountTime targetTime={time} onExpire={fetchDataFlashSale}/>} 
                 </div>
                 <a href="#" className="text-blue-500">
                     Xem tất cả

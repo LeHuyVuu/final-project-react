@@ -11,6 +11,9 @@ import CategoryLinks from './Partial/SmallCategory';
 import TopDeal from './Partial/TopDeal';
 import Trending from "./Partial/Trending";
 
+import FlashSale from "./Partial/FlashSale";
+
+
 export default function Home() {
 
 
