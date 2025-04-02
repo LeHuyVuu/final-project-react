@@ -62,7 +62,7 @@ export default function Import() {
                     more_link_text: res.data.header.more_link_text,
                 };
                 setTitle(title);
-                console.log(title);
+                // console.log(title);
 
                 const extractedItems = res.data.items.map(item => ({
                     id: item.id,

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
-
 import { Carousel } from 'primereact/carousel';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-
 import { getData } from '../../../context/api';
 import { Link } from 'react-router-dom';
 import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
-
+import CountTime from '../FlashSaleComponent/CountTime.jsx';
+import ProgressBar from '../FlashSaleComponent/ProgressBar.jsx';
 
 const itemTemplate = (item) => {
-
     return (
-        <Link to='*'>
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
-                <div className="  justify-center items-center ">
+           <Link to={`/detail/${item.id}`} >
+            <div className="flex flex-col justify-center items-center rounded-lg shadow-lg p-3 m-1">
+                <div className="justify-center items-center">
                     <div className="relative">
-                        <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
-                        <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg mb-4" /> {/* Main image */}
+                        <img src={item.image} alt={item.title} className="h-full object-cover rounded-lg mb-4" />
                     </div>
                     <div className="text-left">
                         <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -30,45 +27,37 @@ const itemTemplate = (item) => {
                             <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
                         </div>
                         <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                         <ProgressBar progress={item.progress} />
                     </div>
                 </div>
             </div>
         </Link>
-
     );
 };
 
 export default function FlashSale() {
     const [items, setItems] = useState([]);
-    const [title, setTitle] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [time, setTime] = useState(0);  
 
     useEffect(() => {
         const fetchDataFlashSale = async () => {
             setLoading(true);
 
             try {
-                const res = await getData("https://api.tiki.vn/flashsale/v2/widget/deals/collection?");
-                console.log(res)
-                // const title = {
-                //     title: res.data.header.title,
-                //     more_link_text: res.data.header.more_link_text,
-                // };
-                // setTitle(title);
+                const res = await getData("https://api.tiki.vn/flashsale/v2/widget/deals/collection?per_page=20&_rf=rotate_by_ctr&trackity_id=44658fd6-8dcf-fb8b-e548-529e90e5e33b");
+                console.log(res);
 
-                // const extractedItems = res.data.product.map(item => ({
-                    
-                //     image: item.thumbnail_url,
-                //     brand_name:item.name || "Không rõ",
-                //     price:item.price   ,
-                //     oldPrice:item.original_price ,
-                //     discount: ,
-                //     rate: ,
-                //     shipping:|| "Giao hàng tiêu chuẩn",
-                // }));
-
+                const extractedItems = res?.data?.data?.map(item => ({
+                    image: item.product.thumbnail_url, 
+                    brand_name: item.product.name || "Không rõ",  
+                    price: item.product.price,  
+                    oldPrice: item.product.original_price,  
+                    discount: item.product.discount_rate + "%",  
+                    rate: item.product.rating_average,  
+                }));
                 setItems(extractedItems);
-                console.log(extractedItems);
+                setTime(res?.data?.data?.[0]?.special_to_date); 
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
             } finally {
@@ -76,17 +65,17 @@ export default function FlashSale() {
             }
         };
 
-
         fetchDataFlashSale();
     }, []);
 
     return (
-        <div className=" py-6">
+        <div className="py-6">
             <div className='flex justify-between'>
                 <div className='flex justify-between'>
-                    <h2 className="text-2xl font-bold text-center mb-4">{title.title}</h2>
+                    <h2 className="text-2xl font-bold text-center ">Flash Sale</h2>
+                    {time > 0 && <CountTime targetTime={time} onExpire={() => console.log("Flash Sale Ended!")} />} 
                 </div>
-                <a href="#" className=" text-blue-500">
+                <a href="#" className="text-blue-500">
                     Xem tất cả
                 </a>
             </div>

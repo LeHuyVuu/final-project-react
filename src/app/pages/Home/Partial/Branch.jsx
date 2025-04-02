@@ -16,7 +16,7 @@ export default function Branch() {
       setLoading(true);
       try {
         const res = await getData("https://tka.tiki.vn/widget/api/v1/banners-group?group=msp_widget_banner_premium");
-        console.log(res.data.data);
+        // console.log(res.data.data);
 
         // Lấy image_url từ tất cả các phần tử trong mảng banners
         const data = res.data.data.map((item) => ({
@@ -35,7 +35,7 @@ export default function Branch() {
     fetchBranches();
   }, []);
 
-  console.log({branch})
+  // console.log({branch})
 
   return (
     <div className="">
