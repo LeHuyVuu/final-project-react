@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
 import { Checkbox } from "primereact/checkbox";
 import { Avatar } from "primereact/avatar";
 import { Paginator } from "primereact/paginator";
+import { getData } from "../../../context/api";
 
-const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
+const ProductReviews = ({ rating = 0, reviewCount = 0, id = "" , review = {}}) => {
   const [activeFilter, setActiveFilter] = useState("All Reviews");
   const [filters, setFilters] = useState({
     rating: {
@@ -203,45 +204,45 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
           <div className="flex-none w-[280px]">
             <div className="flex flex-col items-center mb-6 bg-white p-5 rounded-lg shadow-sm">
               <div className="text-5xl font-bold text-black">
-                {reviewsData.averageRating.toFixed(1)}
+                {rating.toFixed(1)}
               </div>
               <div className="mb-4">
                 <Rating
-                  value={reviewsData.averageRating}
+                  value={rating}
                   readOnly
                   cancel={false}
                   stars={5}
                 />
               </div>
               <div className="text-sm text-black">
-                {reviewsData.totalReviews} đánh giá
+                {reviewCount} đánh giá
               </div>
             </div>
             {/* Rating Distribution */}
-            {reviewsData.ratingDistribution && (
+            {review?.stars && (
               <div className="mb-6">
-                {reviewsData.ratingDistribution.map((item) => (
+                {Object.entries(review.stars).reverse().map(([star, data]) => (
                   <div
-                    key={item.stars}
+                    key={star}
                     className="flex items-center gap-2 mb-2"
                   >
                     <div className="flex items-center gap-1 w-16">
-                      {item.stars}{" "}
-                      <i className="pi pi-star-fill text-yellow-400"></i>
+                      {star} <i className="pi pi-star-fill text-yellow-400"></i>
                     </div>
                     <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-yellow-400"
-                        style={{ width: `${item.percentage}%` }}
+                        style={{ width: `${data.percent}%` }}
                       />
                     </div>
                     <div className="w-8 text-sm text-gray-600">
-                      {item.count}
+                      {data.count}
                     </div>
                   </div>
                 ))}
               </div>
             )}
+
 
             {/* Filter Container */}
             <div className="border border-dashed border-gray-300 rounded-lg p-4">
@@ -275,120 +276,50 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                   ))}
                 </div>
               </div>
-
-              {/* Topics Filter Section */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium text-gray-800">Review Topics</h3>
-                  <i className="pi pi-chevron-up text-gray-400"></i>
-                </div>
-                <div className="space-y-3">
-                  {Object.keys(filters.topics).map((topic) => (
-                    <div key={topic} className="flex items-center gap-3">
-                      <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center bg-gray-50">
-                        <Checkbox
-                          inputId={`topic-${topic}`}
-                          checked={filters.topics[topic]}
-                          onChange={() => handleFilterChange("topics", topic)}
-                          className=""
-                        />
-                      </div>
-                      <label
-                        htmlFor={`topic-${topic}`}
-                        className="text-gray-500 cursor-pointer"
-                      >
-                        {topic}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Reviews List Section */}
           <div className="flex-1">
-            <div className="flex gap-2 mb-6">
-              <button
-                className={`px-4 py-2 rounded-lg border ${
-                  activeFilter === "All Reviews"
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-                onClick={() => handleFilterButtonClick("All Reviews")}
-              >
-                All Reviews
-              </button>
-              <button
-                className={`px-4 py-2 rounded-lg border ${
-                  activeFilter === "With Photos"
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-                onClick={() => handleFilterButtonClick("With Photos")}
-              >
-                With Photos ({reviewsData.photoCount})
-              </button>
-              <button
-                className={`px-4 py-2 rounded-lg border ${
-                  activeFilter === "With Videos"
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-                onClick={() => handleFilterButtonClick("With Videos")}
-              >
-                With Videos (0)
-              </button>
-              <button
-                className={`px-4 py-2 rounded-lg border ${
-                  activeFilter === "With Comments"
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-                onClick={() => handleFilterButtonClick("With Comments")}
-              >
-                With Comments (4)
-              </button>
-            </div>
-
             <div className="space-y-6">
-              {reviewsData.reviews.slice(first, first + rows).map((review) => (
+
+              {review?.data?.slice(first, first + rows).map((review) => (
                 <div
                   key={review.id}
                   className="bg-white rounded-lg p-6 border border-gray-200"
                 >
                   <div className="mb-2">
                     <Rating
-                      value={review.rating}
+                      value={review?.rating}
                       readOnly
                       cancel={false}
                       stars={5}
                     />
                   </div>
-                  <div className="font-semibold mb-1">{review.title}</div>
+                  <div className="font-semibold mb-1">{review?.title}</div>
                   <div className="text-sm text-gray-500 mb-4">
-                    {review.date}
+                    {formatDate(review?.timeline?.review_created_date)}
                   </div>
 
                   <div className="flex items-center gap-3 mb-4">
                     <Avatar
-                      image={review.authorImage}
+                      image={review?.created_by?.avatar_url}
                       shape="circle"
-                      alt={review.author}
+                      alt={review?.created_by?.full_name}
                     />
-                    <span className="font-medium">{review.author}</span>
+                    <span className="font-medium">{review?.created_by?.full_name}</span>
                   </div>
 
                   <div className="text-[15px] leading-relaxed mb-4 text-black">
-                    {review.content}
+                    {review?.content}
                   </div>
 
-                  {review.images && review.images.length > 0 && (
+                  {review?.images && review?.images?.length > 0 && (
                     <div className="flex gap-2 mb-4 flex-wrap">
-                      {review.images.map((image) => (
+                      {review?.images?.map((image) => (
                         <img
-                          key={image.id}
-                          src={image.full_path}
+                          key={image?.id}
+                          src={image?.full_path}
                           alt="Review"
                           className="w-20 h-20 object-cover rounded cursor-pointer hover:opacity-90 transition-opacity"
                         />
@@ -396,25 +327,25 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                     </div>
                   )}
 
-                  {review.comments && review.comments.length > 0 && (
+                  {review?.comments && review?.comments?.length > 0 && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                      {review.comments.map((comment) => (
-                        <div key={comment.id} className="flex gap-3">
+                      {review?.comments?.map((comment) => (
+                        <div key={comment?.id} className="flex gap-3">
                           <Avatar
-                            image={comment.avatar_url}
+                            image={comment?.avatar_url}
                             shape="circle"
-                            alt={comment.fullname}
+                            alt={comment?.fullname}
                             className="w-9 h-9"
                           />
                           <div>
                             <div className="font-medium mb-1 text-black">
-                              {comment.fullname}
+                              {comment?.fullname}
                             </div>
                             <div className="text-sm text-black">
-                              {comment.content}
+                              {comment?.content}
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
-                              {formatDate(comment.create_at)}
+                              {formatDate(comment?.create_at)}
                             </div>
                           </div>
                         </div>
@@ -425,7 +356,7 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                   <div className="flex gap-4 mt-4">
                     <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900">
                       <i className="pi pi-thumbs-up"></i> Hữu ích (
-                      {review.likes})
+                      {review?.likes || 0})
                     </button>
                     <button className="flex items-center gap-1 text-gray-600 hover:text-gray-900">
                       <i className="pi pi-flag"></i> Báo cáo
@@ -438,7 +369,7 @@ const ProductReviews = ({ rating = 0, reviewCount = 0 }) => {
                 <Paginator
                   first={first}
                   rows={rows}
-                  totalRecords={reviewsData.reviews.length}
+                  totalRecords={review?.data?.length}
                   onPageChange={onPageChange}
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 />
