@@ -21,13 +21,10 @@ const MainRoutes = () => {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route path="detail" element={<ProductDetail />} />
-
-          <Route path="category" element={<Category />} />
-          <Route path='/cart' element={<Cart/>}/>
-
+          <Route path="detail/:id" element={<ProductDetail />} />
+          <Route path='/cart' element={<Cart />} />
           <Route path="*" element={<PageNotFound />} />
-
+          <Route path="category" element={<Category />} />
           <Route path='login' element={<SignInSignUp />} />
 
           <Route path='account' element={<Account />} >

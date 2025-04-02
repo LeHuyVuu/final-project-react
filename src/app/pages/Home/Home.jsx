@@ -8,6 +8,8 @@ import Branch from './Partial/Branch'
 import MainCategory from "./Partial/MainCategory";
 import Import from './Partial/Import'
 import Like from './Partial/Like'
+import Trending from "./Partial/Trending";
+import Product from "./Partial/Product";
 
 export default function Home() {
 
@@ -44,6 +46,13 @@ export default function Home() {
       <div className="mt-5">
         <Like />
       </div>
+
+      <div className="mt-5">
+        <Trending />
+      </div>
+      {/* <div className="mt-5">
+        <Product />
+      </div> */}
     </div>
   )
 }
