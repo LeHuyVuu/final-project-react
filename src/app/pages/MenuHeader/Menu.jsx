@@ -22,17 +22,20 @@ export default function Menu() {
     };
 
     return (
-        <div className="mainmenu block justify-center items-center w-[120px]"
+        <div className="mainmenu block justify-center items-center w-fit"
             onMouseEnter={() => handleMouseEnter()}
             onMouseLeave={handleMouseLeave}
         >
             {/* <pre>{JSON.stringify(Data, null, 0).replace(/,\n/g, ',').replace(/],/g, '],\n')}</pre> */}
             {/* <pre>{JSON.stringify(Data, null, 0).substring(0, 100)}</pre> */}
             {/* <h1>{Data.menu_block.items[0].text}</h1> */}
-            Danh mục
+            <div className="flex justify-center items-center gap-2">
+                <i className='fa-solid fa-bars'></i>
+                <span>Danh mục</span>
+            </div>
             {hover &&
                 <nav className="block absolute left-1/2 top-[100px] -translate-x-1/2 w-[800px] bg-white shadow-xl mt-2 py-6 px-8 rounded-xl z-10 transition-all duration-300 transform origin-top">
-                    <ul className="flex flex-col justify-center mt-2 items-start text-gray-500 text-sm font-semibold">
+                    <ul className="flex flex-col justify-center gap-2 mt-2 items-start text-gray-500 text-sm font-semibold">
                         {Data.menu_block.items.map((items, index) => (
                             <li key={index} className="relative group">
                                 <div className="hover:text-blue-500 cursor-pointer transition-colors duration-300 flex items-center">

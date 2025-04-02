@@ -119,7 +119,7 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="container mx-auto flex justify-center items-center gap-8 px-10 py-4">
+      <div className="container mx-auto flex justify-center items-center gap-16 px-10 py-4">
 
         <Menu />
 
