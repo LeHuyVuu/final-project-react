@@ -90,43 +90,6 @@ export default function SignInSignUp() {
             setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
             return;
         }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/Login/authenticate',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({
-        //                 email: SignInEmail,
-        //                 password: SignInPassword,
-        //             }),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     localStorage.removeItem('token');
-        //     localStorage.setItem('token', data.token);
-        //     localStorage.removeItem('UserId');
-        //     localStorage.setItem('UserId', data.id);
-        //     localStorage.removeItem('UserRole');
-        //     localStorage.setItem('UserRole', data.role);
-        //     localStorage.removeItem('isLogIn');
-        //     localStorage.setItem('isLogIn', 'true');
-
-        //     if (data.role && data.role === 'User') {
-        //         navigate('/user/information');
-        //     } else {
-        //         navigate('/');
-        //     }
-        // } catch (error) {
-        //     setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
-        //     setLoading(false);
-        // }
     };
 
     const SignUp = async (SignUpPhoneNumber, SignUpFullName, SignUpEmail, SignUpPassword, SignUpConfirm) => {
@@ -198,7 +161,7 @@ export default function SignInSignUp() {
             nickname: '',
             birthday: '',
             sex: '',
-            nation: '',
+            nationality: '',
             image: 'https://i.pinimg.com/474x/46/7f/be/467fbe9b03913de9dcd39eb0ee1e06ab.jpg',
             role: 'User',
             type: 'Regular',
@@ -223,7 +186,7 @@ export default function SignInSignUp() {
         localStorage.setItem(`nickname${SignUpPhoneNumber}`, signupData.nickname);
         localStorage.setItem(`birthday${SignUpPhoneNumber}`, signupData.birthday);
         localStorage.setItem(`sex${SignUpPhoneNumber}`, signupData.sex);
-        localStorage.setItem(`nation${SignUpPhoneNumber}`, signupData.nation);
+        localStorage.setItem(`nationality${SignUpPhoneNumber}`, signupData.nationality);
         localStorage.setItem(`image${SignUpPhoneNumber}`, signupData.image);
         localStorage.setItem(`role${SignUpPhoneNumber}`, signupData.role);
         localStorage.setItem(`type${SignUpPhoneNumber}`, signupData.type);
@@ -231,43 +194,6 @@ export default function SignInSignUp() {
         localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
-
-        // try {
-        //     const userResponse = await fetch(`https://localhost:7166/api/User/GetUserByEmail/${SignUpEmail}`);
-        //     if (!userResponse.ok) throw new Error('Network response was not ok');
-        //     const userData = await userResponse.json();
-        //     if (userData.email === SignUpEmail) {
-        //         setSignUpEmailError('Email đã tồn tại');
-        //         return;
-        //     }
-        // } catch (error) {
-        //     setLoading(false);
-        // }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/User',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify(signupData),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     if (data.role && data.role === 'User') {
-        //         setSuccessSignUp('Đăng kí thành công!');
-        //         // moveImageBack();
-        //     }
-        // } catch (error) {
-        //     setErrorSignUp('Đăng kí thất bại');
-        //     console.log('Đăng kí thất bại:', error);
-        //     setLoading(false);
-        // }
 
         setSuccessSignUp('Đăng kí thành công!');
     };
@@ -309,21 +235,7 @@ export default function SignInSignUp() {
     const handleAccept = () => {
         setAccept(p => !p);
         console.log(Accept);
-        console.log('ABC');
-
-        // const fetchMaxID = async () => {
-        //     try {
-        //         const userResponse = await fetch('https://localhost:7166/api/User/GetIDandName');
-        //         if (!userResponse.ok) throw new Error('Network response was not ok');
-        //         const userData = await userResponse.json();
-        //         const MaxUserID = userData.reduce((max, user) => Math.max(max, user.id), 0);
-        //         setMaxUserID(MaxUserID);
-        //         console.log('Max User ID:', MaxUserID);
-        //     } catch (error) {
-        //         console.error('Error fetching users:', error);
-        //     }
-        // };
-        // await fetchMaxID();
+        // console.log('ABC');
     };
 
     return (
