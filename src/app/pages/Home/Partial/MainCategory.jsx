@@ -6,6 +6,7 @@ import "swiper/css/grid";
 import "swiper/css/navigation";
 import '../SwiperStyle.css'
 import { getData } from "../../../context/api";
+import { Link } from "react-router-dom";
 
 export default function CategoryCarousel() {
   const [categories, setCategories] = useState([]);
