@@ -18,16 +18,17 @@ const itemTemplate = (item) => {
                         <img src={item.image} alt={item.title} className="h-full object-cover rounded-lg mb-4" />
                     </div>
                     <div className="text-left">
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                            {item.title}
-                        </h4>
-                        <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'><b>{item.brand_name}</b></div>
+                        
+                        <div className='text-sm max-w-60 min-h-10 text-gray-600 line-clamp-2 overflow-hidden text-ellipsis mb-2'><b>{item.brand_name}</b></div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
                             <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
                         </div>
                         <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                         <ProgressBar progress={item.progress} />
+                         
+                         <div>
+                         <ProgressBar qty={item.qty} qty_ordered={item.qty_ordered} progress_text={item.progress_text} />
+                         </div>
                     </div>
                 </div>
             </div>
@@ -54,6 +55,9 @@ export default function FlashSale() {
                 oldPrice: item.product.original_price && item.product.original_price !== item.product.price ? `${item.product.original_price.toLocaleString()}đ` : "",
                 discount: item.product.discount ? `-${item.product.discount_rate}%` : "",
                 rate: item.product.rating_average,  
+                qty: item.progress.qty,
+                qty_ordered: item.progress.qty_ordered, 
+                progress_text: item.progress.progress_text,
             }));
             setItems(extractedItems);
             console.log(extractedItems);
