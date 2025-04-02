@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
+import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 import SignUpImage from './LeftImage.png';
 import SignInImage from './RightImage.png';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 
 export default function SignInSignUp() {
 
@@ -52,11 +52,17 @@ export default function SignInSignUp() {
     };
 
     const navigate = useNavigate();
+    const LoginUser = localStorage.getItem('LoginUser');
+    useEffect(() => {
+        if (LoginUser) {
+            navigate('/');
+        }
+    }, [LoginUser, navigate]);
+
 
 
     const [Accept, setAccept] = useState(false);
 
-    const [MaxUserID, setMaxUserID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errorSignIn, setErrorSignIn] = useState(null);
     const [errorSignUp, setErrorSignUp] = useState(null);
@@ -123,7 +129,7 @@ export default function SignInSignUp() {
         // }
     };
 
-    const SignUp = async (SignUpFullName, SignUpPhoneNumber, SignUpPassword, SignUpConfirm) => {
+    const SignUp = async (SignUpPhoneNumber, SignUpFullName, SignUpEmail, SignUpPassword, SignUpConfirm) => {
 
         console.log('Accept: ', Accept);
 
@@ -146,6 +152,12 @@ export default function SignInSignUp() {
         if (!SignUpFullName) {
             console.error('Invalid full name');
             setErrorSignUp('Họ tên không hợp lệ');
+            return;
+        }
+
+        if (!SignUpEmail) {
+            console.error('Invalid email');
+            setErrorSignUp('Email không hợp lệ');
             return;
         }
 
@@ -181,6 +193,7 @@ export default function SignInSignUp() {
             phoneNumber: SignUpPhoneNumber,
             password: SignUpPassword,
             name: SignUpFullName,
+            email: SignUpEmail,
             nickname: '',
             birthday: '',
             sex: '',
@@ -189,6 +202,7 @@ export default function SignInSignUp() {
             role: 'User',
             type: 'Regular',
             point: 0,
+            gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
         };
@@ -203,6 +217,7 @@ export default function SignInSignUp() {
         localStorage.setItem(`phoneNumber${SignUpPhoneNumber}`, signupData.phoneNumber);
         localStorage.setItem(`password${SignUpPhoneNumber}`, signupData.password);
         localStorage.setItem(`name${SignUpPhoneNumber}`, signupData.name);
+        localStorage.setItem(`email${SignUpPhoneNumber}`, signupData.email);
         localStorage.setItem(`nickname${SignUpPhoneNumber}`, signupData.nickname);
         localStorage.setItem(`birthday${SignUpPhoneNumber}`, signupData.birthday);
         localStorage.setItem(`sex${SignUpPhoneNumber}`, signupData.sex);
@@ -211,6 +226,7 @@ export default function SignInSignUp() {
         localStorage.setItem(`role${SignUpPhoneNumber}`, signupData.role);
         localStorage.setItem(`type${SignUpPhoneNumber}`, signupData.type);
         localStorage.setItem(`point${SignUpPhoneNumber}`, signupData.point);
+        localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
 
@@ -267,19 +283,22 @@ export default function SignInSignUp() {
         e.preventDefault();
         setSuccessSignUp(null);
         setErrorSignUp(null);
-        const SignUpFullName = e.target.SignUpFullName.value;
         const SignUpPhoneNumber = e.target.SignUpPhoneNumber.value;
+        const SignUpFullName = e.target.SignUpFullName.value;
+        const SignUpEmail = e.target.SignUpEmail.value;
         const SignUpPassword = e.target.SignUpPassword.value;
         const SignUpConfirm = e.target.SignUpConfirm.value;
         console.log({
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm,
         });
         SignUp(
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm
         );
@@ -341,26 +360,23 @@ export default function SignInSignUp() {
                                 <button type='submit' className='btn btn-submit' id='btn-signin'>ĐĂNG NHẬP</button>
                                 <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
                             </div>
-
-                            <button id='btn btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
-                            {/* Google Login Button */}
-                            <GoogleLogin
-                                onSuccess={(response) => {
-                                    console.log('Google Login Success:', response);
-                                    // Handle the Google Login success logic here
-                                }}
-                                onError={(error) => {
-                                    console.error('Google Login Error:', error);
-                                }}
-                                useOneTap
-                                clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
-                            />
-
                         </form>
 
                         <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
 
                         <hr />
+
+                        <h2>Hình thức đăng nhập khác</h2>
+                        <GoogleLogin
+                            onSuccess={(response) => {
+                                console.log('Google Login Success:', response);
+                            }}
+                            onError={(error) => {
+                                console.error('Google Login Error:', error);
+                            }}
+                            useOneTap
+                            clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
+                        />
                     </div>
 
                     <div className='card-side card-disappear' id='card-signup'>
@@ -384,6 +400,14 @@ export default function SignInSignUp() {
                                         border: errorSignUp && (
                                             errorSignUp == 'Họ tên không hợp lệ'
                                         ) && '1px solid #dc3545',
+                                    }} />
+                            </div><div className='form-group form-input'>
+                                <i className='fa-solid fa-envelope'></i>
+                                <input name='SignUpEmail' className='input form-control' type='email' placeholder='Email đăng kí'
+                                    style={{
+                                        border: errorSignUp && (
+                                            errorSignUp == 'Email không hợp lệ')
+                                            && '1px solid #dc3545',
                                     }} />
                             </div>
                             <div className='form-group form-input'>
