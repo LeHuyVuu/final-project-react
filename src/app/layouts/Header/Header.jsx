@@ -1,26 +1,32 @@
+import { Link } from "react-router-dom";
+
 export default function Header() {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="grid grid-cols-3 gap-4 items-center w-full pt-2">
-        <div className="flex justify-center flex-col items-center group">
-          <img
-            src="https://salt.tikicdn.com/ts/upload/0e/07/78/ee828743c9afa9792cf20d75995e134e.png"
-            alt="Bluefly Logo"
-            className="h-10 object-contain transition-transform duration-300 group-hover:scale-110"
-          />
-          <span className="text-sm font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">
-            Tốt &amp; Nhanh
-          </span>
-        </div>
+        <Link to='/'>
+          <div className="flex justify-center flex-col items-center group">
+            <img
+              src="https://salt.tikicdn.com/ts/upload/0e/07/78/ee828743c9afa9792cf20d75995e134e.png"
+              alt="Bluefly Logo"
+              className="h-10 object-contain transition-transform duration-300 group-hover:scale-110"
+            />
+            <span className="text-sm font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">
+              Tốt &amp; Nhanh
+            </span>
+          </div>
+        </Link>
         <div className="flex space-x-4 ml-24">
           <nav>
             <ul className="flex space-x-20">
-              <li className="relative group">
-                <span className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
-                  Home
-                </span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-              </li>
+              <Link to='/'>
+                <li className="relative group">
+                  <span className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
+                    Home
+                  </span>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+                </li>
+              </Link>
               <li className="relative group">
                 <span className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
                   Shop

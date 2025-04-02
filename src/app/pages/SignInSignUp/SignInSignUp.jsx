@@ -355,6 +355,7 @@ export default function SignInSignUp() {
                                 useOneTap
                                 clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
                             />
+
                         </form>
 
                         <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
