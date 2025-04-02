@@ -1,8 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './PersonalInformation.css';
 import TikiDefaultAvatar from './TikiDefaultAvatar.png';
 
 export default function PersonalInformation() {
+
+    const LoginUser = localStorage.getItem('LoginUser');
+
+    const [formData, setFormData] = useState({
+        name: '',
+        nickname: '',
+        date: '',
+        month: '',
+        year: '',
+        nationality: '',
+        sex: ''
+    });
+
+    // Hàm xử lý khi input thay đổi
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value, // Cập nhật giá trị của trường tương ứng
+        }));
+    };
+
+    // Hàm xử lý khi radio button thay đổi
+    const handleGenderChange = (e) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            gender: e.target.value,
+        }));
+    };
+
     return (
         <div className='personalinformation-container'>
 
@@ -17,7 +47,9 @@ export default function PersonalInformation() {
                     <div>
                         <div className='form-name form-group'>
                             <label htmlFor='name'>Họ và tên</label>
-                            <input type='text' id='name' name='name' />
+                            <input type='text' id='name' name='name'
+                                // value={localStorage.getItem(`name${LoginUser}`) || ''}
+                            />
                         </div>
                         <div className='form-nickname form-group'>
                             <label htmlFor='nickname'>Nickname</label>
@@ -68,10 +100,10 @@ export default function PersonalInformation() {
                     </div>
                 </div>
 
-                <div className='form-nation form-group'>
+                <div className='form-nationality form-group'>
                     <label>Quốc tịch</label>
                     <div className='select-items'>
-                        <select id='nation' name='nation'>
+                        <select id='nationality' name='nationality'>
                             <option value=''>Chọn quốc tịch</option>
                         </select>
                     </div>
