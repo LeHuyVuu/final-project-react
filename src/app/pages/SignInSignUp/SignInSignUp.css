@@ -3,7 +3,6 @@
     min-height: 100vh;
     margin: 40px 0;
     text-align: center;
-    font-family: 'Quicksand', Arial, sans-serif;
 
     .card-box {
         position: relative;
@@ -36,7 +35,7 @@
 
                 .form-input {
                     width: 100%;
-                    margin: 16px 0;
+                    margin: 12px 0;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
@@ -75,10 +74,10 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin: 28px 0;
+                    margin: 20px 0;
 
                     a {
-                        padding: 0 5px;
+                        padding: 4px 8px;
                         border-radius: 5px;
                         color: #666666;
                         border: 1px solid #cccccc;
@@ -87,39 +86,35 @@
                     }
 
                     .form-check {
-                        padding: 0;
-                        display: flex;
-                        justify-content: end;
-                        align-items: center;
-
-
-                        .checkbox-item {
-                            display: flex;
-                            align-items: center;
-                        }
-
-                        input {
-                            border-color: #3396ff;
-                            margin-right: 5px;
-                            transform: scale(1.2);
-                            cursor: pointer;
-                        }
 
                         label {
                             user-select: none;
                             cursor: pointer;
                             color: #0055b1;
                             font-weight: bold;
+                            display: flex;
+                            align-items: center;
+
+                            input {
+                                border-color: #3396ff;
+                                margin-right: 5px;
+                                transform: scale(1.2);
+                                cursor: pointer;
+                            }
                         }
                     }
                 }
 
                 .error-message {
                     color: #dc3545;
+                    font-style: italic;
+                    margin: 16px 0;
                 }
 
                 .success-message {
                     color: #28a745;
+                    font-style: italic;
+                    margin: 16px 0;
                 }
 
                 .forget-link {
@@ -150,27 +145,26 @@
         .btn,
         .btn:focus {
             width: 100%;
+            padding: 6px 12px;
             color: #fff;
             background-color: #0055b1;
             border: none;
             border-radius: 5px;
+            outline: none;
             font-weight: bold;
+            transition: all 0.2s ease;
         }
 
-        .form-box {
+        .btn:hover {
+            background-color: #0055b1;
+        }
 
-            .btn-box {
-                margin: 20px 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .btn {
-                padding: 6px 12px;
-                outline: none;
-            }
+        .btn-box {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
 
             .btn-submit {
                 flex: 2;
@@ -180,10 +174,6 @@
             .btn-reset {
                 flex: 1;
                 background-color: #a2cfff;
-            }
-
-            .btn:hover {
-                background-color: #0055b1;
             }
         }
     }
