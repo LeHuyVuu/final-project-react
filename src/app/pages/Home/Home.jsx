@@ -10,6 +10,7 @@ import Import from './Partial/Import'
 import Like from './Partial/Like'
 import Trending from "./Partial/Trending";
 import Product from "./Partial/Product";
+import FlashSale from "./Partial/FlashSale";
 
 export default function Home() {
 
@@ -26,6 +27,9 @@ export default function Home() {
       <div className="mt-5">
         <TopDeal />
       </div>
+      {/* <div className="mt-5">
+        <FlashSale />
+      </div> */}
       <div>
         <h2 className="text-2xl font-bold  mb-4">Khám phá mua sắm</h2>
 
