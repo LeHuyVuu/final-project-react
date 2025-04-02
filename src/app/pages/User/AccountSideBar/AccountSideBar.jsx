@@ -13,9 +13,9 @@ export default function AccountSideBar() {
         { name: 'Quản lý đơn hàng', icon: 'fa-solid fa-box', link: 'order' },
         { name: 'Hỗ trợ khách hàng', icon: 'fa-solid fa-headset', link: 'help-center' },
         { name: 'Thông báo của tôi', icon: 'fa-solid fa-bell', link: 'notification' },
-        { name: 'Quản lý đổi trả', icon: 'fa-solid fa-cube', link: 'aaaaaaaaaaaaaaaaaaa' },
         { name: 'Sổ địa chỉ', icon: 'fa-solid fa-map', link: 'aaaaaaaaaaaaaaaaaaa' },
         { name: 'Thông tin thanh toán', icon: 'fa-solid fa-dollar', link: 'aaaaaaaaaaaaaaaaaaa' },
+        { name: 'Xúc xắc may mắn', icon: 'fa-solid fa-dice', link: '/dice' },
     ];
 
     const User = {

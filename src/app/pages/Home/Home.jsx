@@ -1,15 +1,18 @@
 
-import React, { useState } from "react";
+import React from "react";
 
 import Banner from './Partial/Banner';
-import CategoryLinks from './Partial/SmallCategory';
-import TopDeal from './Partial/TopDeal'
-import Branch from './Partial/Branch'
-import MainCategory from "./Partial/MainCategory";
-import Import from './Partial/Import'
-import Like from './Partial/Like'
-import Trending from "./Partial/Trending";
+import Branch from './Partial/Branch';
 import FlashSale from "./Partial/FlashSale";
+import Import from './Partial/Import';
+import Like from './Partial/Like';
+import MainCategory from "./Partial/MainCategory";
+import CategoryLinks from './Partial/SmallCategory';
+import TopDeal from './Partial/TopDeal';
+import Trending from "./Partial/Trending";
+
+import FlashSale from "./Partial/FlashSale";
+
 
 export default function Home() {
 

@@ -14,6 +14,7 @@ import AccountInformation from '../pages/User/AccountInformation/AccountInformat
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx'
 import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx'
 import Notification from '../pages/User/Notification/Notification.jsx'
+import Dice from '../pages/User/Game/Dice/Dice.jsx'
 
 const MainRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const MainRoutes = () => {
             <Route path='help-center' element={<HelpCenter />} />
             <Route path='notification' element={<Notification />} />
           </Route>
+          <Route path='dice' element={<Dice />} />
 
         </Route>
       </Routes>
