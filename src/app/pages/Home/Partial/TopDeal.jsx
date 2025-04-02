@@ -53,6 +53,7 @@ export default function TopDeal() {
                 const res = await getData("https://api.tiki.vn/raiden/v3/widgets/top_choise?version=2&_v=2");
 
                 const items = res.data.items.map((item) => ({
+                    id: item.id,
                     icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150", // Thêm icon
                     image: item.thumbnail_url || "https://via.placeholder.com/150", // Hình ảnh sản phẩm
                     oldPrice: item.original_price && item.original_price !== item.price ? `${item.original_price.toLocaleString()}đ` : "",
