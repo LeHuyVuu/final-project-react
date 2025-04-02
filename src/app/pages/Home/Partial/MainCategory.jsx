@@ -10,7 +10,6 @@ import { getData } from "../../../context/api";
 export default function CategoryCarousel() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -49,11 +48,13 @@ export default function CategoryCarousel() {
         className=""
       >
         {categories.map((item) => (
-          <SwiperSlide key={item.id} className="  ">
-            <div className="w-20 h-20 flex justify-center items-center">
-              <img src={item.image} alt={item.title} className=" " />
-            </div>
-            <div className="  text-sm font-medium ">{item.title}</div>
+          <SwiperSlide key={item.id} className="">
+            <Link to={`/category/${item.id}`}>
+              <div className="w-20 h-20 flex justify-center items-center">
+                <img src={item.image} alt={item.title} className=" " />
+              </div>
+              <div className="text-sm font-medium ">{item.title}</div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
