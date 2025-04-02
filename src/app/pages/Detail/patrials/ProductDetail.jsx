@@ -37,7 +37,7 @@ const ProductDetail = () => {
     const fetchData = async () => {
       try {
         const res = await getData(`https://tiki.vn/api/v2/products/${id}`);
-        setProductRes(res.data);  // Lưu dữ liệu vào state
+        setProductRes(res.data);  
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
       }
