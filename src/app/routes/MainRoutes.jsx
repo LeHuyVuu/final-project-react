@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootLayout from "../layouts/RootLayout";
 import Home from "../pages/Home/Home";
@@ -15,13 +14,13 @@ const MainRoutes = () => {
           <Route index element={<Home />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path="category" element={<Category />} />
-          <Route path='/cart' element={<Cart/>}/>
+          <Route path="category/:categoryId" element={<Category />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
 };
-
 
 export default MainRoutes;
