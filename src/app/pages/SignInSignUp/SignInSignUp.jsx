@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
+import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 import SignUpImage from './LeftImage.png';
 import SignInImage from './RightImage.png';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 
 export default function SignInSignUp() {
 
@@ -52,11 +52,17 @@ export default function SignInSignUp() {
     };
 
     const navigate = useNavigate();
+    const LoginUser = localStorage.getItem('LoginUser');
+    useEffect(() => {
+        if (LoginUser) {
+            navigate('/');
+        }
+    }, [LoginUser, navigate]);
+
 
 
     const [Accept, setAccept] = useState(false);
 
-    const [MaxUserID, setMaxUserID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errorSignIn, setErrorSignIn] = useState(null);
     const [errorSignUp, setErrorSignUp] = useState(null);
@@ -74,9 +80,9 @@ export default function SignInSignUp() {
             return;
         }
 
-        const isExistPhoneNumber = localStorage.getItem(`phoneNumber${SignInPhoneNumber}`);
+        const isExistId = localStorage.getItem(`id${SignInPhoneNumber}`);
         const isExistPassword = localStorage.getItem(`password${SignInPhoneNumber}`);
-        if (isExistPhoneNumber == SignInPhoneNumber && isExistPassword == SignInPassword) {
+        if (isExistId == SignInPhoneNumber && isExistPassword == SignInPassword) {
             localStorage.removeItem('LoginUser');
             localStorage.setItem('LoginUser', SignInPhoneNumber);
             navigate('/');
@@ -84,46 +90,9 @@ export default function SignInSignUp() {
             setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
             return;
         }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/Login/authenticate',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({
-        //                 email: SignInEmail,
-        //                 password: SignInPassword,
-        //             }),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     localStorage.removeItem('token');
-        //     localStorage.setItem('token', data.token);
-        //     localStorage.removeItem('UserId');
-        //     localStorage.setItem('UserId', data.id);
-        //     localStorage.removeItem('UserRole');
-        //     localStorage.setItem('UserRole', data.role);
-        //     localStorage.removeItem('isLogIn');
-        //     localStorage.setItem('isLogIn', 'true');
-
-        //     if (data.role && data.role === 'User') {
-        //         navigate('/user/information');
-        //     } else {
-        //         navigate('/');
-        //     }
-        // } catch (error) {
-        //     setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
-        //     setLoading(false);
-        // }
     };
 
-    const SignUp = async (SignUpFullName, SignUpPhoneNumber, SignUpPassword, SignUpConfirm) => {
+    const SignUp = async (SignUpPhoneNumber, SignUpFullName, SignUpEmail, SignUpPassword, SignUpConfirm) => {
 
         console.log('Accept: ', Accept);
 
@@ -146,6 +115,12 @@ export default function SignInSignUp() {
         if (!SignUpFullName) {
             console.error('Invalid full name');
             setErrorSignUp('Họ tên không hợp lệ');
+            return;
+        }
+
+        if (!SignUpEmail) {
+            console.error('Invalid email');
+            setErrorSignUp('Email không hợp lệ');
             return;
         }
 
@@ -178,78 +153,47 @@ export default function SignInSignUp() {
         }
 
         const signupData = {
+            id: SignUpPhoneNumber,
             phoneNumber: SignUpPhoneNumber,
             password: SignUpPassword,
             name: SignUpFullName,
+            email: SignUpEmail,
             nickname: '',
             birthday: '',
             sex: '',
-            nation: '',
+            nationality: '',
             image: 'https://i.pinimg.com/474x/46/7f/be/467fbe9b03913de9dcd39eb0ee1e06ab.jpg',
             role: 'User',
             type: 'Regular',
             point: 0,
+            gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
         };
         console.log('Sign Up Data:', signupData);
 
-        const isExist = localStorage.getItem(`phoneNumber${SignUpPhoneNumber}`);
+        const isExist = localStorage.getItem(`id${SignUpPhoneNumber}`);
         if (isExist == SignUpPhoneNumber) {
             setErrorSignUp('Tài khoản đã tồn tại');
             return;
         }
 
+        localStorage.setItem(`id${SignUpPhoneNumber}`, signupData.id);
         localStorage.setItem(`phoneNumber${SignUpPhoneNumber}`, signupData.phoneNumber);
         localStorage.setItem(`password${SignUpPhoneNumber}`, signupData.password);
         localStorage.setItem(`name${SignUpPhoneNumber}`, signupData.name);
+        localStorage.setItem(`email${SignUpPhoneNumber}`, signupData.email);
         localStorage.setItem(`nickname${SignUpPhoneNumber}`, signupData.nickname);
         localStorage.setItem(`birthday${SignUpPhoneNumber}`, signupData.birthday);
         localStorage.setItem(`sex${SignUpPhoneNumber}`, signupData.sex);
-        localStorage.setItem(`nation${SignUpPhoneNumber}`, signupData.nation);
+        localStorage.setItem(`nationality${SignUpPhoneNumber}`, signupData.nationality);
         localStorage.setItem(`image${SignUpPhoneNumber}`, signupData.image);
         localStorage.setItem(`role${SignUpPhoneNumber}`, signupData.role);
         localStorage.setItem(`type${SignUpPhoneNumber}`, signupData.type);
         localStorage.setItem(`point${SignUpPhoneNumber}`, signupData.point);
+        localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
-
-        // try {
-        //     const userResponse = await fetch(`https://localhost:7166/api/User/GetUserByEmail/${SignUpEmail}`);
-        //     if (!userResponse.ok) throw new Error('Network response was not ok');
-        //     const userData = await userResponse.json();
-        //     if (userData.email === SignUpEmail) {
-        //         setSignUpEmailError('Email đã tồn tại');
-        //         return;
-        //     }
-        // } catch (error) {
-        //     setLoading(false);
-        // }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/User',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify(signupData),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     if (data.role && data.role === 'User') {
-        //         setSuccessSignUp('Đăng kí thành công!');
-        //         // moveImageBack();
-        //     }
-        // } catch (error) {
-        //     setErrorSignUp('Đăng kí thất bại');
-        //     console.log('Đăng kí thất bại:', error);
-        //     setLoading(false);
-        // }
 
         setSuccessSignUp('Đăng kí thành công!');
     };
@@ -267,19 +211,22 @@ export default function SignInSignUp() {
         e.preventDefault();
         setSuccessSignUp(null);
         setErrorSignUp(null);
-        const SignUpFullName = e.target.SignUpFullName.value;
         const SignUpPhoneNumber = e.target.SignUpPhoneNumber.value;
+        const SignUpFullName = e.target.SignUpFullName.value;
+        const SignUpEmail = e.target.SignUpEmail.value;
         const SignUpPassword = e.target.SignUpPassword.value;
         const SignUpConfirm = e.target.SignUpConfirm.value;
         console.log({
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm,
         });
         SignUp(
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm
         );
@@ -288,21 +235,7 @@ export default function SignInSignUp() {
     const handleAccept = () => {
         setAccept(p => !p);
         console.log(Accept);
-        console.log('ABC');
-
-        // const fetchMaxID = async () => {
-        //     try {
-        //         const userResponse = await fetch('https://localhost:7166/api/User/GetIDandName');
-        //         if (!userResponse.ok) throw new Error('Network response was not ok');
-        //         const userData = await userResponse.json();
-        //         const MaxUserID = userData.reduce((max, user) => Math.max(max, user.id), 0);
-        //         setMaxUserID(MaxUserID);
-        //         console.log('Max User ID:', MaxUserID);
-        //     } catch (error) {
-        //         console.error('Error fetching users:', error);
-        //     }
-        // };
-        // await fetchMaxID();
+        // console.log('ABC');
     };
 
     return (
@@ -341,26 +274,23 @@ export default function SignInSignUp() {
                                 <button type='submit' className='btn btn-submit' id='btn-signin'>ĐĂNG NHẬP</button>
                                 <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
                             </div>
-
-                            <button id='btn btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
-                            {/* Google Login Button */}
-                            <GoogleLogin
-                                onSuccess={(response) => {
-                                    console.log('Google Login Success:', response);
-                                    // Handle the Google Login success logic here
-                                }}
-                                onError={(error) => {
-                                    console.error('Google Login Error:', error);
-                                }}
-                                useOneTap
-                                clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
-                            />
-
                         </form>
 
                         <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
 
                         <hr />
+
+                        <h2>Hình thức đăng nhập khác</h2>
+                        <GoogleLogin
+                            onSuccess={(response) => {
+                                console.log('Google Login Success:', response);
+                            }}
+                            onError={(error) => {
+                                console.error('Google Login Error:', error);
+                            }}
+                            useOneTap
+                            clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
+                        />
                     </div>
 
                     <div className='card-side card-disappear' id='card-signup'>
@@ -384,6 +314,14 @@ export default function SignInSignUp() {
                                         border: errorSignUp && (
                                             errorSignUp == 'Họ tên không hợp lệ'
                                         ) && '1px solid #dc3545',
+                                    }} />
+                            </div><div className='form-group form-input'>
+                                <i className='fa-solid fa-envelope'></i>
+                                <input name='SignUpEmail' className='input form-control' type='email' placeholder='Email đăng kí'
+                                    style={{
+                                        border: errorSignUp && (
+                                            errorSignUp == 'Email không hợp lệ')
+                                            && '1px solid #dc3545',
                                     }} />
                             </div>
                             <div className='form-group form-input'>

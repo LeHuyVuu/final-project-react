@@ -13,6 +13,8 @@ import AccountInformation from '../pages/User/AccountInformation/AccountInformat
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx'
 import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx'
 import Notification from '../pages/User/Notification/Notification.jsx'
+import Dice from '../pages/User/Game/Dice/Dice.jsx'
+import Menu from '../pages/MenuHeader/Menu.jsx'
 
 const MainRoutes = () => {
   return (
@@ -20,12 +22,12 @@ const MainRoutes = () => {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
+          <Route path="detail/:id" element={<ProductDetail />} />
+          <Route path='/cart' element={<Cart />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path="category" element={<Category />} />
           <Route path="category/:categoryId" element={<Category />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="detail/:id" element={<ProductDetail />} />
-          <Route path='/cart' element={<Cart />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="category/:cid" element={<Category />} />
           <Route path='login' element={<SignInSignUp />} />
@@ -36,6 +38,8 @@ const MainRoutes = () => {
             <Route path='help-center' element={<HelpCenter />} />
             <Route path='notification' element={<Notification />} />
           </Route>
+          <Route path='dice' element={<Dice />} />
+          <Route path='menu' element={<Menu />} />
 
         </Route>
       </Routes>
