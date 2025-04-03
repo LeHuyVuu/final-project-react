@@ -82,9 +82,7 @@ export default function FlashSale() {
                     <h2 className="text-2xl font-bold text-center ">Flash Sale</h2>
                     {time > 0 && <CountTime targetTime={time} onExpire={fetchDataFlashSale} />}
                 </div>
-                <a href="#" className="text-blue-500">
-                    Xem tất cả
-                </a>
+               
             </div>
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">

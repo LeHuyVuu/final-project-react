@@ -28,7 +28,7 @@ export default function Home() {
         <div className="mt-5">
           <TopDeal />
         </div>
-        <div className="my-5 bg-[#ff9ea4] p-5 ">
+        <div className="my-5 bg-red-200 p-5 ">
           <FlashSale />
         </div>
         <div>

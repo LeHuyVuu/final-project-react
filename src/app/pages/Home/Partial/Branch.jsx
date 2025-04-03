@@ -4,6 +4,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx'; // Import Skeleton Loader
 import { getData } from "../../../context/api";
 
 export default function Branch() {
@@ -24,7 +25,6 @@ export default function Branch() {
           imageUrls: item.banners.map((banner) => banner.image_url),  // Lấy image_url từ từng banner
         }));
         setBranch(data);
-
       } catch (err) {
         console.error("Lỗi khi tải dữ liệu danh mục:", err);
       } finally {
@@ -35,36 +35,38 @@ export default function Branch() {
     fetchBranches();
   }, []);
 
-  // console.log({branch})
-
   return (
     <div className="">
-
-      <Swiper
-        slidesPerView={1} // 1 logo trên mỗi slide
-        spaceBetween={20} // Khoảng cách giữa các item
-        autoplay={{ delay: 2500, disableOnInteraction: false }} // Tự động trượt
-        pagination={{ clickable: true }} // Hiển thị dot
-        navigation={false} // Nút next/prev
-        modules={[Autoplay, Pagination, Navigation]}
-        breakpoints={{
-          1024: { slidesPerView: 1 },
-          768: { slidesPerView: 1 },
-          640: { slidesPerView: 1 },
-          320: { slidesPerView: 1 },
-        }}
-        className="mySwiper"
-      >
-        {branch.map((brand, index) => (
-          brand.imageUrls.map((imgUrl, idx) => (
-            <SwiperSlide key={index + '-' + idx}>
-              <div className="flex justify-center items-center  bg-gray-200 rounded-lg shadow-md">
-                <img src={imgUrl} className=" h-auto object-contain" />
-              </div>
-            </SwiperSlide>
-          ))
-        ))}
-      </Swiper>
+      {loading ? (
+        // Hiển thị Skeleton khi dữ liệu đang tải
+        <SkeletonLoader type="image" count={1} width="100%" height="400px" />
+      ) : (
+        <Swiper
+          slidesPerView={1} // 1 logo trên mỗi slide
+          spaceBetween={20} // Khoảng cách giữa các item
+          autoplay={{ delay: 2500, disableOnInteraction: false }} // Tự động trượt
+          pagination={{ clickable: true }}
+          navigation={false} // Nút next/prev
+          modules={[Autoplay, Pagination, Navigation]}
+          breakpoints={{
+            1024: { slidesPerView: 1 },
+            768: { slidesPerView: 1 },
+            640: { slidesPerView: 1 },
+            320: { slidesPerView: 1 },
+          }}
+          className="mySwiper"
+        >
+          {branch.map((brand, index) => (
+            brand.imageUrls.map((imgUrl, idx) => (
+              <SwiperSlide key={index + '-' + idx}>
+                <div className="flex justify-center items-center bg-gray-200 rounded-lg">
+                  <img src={imgUrl} alt={`Brand Image ${idx}`} className="h-auto object-contain" />
+                </div>
+              </SwiperSlide>
+            ))
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 }
