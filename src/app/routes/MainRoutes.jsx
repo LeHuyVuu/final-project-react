@@ -1,21 +1,22 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import RootLayout from "../layouts/RootLayout";
-import Home from "../pages/Home/Home";
 import PageNotFound from "../layouts/PageNotFound/PageNotFound";
-import ProductDetail from "../pages/Detail/patrials/ProductDetail";
-import Cart from "../pages/Cart/Cart";
+import RootLayout from "../layouts/RootLayout";
 import Category from "../pages/Category/Category";
+import ProductDetail from "../pages/Detail/patrials/ProductDetail";
+import Home from "../pages/Home/Home";
 
-import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx'
+import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx';
 
-import Account from '../pages/User/Account.jsx'
-import AccountInformation from '../pages/User/AccountInformation/AccountInformation.jsx'
-import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx'
-import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx'
-import Notification from '../pages/User/Notification/Notification.jsx'
-import Dice from '../pages/User/Game/Dice/Dice.jsx'
-import Menu from '../pages/MenuHeader/Menu.jsx'
+import Account from '../pages/User/Account.jsx';
+import AccountInformation from '../pages/User/AccountInformation/AccountInformation.jsx';
+import Dice from '../pages/User/Game/Dice/Dice.jsx';
+import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx';
+import Notification from '../pages/User/Notification/Notification.jsx';
+import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
+import Cart from "../pages/Cart/Cart.jsx";
+import Payment from "../pages/Payment/Payment.jsx";
+import Menu from "../pages/MenuHeader/Menu.jsx";
+import CategorySideBar from "../pages/CategorySideBar/CategorySideBar.jsx";
 
 const MainRoutes = () => {
   return (
@@ -27,7 +28,7 @@ const MainRoutes = () => {
           <Route path='/cart' element={<Cart />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path="category" element={<Category />} />
-          <Route path='/cart' element={<Cart/>}/>
+          <Route path='/checkout' element={<Payment/>}/>
           <Route path="*" element={<PageNotFound />} />
           <Route path="category/:cid" element={<Category />} />
           <Route path='login' element={<SignInSignUp />} />
@@ -40,12 +41,12 @@ const MainRoutes = () => {
           </Route>
           <Route path='dice' element={<Dice />} />
           <Route path='menu' element={<Menu />} />
+          <Route path='categorysidesar' element={<CategorySideBar />} />
 
         </Route>
       </Routes>
     </BrowserRouter>
   );
 };
-
 
 export default MainRoutes;

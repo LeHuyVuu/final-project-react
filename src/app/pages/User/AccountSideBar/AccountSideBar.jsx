@@ -6,7 +6,7 @@ import TikiCharacter from './TikiCharacter.png';
 
 export default function AccountSideBar() {
 
-    const [Option, setOption] = useState(window.location.pathname.split('/').pop())
+    const [Option, setOption] = useState(window.location.pathname.split('/').pop());
 
     const ListOption = [
         { name: 'Thông tin tài khoản', icon: 'fa-solid fa-user', link: 'information' },
@@ -21,7 +21,7 @@ export default function AccountSideBar() {
     const User = {
         name: 'Đặng Ngọc Hải Triều',
         image: null,
-    }
+    };
 
     return (
         <div className='accountsidebar-container'>
