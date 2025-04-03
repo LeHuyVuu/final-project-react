@@ -5,7 +5,8 @@ import { useParams, useLocation } from "react-router-dom";
 import ProductListing from "./Patrials/ProductListing";
 
 function Category() {
-  const { categoryId } = useParams();
+  const {categoryId} = useParams();
+  // console.log("categoryId", categoryId);
   const location = useLocation();
   const urlKey = new URLSearchParams(location.search).get("urlKey");
   const normalizedCategoryId = categoryId?.replace(/^c/, '') || "";
