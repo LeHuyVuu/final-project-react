@@ -15,6 +15,7 @@ import Notification from '../pages/User/Notification/Notification.jsx';
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
 import Cart from "../pages/Cart/Cart.jsx";
 import Payment from "../pages/Payment/Payment.jsx";
+import Menu from "../pages/MenuHeader/Menu.jsx";
 
 const MainRoutes = () => {
   return (
