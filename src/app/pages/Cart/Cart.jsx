@@ -6,35 +6,74 @@ import { Divider } from "primereact/divider";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox } from "primereact/checkbox";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { sCountItem } from "../../context/store";
 
 const Cart = () => {
     const navigate = useNavigate();
     const toast = useRef(null);
-
+    const carouselAds = [
+        {
+            id: 1,
+            title: "Summer Sale",
+            description: "Up to 50% off on all summer items!",
+            image:
+                "https://img.freepik.com/free-vector/gradient-sale-background_23-2148934477.jpg",
+            buttonText: "Shop Now",
+        },
+        {
+            id: 2,
+            title: "New Arrivals",
+            description: "Check out our latest collection!",
+            image:
+                "https://img.freepik.com/free-vector/realistic-3d-sale-background_52683-62689.jpg",
+            buttonText: "Explore",
+        },
+        {
+            id: 3,
+            title: "Flash Deal",
+            description: "24 hours only! Special prices on selected items.",
+            image:
+                "https://img.freepik.com/free-vector/gradient-sale-background_23-2148829809.jpg",
+            buttonText: "Don't Miss Out",
+        },
+    ];
     // Giả sử các sản phẩm trong giỏ hàng được lưu trong localStorage
     const [cartItems, setCartItems] = useState(() => {
         const storedItems = localStorage.getItem("cartItems");
         return storedItems ? JSON.parse(storedItems) : [];
     });
 
-    const [selectAll, setSelectAll] = useState(true);
+    const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    // Tính tổng giá trị giỏ hàng
+    // Tính tổng giá trị giỏ hàng chỉ cho các sản phẩm đã được chọn
     const calculateTotal = () => {
         return selectedItems.reduce((total, item) => total + item.totalPrice, 0);
     };
 
     const handleQuantityChange = (id, newQuantity) => {
         setCartItems(prevItems => {
-            return prevItems.map(item => {
+            const updatedItems = prevItems.map(item => {
                 if (item.id === id) {
                     const updatedItem = { ...item, quantity: newQuantity, totalPrice: item.price * newQuantity };
+                    // Update selectedItems if item is selected
+                    if (selectedItems.some(selectedItem => selectedItem.id === item.id)) {
+                        setSelectedItems(prevSelectedItems => {
+                            return prevSelectedItems.map(selItem => {
+                                if (selItem.id === item.id) {
+                                    return updatedItem;
+                                }
+                                return selItem;
+                            });
+                        });
+                    }
                     return updatedItem;
                 }
                 return item;
             });
+            localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // Cập nhật vào localStorage
+            return updatedItems;
         });
     };
 
@@ -42,6 +81,8 @@ const Cart = () => {
         setCartItems(prevItems => {
             const updatedItems = prevItems.filter(item => item.id !== id);
             localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+            setSelectedItems(prevSelectedItems => prevSelectedItems.filter(item => item.id !== id)); // Remove from selectedItems if removed
+            sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length)
             return updatedItems;
         });
     };
@@ -69,7 +110,9 @@ const Cart = () => {
                         className="p-button-danger"
                         onClick={() => {
                             setCartItems([]);
+                            setSelectedItems([]);
                             localStorage.removeItem("cartItems");
+                            sCountItem.set(0);
                             toast.current.show({ severity: "success", summary: "Đã xóa tất cả sản phẩm", detail: "", life: 3000 });
                         }}
                     />
@@ -93,11 +136,8 @@ const Cart = () => {
                 return [...prevSelectedItems, itemToAdd];  // Thêm sản phẩm vào danh sách đã chọn
             }
         });
-
-        
     };
 
-    console.log(selectedItems)
     // Handle "select all" toggle
     const handleSelectAll = () => {
         if (selectAll) {
@@ -131,12 +171,14 @@ const Cart = () => {
                                         Giỏ Hàng
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        <button className="flex items-center bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 transform -rotate-90" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path d="M10 3a1 1 0 01.707.293l3 3a1 1 0 11-1.414 1.414L11 5.414V14a1 1 0 11-2 0V5.414L7.707 7.707A1 1 0 116.293 6.293l3-3A1 1 0 0110 3z" />
-                                            </svg>
-                                            Continue shopping
-                                        </button>
+                                        <Link to='/'>
+                                            <button className="flex items-center bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 transform -rotate-90" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path d="M10 3a1 1 0 01.707.293l3 3a1 1 0 11-1.414 1.414L11 5.414V14a1 1 0 11-2 0V5.414L7.707 7.707A1 1 0 116.293 6.293l3-3A1 1 0 0110 3z" />
+                                                </svg>
+                                                Continue shopping
+                                            </button>
+                                        </Link>
                                     </div>
                                 </div>
 

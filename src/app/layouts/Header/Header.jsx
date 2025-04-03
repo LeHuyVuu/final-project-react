@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import Menu from "../../pages/MenuHeader/Menu.jsx";
+import { useEffect, useState } from "react";
+import { sCountItem } from "../../context/store.js";
 
 export default function Header() {
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="grid grid-cols-3 gap-4 items-center w-full pt-2">
@@ -79,7 +82,7 @@ export default function Header() {
           </div>
 
           <div className="user cursor-pointer group">
-            <Link to='/login'>
+            <Link to='/account/information'>
               <svg
                 className="icon icon--account transition-transform duration-300 group-hover:scale-110"
                 aria-hidden="true"
@@ -116,7 +119,7 @@ export default function Header() {
               </svg>
 
               <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center animate-bounce">
-                0
+                {sCountItem.use()}
               </span>
             </Link>
           </div>
