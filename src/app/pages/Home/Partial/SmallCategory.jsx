@@ -32,11 +32,11 @@ export default function SmallCategory() {
     }, []);
 
     return (
-        <div className="flex overflow-x-auto space-x-4 p-4 justify-between shadow-xl rounded-lg bg-white">
+        <div className="flex overflow-x-auto space-x-4 p-2 justify-between shadow-xl rounded-lg bg-white">
             {categories.map((category, index) => (
                 <div
                     key={index}
-                    className="flex flex-col items-center min-w-[100px] hover:scale-105 transition-transform duration-200"
+                    className="flex flex-col items-center  min-w-[100px] hover:scale-105 transition-transform duration-200"
                 >
                     {/* Skeleton cho hình ảnh khi loading */}
                     {loading ? (
@@ -48,7 +48,7 @@ export default function SmallCategory() {
                         <img
                             src={category.image}
                             alt={category.name}
-                            className="w-12 h-12 object-contain"
+                            className="w-12 h-12 rounded-lg object-contain"
                         />
                     )}
 

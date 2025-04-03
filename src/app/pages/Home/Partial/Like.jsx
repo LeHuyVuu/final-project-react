@@ -16,7 +16,7 @@ const itemTemplate = (item) => {
 
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1">
                 <div className="  justify-center items-center ">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
@@ -32,7 +32,7 @@ const itemTemplate = (item) => {
                                 {item.discount}
                             </span>
                         </div>
-                        <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                        <div className="text-xl font-bold text-[#ff424e] mb-2">{item.price}</div>
                         <div className="card flex justify-between">
                             <Rating value={item.rate} disabled cancel={false} />
                             <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>

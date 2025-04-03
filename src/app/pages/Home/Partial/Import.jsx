@@ -15,7 +15,7 @@ import FormattedSold from '../FormattedSold.jsx';
 const itemTemplate = (item) => {
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1 ">
                 <div className="  justify-center items-center ">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
@@ -26,7 +26,7 @@ const itemTemplate = (item) => {
                             {item.brand_name}</div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
-                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-sm text-white' : 'bg-transparent'}`}>
+                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
                                 {item.discount}
                             </span>
                         </div>
@@ -36,8 +36,7 @@ const itemTemplate = (item) => {
                             <Rating value={item.rate} disabled cancel={false} />
                             <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>
                         </div>
-                        {/* <div className="w-full h-px bg-gray-300 my-2"></div>
-                <div className="text-sm text-green-500">{item.shipping}</div> */}
+                        
                     </div>
                 </div>
 
