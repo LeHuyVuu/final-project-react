@@ -78,42 +78,46 @@ export default function Header() {
           </div>
 
           <div className="user cursor-pointer group">
-            <svg
-              className="icon icon--account transition-transform duration-300 group-hover:scale-110"
-              aria-hidden="true"
-              focusable="false"
-              role="presentation"
-              width={24}
-              height={24}
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M16 5.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm1 0a5 5 0 1 1-10 0 5 5 0 0 1 10 0Zm-12.5 14c0-2.143.486-3.732 1.596-4.796C7.212 13.634 9.058 13 12 13c2.942 0 4.788.635 5.904 1.704 1.11 1.064 1.596 2.652 1.596 4.796a.5.5 0 0 0 1 0c0-2.275-.514-4.186-1.904-5.518C17.212 12.656 15.058 12 12 12c-3.058 0-5.212.656-6.596 1.982C4.014 15.314 3.5 17.225 3.5 19.5a.5.5 0 0 0 1 0Z"
-              />
-            </svg>
+            <Link to='/login'>
+              <svg
+                className="icon icon--account transition-transform duration-300 group-hover:scale-110"
+                aria-hidden="true"
+                focusable="false"
+                role="presentation"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M16 5.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm1 0a5 5 0 1 1-10 0 5 5 0 0 1 10 0Zm-12.5 14c0-2.143.486-3.732 1.596-4.796C7.212 13.634 9.058 13 12 13c2.942 0 4.788.635 5.904 1.704 1.11 1.064 1.596 2.652 1.596 4.796a.5.5 0 0 0 1 0c0-2.275-.514-4.186-1.904-5.518C17.212 12.656 15.058 12 12 12c-3.058 0-5.212.656-6.596 1.982C4.014 15.314 3.5 17.225 3.5 19.5a.5.5 0 0 0 1 0Z"
+                />
+              </svg>
+            </Link>
           </div>
           <div className="cart cursor-pointer relative group">
-            <svg
-              className="icon icon--cart transition-transform duration-300 group-hover:scale-110"
-              aria-hidden="true"
-              focusable="false"
-              role="presentation"
-              width={24}
-              height={24}
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M10 3.833c0-.818.247-1.395.595-1.763.349-.368.837-.57 1.405-.57.568 0 1.056.202 1.405.57.348.368.595.945.595 1.763V5.5h-4V3.833ZM9 6.5v2a.5.5 0 0 0 1 0v-2h4v2a.5.5 0 0 0 1 0v-2h3.564l.867 13H4.57l.867-13H9Zm0-1V3.833c0-1.023.313-1.862.869-2.45C10.425.794 11.187.5 12 .5c.813 0 1.575.294 2.131.883.556.588.869 1.427.869 2.45V5.5h4.5l1 15h-17l1-15H9Z"
-              />
-            </svg>
+            <Link to='/cart'>
+              <svg
+                className="icon icon--cart transition-transform duration-300 group-hover:scale-110"
+                aria-hidden="true"
+                focusable="false"
+                role="presentation"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 3.833c0-.818.247-1.395.595-1.763.349-.368.837-.57 1.405-.57.568 0 1.056.202 1.405.57.348.368.595.945.595 1.763V5.5h-4V3.833ZM9 6.5v2a.5.5 0 0 0 1 0v-2h4v2a.5.5 0 0 0 1 0v-2h3.564l.867 13H4.57l.867-13H9Zm0-1V3.833c0-1.023.313-1.862.869-2.45C10.425.794 11.187.5 12 .5c.813 0 1.575.294 2.131.883.556.588.869 1.427.869 2.45V5.5h4.5l1 15h-17l1-15H9Z"
+                />
+              </svg>
 
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center animate-bounce">
-              0
-            </span>
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center animate-bounce">
+                0
+              </span>
+            </Link>
           </div>
         </div>
       </div>
