@@ -12,6 +12,7 @@ import TopDeal from './Partial/TopDeal';
 import Trending from "./Partial/Trending";
 
 
+
 export default function Home() {
 
 
