@@ -1,101 +1,114 @@
-import React from 'react'
-import { Carousel } from 'primereact/carousel';
+import React, { useEffect, useState } from 'react';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { Carousel } from 'primereact/carousel';
+import { Rating } from "primereact/rating";
+import { Link } from "react-router-dom";
 
-// Fake data (dữ liệu giả)
-const Imports = [
-    {
-        id: 1,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Màn Hình Cong Samsung LC27R500FHEXVV 27 inch",
-        price: "2.565.000đ",
-        oldPrice: "4.590.000đ",
-        discount: "-44%",
-        shipping: "Giao siêu tốc 2h"
-    },
-    {
-        id: 2,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Điện Thoại Oppo A18 4GB/128GB",
-        price: "2.819.000đ",
-        oldPrice: "3.990.000đ",
-        discount: "-29%",
-        shipping: "Giao siêu tốc 2h"
-    },
-    {
-        id: 3,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Tiếng Anh 2 i-Learn Smart Start - Student's Book",
-        price: "54.828đ",
-        oldPrice: "242.270đ",
-        discount: "-32%",
-        shipping: "Giao siêu tốc 2h"
-    },
-    {
-        id: 4,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Combo Sách Giáo Trình Chuẩn HSK 1 - Sách Bài Tập",
-        price: "242.270đ",
-        oldPrice: "356.000đ",
-        discount: "-32%",
-        shipping: "Giao siêu tốc 2h"
-    },
-    {
-        id: 5,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Sự Im Lặng Của Bầy Cừu",
-        price: "80.500đ",
-        oldPrice: "115.000đ",
-        discount: "-30%",
-        shipping: "Giao siêu tốc 2h"
-    },
-    {
-        id: 6,
-        image: "https://i.pinimg.com/736x/33/26/6e/33266efd66b550f7ea6d920ba667bf71.jpg",
-        title: "Miếng Lót Chuột FIRO MXL800 EXTENDED",
-        price: "115.000đ",
-        oldPrice: "229.000đ",
-        discount: "-50%",
-        shipping: "Giao siêu tốc 2h"
-    }
-];
+import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
+import { getData } from '../../../context/api';
 
-// Template for each carousel item (sử dụng Tailwind để tạo kiểu)
+
+
 const itemTemplate = (item) => {
     return (
-        <div className="flex flex-col max-w-60 h-auto bg-slate-50 gap-2 p-4 rounded-lg shadow-lg">
-            <img src={item.image} alt={item.title} className="w-full h-52 object-cover  rounded-lg mb-4 " />
-            <div className="text-left">
-                <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis ">{item.title}</h4>
-                <div className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</div>
-                <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
-                <div className="text-sm text-orange-600 mb-2">{item.discount}</div>
-                <div className="text-sm text-green-500">{item.shipping}</div>
+        <Link to={`/detail/${item.id}`} >
+            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+                <div className="  justify-center items-center ">
+                    <div className="relative">
+                        <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
+                        <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg mb-2 " /> {/* Main image */}
+                    </div>
+                    <div className="text-left">
+                        <div className='text-sm max-w-60 min-h-10 text-gray-600 line-clamp-2 overflow-hidden text-ellipsis mb-2'><b>{item.brand_name}</b></div>
+                        <div className='min-h-[25px]'>
+                            <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
+                            <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
+                        </div>
+                        <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                        <div>
+                            {item.rate}
+                        </div>
+                        <div className="card flex justify-content-center">
+                            <Rating value={item.rate} disabled cancel={false} />
+                        </div>
+                        {/* <div className="w-full h-px bg-gray-300 my-2"></div>
+                <div className="text-sm text-green-500">{item.shipping}</div> */}
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </Link>
+
     );
 };
 
 export default function Import() {
+    const [items, setItems] = useState([]);
+    const [title, setTitle] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchDataImport = async () => {
+            setLoading(true);
+
+            try {
+                const res = await getData("https://api.tiki.vn/raiden/v3/widgets/imported_genuine?version=2");
+                // console.log(res)
+
+                const title = {
+                    title: res.data.header.title,
+                    more_link_text: res.data.header.more_link_text,
+                };
+                setTitle(title);
+                console.log(title);
+
+                const extractedItems = res.data.items.map(item => ({
+                    id: item.id,
+                    icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150",
+                    image: item.thumbnail_url || "https://via.placeholder.com/150",
+                    brand_name: item.name || "Không rõ",
+                    price: item.price ? `${item.price.toLocaleString()}đ` : "",
+                    oldPrice: item.original_price && item.original_price !== item.price ? `${item.original_price.toLocaleString()}đ` : "",
+                    discount: item.discount ? `-${item.discount_rate}%` : "",
+                    rate: item.rating_average,
+                    shipping: item.badges_new?.find(b => b.code === "delivery_info_badge")?.text || "Giao hàng tiêu chuẩn",
+                }));
+                setItems(extractedItems);
+                // console.log(extractedItems);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDataImport();
+    }, []);
+
     return (
-        <div className="top-deal py-6">
+        <div className="   ">
             <div className='flex justify-between'>
-                <h2 className="text-2xl font-bold text-center mb-4">Hàng ngoại giá hot</h2>
-                <a href="#" className=" text-blue-500">
-                    Xem tất cả
-                </a>
+                <h2 className="text-2xl font-bold text-center mb-4">{title.title}</h2>
+                <Link to='/' className="text-blue-500">{title.more_link_text}</Link>
             </div>
-
-            <Carousel
-                value={Imports}
-                itemTemplate={itemTemplate}
-                numVisible={6}
-                numScroll={6}
-                circular={true}
-
-            />
+            <div>
+                {loading ? (
+                    <div className="grid grid-cols-5 gap-4">
+                        <SkeletonLoader type="card" count={5} width='100%' height='300px' />
+                    </div>
+                ) : (
+                    <Carousel className=''
+                        value={items}
+                        itemTemplate={itemTemplate}
+                        numVisible={5}
+                        numScroll={5}
+                        // responsiveOptions={responsiveOptions}
+                        circular={true}
+                    />
+                )}
+            </div>
         </div>
     );
 }

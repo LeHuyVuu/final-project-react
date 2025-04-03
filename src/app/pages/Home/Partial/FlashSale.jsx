@@ -38,37 +38,37 @@ const itemTemplate = (item) => {
     );
 };
 
-export default function Like() {
+export default function FlashSale() {
     const [items, setItems] = useState([]);
     const [title, setTitle] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchDataLike = async () => {
+        const fetchDataFlashSale = async () => {
             setLoading(true);
 
             try {
-                const res = await getData("https://api.tiki.vn/raiden/v3/widgets/maybe_you_like?");
-                // console.log(res)
-                const title = {
-                    title: res.data.header.title,
-                    more_link_text: res.data.header.more_link_text,
-                };
-                setTitle(title);
+                const res = await getData("https://api.tiki.vn/flashsale/v2/widget/deals/collection?");
+                console.log(res)
+                // const title = {
+                //     title: res.data.header.title,
+                //     more_link_text: res.data.header.more_link_text,
+                // };
+                // setTitle(title);
 
-                const extractedItems = res.data.items.map(item => ({
-                    icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150",
-                    image: item.thumbnail_url || "https://via.placeholder.com/150",
-                    brand_name: item.name || "Không rõ",
-                    price: item.price ? `${item.price.toLocaleString()}đ` : "",
-                    oldPrice: item.original_price && item.original_price !== item.price ? `${item.original_price.toLocaleString()}đ` : "",
-                    discount: item.discount ? `-${item.discount_rate}%` : "",
-                    rate: item.rating_average,
-                    shipping: item.badges_new?.find(b => b.code === "delivery_info_badge")?.text || "Giao hàng tiêu chuẩn",
-                }));
+                // const extractedItems = res.data.product.map(item => ({
+                    
+                //     image: item.thumbnail_url,
+                //     brand_name:item.name || "Không rõ",
+                //     price:item.price   ,
+                //     oldPrice:item.original_price ,
+                //     discount: ,
+                //     rate: ,
+                //     shipping:|| "Giao hàng tiêu chuẩn",
+                // }));
 
                 setItems(extractedItems);
-                // console.log(extractedItems);
+                console.log(extractedItems);
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
             } finally {
@@ -77,7 +77,7 @@ export default function Like() {
         };
 
 
-        fetchDataLike();
+        fetchDataFlashSale();
     }, []);
 
     return (

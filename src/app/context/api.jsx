@@ -155,13 +155,13 @@ export const getCategoryChildren = async (categoryId) => {
 
 ///api tổng rồi chiết ra thành các hàm riêng
 export const getProductsByCategory = async (
-  category = "27582", 
-  page = 1, 
-  limit = 40, 
+  category = "27582",
+  page = 1,
+  limit = 40,
   urlKey = "dam-dang-xoe"
 ) => {
   const url = `https://tiki.vn/api/personalish/v1/blocks/listings?limit=${limit}&include=advertisement&aggregations=2&version=home-persionalized&trackity_id=182be9b9-76ed-6222-e51b-b73a2c7de71f&category=${category}&page=${page}&urlKey=${urlKey}`;
-  
+
   try {
     return await getData(url);
   } catch (error) {
@@ -171,10 +171,7 @@ export const getProductsByCategory = async (
 };
 
 // Hàm riêng để lấy dữ liệu banner từ API Tiki
-export const getBannersByCategory = async (
-  category = "",
-  urlKey = ""
-) => {
+export const getBannersByCategory = async (category = "", urlKey = "") => {
   try {
     const response = await getProductsByCategory(category, 1, 40, urlKey);
     const bannersData = response.data.widgets;
@@ -196,34 +193,44 @@ export const getBannersByCategory = async (
 export const getFilters = async (category = "", urlKey = "") => {
   try {
     const response = await getProductsByCategory(category, 1, 40, urlKey);
-    
+
     // Kiểm tra và trích xuất dữ liệu filter từ phản hồi API
     if (response?.data?.filters) {
       const filters = response.data.filters;
-      
+
       // Trả về dữ liệu filter đã được xử lý theo nhóm
       return {
         // Filter danh mục sản phẩm
-        category: filters.find(filter => filter.code === "category") || null,
-        
+        category: filters.find((filter) => filter.code === "category") || null,
+
         // Nhóm các dịch vụ
-        services: filters.filter(filter => 
-          ["support_p2h_delivery", "tiki_hero", "freeship_campaign"].includes(filter.code)
+        services: filters.filter((filter) =>
+          ["support_p2h_delivery", "tiki_hero", "freeship_campaign"].includes(
+            filter.code
+          )
         ),
-        
+
         // Filter đánh giá
-        rating: filters.find(filter => filter.code === "rating") || null,
-        
+        rating: filters.find((filter) => filter.code === "rating") || null,
+
         // Filter giá
-        price: filters.find(filter => filter.code === "price") || null,
-        
+        price: filters.find((filter) => filter.code === "price") || null,
+
         // Filter theo các thuộc tính sản phẩm (vải, chất liệu...)
-        attributes: filters.filter(filter => 
-          !["category", "support_p2h_delivery", "tiki_hero", "freeship_campaign", "rating", "price"].includes(filter.code)
-        )
+        attributes: filters.filter(
+          (filter) =>
+            ![
+              "category",
+              "support_p2h_delivery",
+              "tiki_hero",
+              "freeship_campaign",
+              "rating",
+              "price",
+            ].includes(filter.code)
+        ),
       };
     }
-    
+
     return null;
   } catch (error) {
     console.error("Error fetching filters:", error);
@@ -268,56 +275,90 @@ export const getFilteredProducts = async (
 ) => {
   try {
     const { page = 1, limit = 40 } = pagination;
-    
+
     // Xây dựng URL cơ bản với phân trang và sắp xếp
     let url = `https://tiki.vn/api/personalish/v1/blocks/listings?limit=${limit}&include=advertisement&aggregations=2&version=home-persionalized&trackity_id=182be9b9-76ed-6222-e51b-b73a2c7de71f&category=${category}&page=${page}&urlKey=${urlKey}&sort=${sort}`;
-    
+
     // Thêm các filter vào URL
     if (filters.price) {
       url += `&price=${filters.price}`;
     }
-    
+
     if (filters.rating) {
       url += `&rating=${filters.rating}`;
     }
-    
+
     // Xử lý filter cho chất liệu vải (multi-select)
     if (filters.cloth_material && filters.cloth_material.length > 0) {
-      url += `&cloth_material=${filters.cloth_material.join(',')}`;
+      url += `&cloth_material=${filters.cloth_material.join(",")}`;
     }
 
     // Xử lý filter cho họa tiết (pattern)
     if (filters.fashion_pattern && filters.fashion_pattern.length > 0) {
-      url += `&fashion_pattern=${filters.fashion_pattern.join(',')}`;
+      url += `&fashion_pattern=${filters.fashion_pattern.join(",")}`;
     }
 
     // Xử lý filter cho màu sắc
     if (filters.option_color && filters.option_color.length > 0) {
-      url += `&option_color=${filters.option_color.join(',')}`;
+      url += `&option_color=${filters.option_color.join(",")}`;
     }
-    
+
+    // Xử lý filter thương hiệu
+    if (filters.brand && filters.brand.length > 0) {
+      url += `&brand=${filters.brand.join(",")}`;
+    }
+
     // Xử lý các dịch vụ
     if (filters.services) {
       if (filters.services.support_p2h_delivery) {
-        url += '&support_p2h_delivery=1';
+        url += "&support_p2h_delivery=1";
       }
       if (filters.services.tiki_hero) {
-        url += '&tiki_hero=1';
+        url += "&tiki_hero=1";
       }
       if (filters.services.freeship_campaign) {
-        url += '&freeship_campaign=freeship_xtra';
+        url += "&freeship_campaign=freeship_xtra";
       }
     }
-    
+
+    // Xử lý các filter động
+    Object.entries(filters).forEach(([key, value]) => {
+      // Bỏ qua các filter đã xử lý riêng ở trên
+      if (
+        ![
+          "price",
+          "rating",
+          "cloth_material",
+          "fashion_pattern",
+          "option_color",
+          "brand",
+          "services",
+        ].includes(key) &&
+        value &&
+        (Array.isArray(value) ? value.length > 0 : true)
+      ) {
+        // Nếu là mảng thì join bằng dấu phẩy
+        if (Array.isArray(value)) {
+          url += `&${key}=${value.join(",")}`;
+        }
+        // Nếu là giá trị đơn
+        else if (typeof value === "string" || typeof value === "number") {
+          url += `&${key}=${value}`;
+        }
+      }
+    });
+
+    console.log("Final API URL:", url);
+
     // Gọi API với URL đã được xây dựng
     const response = await getData(url);
-    
+
     // Trả về response với dữ liệu và thông tin phân trang
     return {
       data: response.data.data,
       paging: response.data.paging,
       filters: response.data.filters, // Trả về cả filter mới nếu có
-      aggregations: response.data.aggregations // Thống kê bổ sung
+      aggregations: response.data.aggregations, // Thống kê bổ sung
     };
   } catch (error) {
     console.error("Error fetching filtered products:", error);
@@ -331,23 +372,24 @@ export const getFilteredProducts = async (
  * @returns {Object} - Thông tin phân trang đã được xử lý
  */
 export const getPaginationInfo = (paging) => {
-  if (!paging) return {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    perPage: 40,
-    hasNextPage: false,
-    hasPrevPage: false
-  };
-  
+  if (!paging)
+    return {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      perPage: 40,
+      hasNextPage: false,
+      hasPrevPage: false,
+    };
+
   const { current_page, last_page, total, per_page } = paging;
-  
+
   return {
     currentPage: current_page || 1,
     totalPages: last_page || 1,
     totalItems: total || 0,
     perPage: per_page || 40,
     hasNextPage: current_page < last_page,
-    hasPrevPage: current_page > 1
+    hasPrevPage: current_page > 1,
   };
 };
