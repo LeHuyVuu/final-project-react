@@ -29,10 +29,10 @@ export default function CountTime({ targetTime, onExpire }) {
     const formatTime = (t) => String(Math.floor(t)).padStart(2, '0');
 
     return (
-        <div className="  flex mx-2 gap-1">
-            <span className="bg-black h-7 w-10 text-center font-bold text-white px-2 py-1 rounded">{formatTime(timeLeft / 3600)}</span>:
-            <span className="bg-black h-7 w-10 text-center font-bold text-white px-2 py-1 rounded">{formatTime((timeLeft % 3600) / 60)}</span>:
-            <span className="bg-black h-7 w-10 text-center font-bold text-white px-2 py-1 rounded">{formatTime(timeLeft % 60)}</span>
+        <div className="flex mx-2 gap-1">
+            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime(timeLeft / 3600)}</span>:
+            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime((timeLeft % 3600) / 60)}</span>:
+            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime(timeLeft % 60)}</span>
         </div>
     );
 }

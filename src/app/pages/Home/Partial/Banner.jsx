@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel } from 'primereact/carousel';
 import { getData } from '../../../context/api';
+import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
+
 
 export default function Banner() {
     const [banners, setBanners] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
     const bannerTemplate = (banner) => (
@@ -14,6 +17,8 @@ export default function Banner() {
 
     useEffect(() => {
         const fetchDataCarousel = async () => {
+            setLoading(true);
+            
             try {
                 // Fetching data from API, replace with your API endpoint
                 const res = await getData("https://tka.tiki.vn/widget/api/v1/banners-group?group=banner_carousel_2_8");
@@ -31,6 +36,8 @@ export default function Banner() {
                 setBanners(extractedBanners);
             } catch (error) {
                 console.error('Error fetching banners:', error);
+            }finally {
+                setLoading(false);
             }
         };
 
@@ -39,12 +46,18 @@ export default function Banner() {
 
     return (
         <div>
+            {loading ? (
+                 <div className="grid grid-cols-2 gap-4">
+                 <SkeletonLoader type="image" count={2} width="100%" height="350px" />
+             </div>
+            ) : (
             <Carousel value={banners}
                 itemTemplate={bannerTemplate}
                 numVisible={2}
                 numScroll={1}
                 circular
                 autoplayInterval={4000} />
+            )}
         </div>
     );
 }

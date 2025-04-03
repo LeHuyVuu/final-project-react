@@ -19,49 +19,53 @@ export default function Home() {
   return (
     <div classNam=''>
       <div className=" mx-28" >
-        <div className="mt-5">
+
+        <div className="my-10">
           <Banner />
         </div>
 
-        <div className="mt-5">
+        <div className="my-10">
           <CategoryLinks />
         </div>
-        <div className="mt-5">
+
+        <div className="my-10">
           <TopDeal />
         </div>
-        <div className="my-5 bg-[#ff9ea4] p-5 ">
+
+        <div className="my-10 p-5 bg-red-200  ">
           <FlashSale />
         </div>
+
         <div>
-          <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-700 text-center mb-4 rounded-tr-full rounded-br-full w-fit">
-            Khám Phá Mua Sắm
-          </h2>
-
-
-          <div className="flex items-center">
-            <div className=" w-1/5">
-              <Branch />
+          <div className='my-10'>
+            <div className=' flex'>
+              <div className='p-2 bg-red-300 rounded-bl-full '></div>
+              <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                Khám Phá Mua Sắm
+              </h2>
             </div>
-            <div className=" w-4/5">
-              <MainCategory />
+            <div className=" flex items-center">
+              <div className=" w-1/5">
+                <Branch />
+              </div>
+              <div className=" w-4/5">
+                <MainCategory />
+              </div>
             </div>
           </div>
         </div>
-
-        <div className="mt-5 ">
+        <div className="my-10 ">
           <Import />
         </div>
 
-        <div className="mt-5">
+        <div className="my-10">
           <Like />
         </div>
 
-        <div className="mt-5">
+        <div className="my-10">
           <Trending />
         </div>
-        {/* <div className="mt-5">
-        <Product />
-      </div> */}
+
       </div>
     </div>
   )
