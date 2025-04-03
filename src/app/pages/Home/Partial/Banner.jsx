@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel } from 'primereact/carousel';
-import { Button } from 'primereact/button';
-import axios from 'axios';
 import { getData } from '../../../context/api';
 
 export default function Banner() {
@@ -9,7 +7,7 @@ export default function Banner() {
 
 
     const bannerTemplate = (banner) => (
-        <div className="flex justify-center items-center">
+        <div className="p-2 flex justify-center items-center">
             <img src={banner.image_url} alt={banner.title} className="rounded-lg shadow-lg" />
         </div>
     );

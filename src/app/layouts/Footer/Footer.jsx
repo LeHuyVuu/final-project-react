@@ -1,40 +1,81 @@
-import React from 'react'
+import React, { useRef, useState } from 'react';
 import { FaFacebook, FaInstagram, FaEnvelope, FaWhatsapp, FaYoutube, FaPhone } from "react-icons/fa";
-
-
+import emailjs from 'emailjs-com';
+import { Toast } from "primereact/toast";
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const toast = useRef(null);
+  // Hàm gửi email
+  const sendEmail = (e) => {
+    e.preventDefault(); // Ngừng hành động mặc định của form (submit)
+
+    const templateParams = {
+      email_to: email, // Email của người dùng nhập vào
+      // Thêm các tham số khác nếu cần
+    };
+
+    emailjs.send(
+      'service_lptm90f', // Service ID của bạn
+      'template_8lnoa8h', // Template ID của bạn
+      templateParams,
+      'PL8gMYLSA7J6k-atS' // User ID của bạn
+    ).then((response) => {
+      console.log('Email sent successfully', response);
+      toast.current.show({
+        severity: "success",
+        detail: "Đăng ký thành công! Chúng tôi sẽ gửi email cho bạn.",
+        life: 3000,
+      });
+      setEmail(''); // Reset email input
+    }, (err) => {
+      console.error('Error sending email', err);
+      alert('');
+      toast.current.show({
+        severity: "danger",
+        summary: "Error",
+        detail: "Có lỗi xảy ra. Vui lòng thử lại sau.",
+        life: 3000,
+      });
+    });
+  };
+
   return (
-    <footer className="bg-gray-100 text-gray-800">
+    <footer className="text-gray-800 relative mt-48">
+      <Toast ref={toast} />
       {/* Subscription Section */}
-      <div className="bg-slate-500 text-white py-10 px-6 md:px-20 rounded-t-lg">
-        <div className="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto">
+      <div className="bg-slate-500 text-white max-w-5xl mx-auto py-10 px-6 md:px-20 rounded-3xl absolute top-[-140px] left-0 right-0 z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between">
           {/* Left - Image */}
           <div className="mb-6 md:mb-0">
-            <img src="  " alt="Fitness" className="w-80" />
+            <img src="https://salt.tikicdn.com/cache/w500/ts/upload/c0/8b/46/c3f0dc850dd93bfa7af7ada0cbd75dc0.png" alt="Store Logo" className="w-36" />
           </div>
 
           {/* Right - Subscription */}
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold">
-              Subscribe to our newsletter and get exclusive gym offers!
+              Đăng ký nhận bản tin và nhận ưu đãi độc quyền từ cửa hàng!
             </h2>
             <p className="mt-2 text-sm">
-              Get 20% off on your first membership just by subscribing to our newsletter.
+              Nhận ngay 20% giảm giá cho lần mua hàng đầu tiên chỉ với một lần đăng ký!
             </p>
-            <div className="mt-4 flex justify-center md:justify-start">
+            <div className="mt-2 flex justify-center md:justify-start">
               <input
                 type="email"
-                placeholder="Enter your Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} // Cập nhật email nhập vào
+                placeholder="Nhập Email của bạn"
                 className="p-2 w-60 rounded-l-lg text-gray-700"
               />
-              <button className="bg-white text-blue-600 px-4 py-2 rounded-r-lg font-semibold">
-                Subscribe
+              <button
+                onClick={sendEmail} // Gọi hàm gửi email khi nhấn nút
+                className="bg-white text-blue-600 px-4 py-2 rounded-r-lg font-semibold">
+                Đăng ký
               </button>
             </div>
             <p className="mt-2 text-xs">
-              You will be able to unsubscribe at any time. Read our privacy & policy{" "}
+              Bạn có thể hủy đăng ký bất cứ lúc nào. Đọc chính sách bảo mật & quyền riêng tư{" "}
               <a href="#" className="underline">
-                here
+                tại đây
               </a>.
             </p>
           </div>
@@ -42,14 +83,14 @@ export default function Footer() {
       </div>
 
       {/* Footer Content */}
-      <div className="max-w-6xl mx-auto px-6 md:px-20 py-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="w-full bg-gray-100 mx-auto px-6 md:px-20 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 pt-32"> {/* Add padding-top to make space for subscription */}
         {/* Company Info */}
         <div>
           <h3 className="text-lg font-bold flex items-center">
-            <span className="mr-2 text-2xl">💪</span> AlphaFitness
+            <span className="mr-2 text-2xl">🛒</span> AlphaStore
           </h3>
           <p className="mt-2 text-sm">
-            Lorem ipsum dolor sit amet consectetur. Eget tellus posuere blandit.
+            Chúng tôi cung cấp sản phẩm chất lượng, phục vụ tận tâm, đáp ứng nhu cầu mua sắm trực tuyến của bạn.
           </p>
           <div className="flex space-x-4 mt-4 text-gray-600">
             <FaFacebook className="text-2xl cursor-pointer hover:text-blue-600" />
@@ -60,6 +101,7 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Các phần khác */}
         {/* Links Sections */}
         <div>
           <h3 className="font-bold">Company</h3>
@@ -92,16 +134,7 @@ export default function Footer() {
         </div>
 
         {/* Contact Info */}
-        <div className="col-span-1 md:col-span-4 mt-6">
-          <div className="flex items-center space-x-4">
-            <FaPhone className="text-xl text-blue-600" />
-            <span>(+977) 9800000000</span>
-          </div>
-          <div className="flex items-center space-x-4 mt-2">
-            <FaEnvelope className="text-xl text-blue-600" />
-            <span>support@mail.com</span>
-          </div>
-        </div>
+       
       </div>
 
       {/* Bottom Section */}
@@ -112,7 +145,10 @@ export default function Footer() {
           <a href="#" className="hover:underline">Terms of Use</a>
           <a href="#" className="hover:underline">Sitemap</a>
         </div>
+
       </div>
+
+      {/* Footer */}
     </footer>
-  )
+  );
 }

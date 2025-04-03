@@ -1,0 +1,22 @@
+.accountinformation-container {
+    width: 100%;
+    max-width: 900px;
+
+    h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 20px 0 16px;
+    }
+
+    .accountinformation-content {
+        display: flex;
+        justify-content: space-between;
+        border-radius: 10px;
+        background-color: #fff;
+
+        .info-vertical {
+            margin: 16px 0;
+            border-left: 1px solid #ccc;
+        }
+    }
+}
