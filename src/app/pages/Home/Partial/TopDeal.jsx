@@ -81,13 +81,15 @@ export default function TopDeal() {
 
     return (
         <div className="top-deal py-6">
-            <div className="flex justify-between">
-                <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
-                    Top Deals - Siêu Rẻ
-                </h2>
+            <div className='flex justify-between'>
+                <div className="flex ">
+                    <div className='p-2 bg-red-300 rounded-bl-full '></div>
+                    <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                        Top Deals - Siêu Rẻ
+                    </h2>
+                </div>
                 <a href="#" className="text-blue-500">Xem tất cả</a>
             </div>
-
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">
                     <SkeletonLoader type="card" count={5} width="100%" height="300px" />
