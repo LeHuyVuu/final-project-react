@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PageNotFound from "../layouts/PageNotFound/PageNotFound";
 import RootLayout from "../layouts/RootLayout";
@@ -39,12 +38,12 @@ const MainRoutes = () => {
             <Route path='notification' element={<Notification />} />
           </Route>
           <Route path='dice' element={<Dice />} />
+          <Route path='menu' element={<Menu />} />
 
         </Route>
       </Routes>
     </BrowserRouter>
   );
 };
-
 
 export default MainRoutes;

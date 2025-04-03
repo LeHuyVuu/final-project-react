@@ -1,3 +1,5 @@
+
+/*css nút next,prev của swiper------------------------------------------- */
 .swiper-button-next,
 .swiper-button-prev {
   width: 30px;  /* Điều chỉnh kích thước */
@@ -17,3 +19,10 @@
 .swiper-button-prev:hover {
   background-color: rgba(0, 0, 0, 0.8); /* Màu khi hover */
 }
+/*css cho rating------------------------------------------------ */
+.p-rating .p-rating-item .p-rating-icon.p-icon{
+  width: 15px !important;
+  height: auto !important;
+}
+
+/*css cho topdeal wave------------------------------------------------ */
