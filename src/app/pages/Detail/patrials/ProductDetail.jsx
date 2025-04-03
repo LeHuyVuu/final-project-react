@@ -10,7 +10,8 @@ import "./styleDetail.css";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
 import { getData } from "../../../context/api";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { sCountItem } from "../../../context/store";
 
 // Define custom colors
 const COLORS = {
@@ -102,9 +103,67 @@ const ProductDetail = () => {
     fetchData();
   }, [id])
 
+  const navigate = useNavigate();
+  const handleBuyNow = () => {
+    const authen = localStorage.getItem("LoginUser");
+    console.log(authen)
+    if (authen != null) {
+      const productToBuy = {
+        id: productRes.id,
+        name: productRes?.name,
+        current_seller: productRes?.current_seller?.name,
+        price: productRes?.price,
+        quantity: quantity,
+        original_price: productRes?.original_price,
+        thumbnail_url: productRes?.thumbnail_url
+      };
+      navigate("/checkout", { state: { productToBuy } });
+    } else {
+      navigate("/login");
+    }
+  };
+
+
+  const handleAddToCart = () => {
+    const authen = localStorage.getItem("LoginUser");
+    console.log(authen)
+    if (authen != null) {
+      const productToAddCart = {
+        id: productRes.id,
+        name: productRes?.name,
+        current_seller: productRes?.current_seller?.name,
+        price: productRes?.price,
+        quantity: quantity,
+        original_price: productRes?.original_price,
+        thumbnail_url: productRes?.thumbnail_url,
+        totalPrice: productRes.price * quantity,  // Tính totalPrice khi thêm sản phẩm vào giỏ hàng
+      };
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      const existingProductIndex = cartItems.findIndex(
+        (item) => item.id === productToAddCart.id
+      );
+
+      if (existingProductIndex !== -1) {
+        cartItems[existingProductIndex].quantity += quantity;
+      } else {
+        cartItems.push(productToAddCart);
+      }
+
+      
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length)
+      // console.log(JSON.parse(localStorage.getItem("cartItems"))?.length)
+      // console.log("Product added to cart:", productToAddCart);
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <>
+    <sCountItem.DevTool name="count"/>
       <div className="bg-white text-black">
         <div className="p-4 mb-2">
           <BreadCrumb
@@ -372,11 +431,13 @@ const ProductDetail = () => {
                 className="p-button-raised flex-1 bg-white border-2 border-blue-500 text-blue-500 font-semibold rounded-lg px-5 py-3 text-base transition-all duration-200"
                 label="Thêm vào giỏ hàng"
                 icon="pi pi-shopping-cart"
+                onClick={handleAddToCart}
               />
               <Button
                 className="p-button-outlined flex-1 bg-blue-500 border-2 border-blue-500 text-white font-semibold rounded-lg px-5 py-3 text-base shadow-md transition-all duration-200"
                 label="Mua ngay"
                 icon="pi pi-check"
+                onClick={handleBuyNow}
               />
             </div>
 

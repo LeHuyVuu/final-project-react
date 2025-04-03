@@ -15,7 +15,7 @@ import '../SwiperStyle.css'
 const itemTemplate = (item) => {
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1">
                 <div className="justify-center items-center">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0" /> {/* Icon */}
@@ -55,6 +55,7 @@ export default function TopDeal() {
             try {
                 const res = await getData("https://api.tiki.vn/raiden/v3/widgets/top_choise?version=2&_v=2");
                 const items = res.data.items.map((item) => ({
+                    id: item.id,
                     icon: item.badges_v3?.[0]?.image || "https://via.placeholder.com/150", // Thêm icon
                     image: item.thumbnail_url || "https://via.placeholder.com/150", // Hình ảnh sản phẩm
                     oldPrice: item.original_price && item.original_price !== item.price ? `${item.original_price.toLocaleString()}đ` : "",
@@ -80,14 +81,18 @@ export default function TopDeal() {
     }, []);
 
     return (
-        <div className="top-deal py-6">
-            <div className="flex justify-between">
-                <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
-                    Top Deals - Siêu Rẻ
-                </h2>
+        <div className="top-deal">
+            <div className='flex justify-between'>
+                <div className="flex ">
+                    
+                    <div className='p-2 bg-red-300 rounded-bl-full '></div>
+                    
+                    <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                        Top Deals - Siêu Rẻ
+                    </h2>
+                </div>
                 <a href="#" className="text-blue-500">Xem tất cả</a>
             </div>
-
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">
                     <SkeletonLoader type="card" count={5} width="100%" height="300px" />
