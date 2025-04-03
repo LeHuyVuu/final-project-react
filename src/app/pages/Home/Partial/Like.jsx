@@ -16,7 +16,7 @@ const itemTemplate = (item) => {
 
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1">
                 <div className="  justify-center items-center ">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
@@ -32,7 +32,7 @@ const itemTemplate = (item) => {
                                 {item.discount}
                             </span>
                         </div>
-                        <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                        <div className="text-xl font-bold text-[#ff424e] mb-2">{item.price}</div>
                         <div className="card flex justify-between">
                             <Rating value={item.rate} disabled cancel={false} />
                             <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>
@@ -74,7 +74,7 @@ export default function Like() {
                     rate: item.rating_average,
                     shipping: item.badges_new?.find(b => b.code === "delivery_info_badge")?.text || "Giao hàng tiêu chuẩn",
                     sold: item.quantity_sold?.value,
-               
+
                 }));
 
                 setItems(extractedItems);
@@ -91,11 +91,12 @@ export default function Like() {
     }, []);
 
     return (
-        <div className=" py-6">
-            <div className='flex justify-between'>
-                <div className='flex justify-between'>
-                <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
-                {title.title}</h2>
+        <div className=" ">
+            <div className='flex justify-between '>
+                <div className='flex '>
+                    <div className='p-2 bg-red-300 rounded-bl-full '></div>
+                    <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                        Bạn có thể thích</h2>
                 </div>
                 <a href="#" className=" text-blue-500">
                     Xem tất cả

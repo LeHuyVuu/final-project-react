@@ -15,7 +15,7 @@ import FormattedSold from '../FormattedSold.jsx';
 const itemTemplate = (item) => {
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1 ">
                 <div className="  justify-center items-center ">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}
@@ -26,7 +26,7 @@ const itemTemplate = (item) => {
                             {item.brand_name}</div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
-                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-sm text-white' : 'bg-transparent'}`}>
+                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
                                 {item.discount}
                             </span>
                         </div>
@@ -36,8 +36,7 @@ const itemTemplate = (item) => {
                             <Rating value={item.rate} disabled cancel={false} />
                             <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>
                         </div>
-                        {/* <div className="w-full h-px bg-gray-300 my-2"></div>
-                <div className="text-sm text-green-500">{item.shipping}</div> */}
+                        
                     </div>
                 </div>
 
@@ -93,10 +92,14 @@ export default function Import() {
 
     return (
         <div className="   ">
-            <div className='flex justify-between'>
-            <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
-            {title.title}</h2>
+            <div className='flex justify-between '>
+                <div className='flex '>
+                    <div className='p-2 bg-red-300 rounded-bl-full '></div>
+                    <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                        Hàng Ngoại Giá Hot</h2>
+                </div>
                 <Link to='/' className="text-blue-500">{title.more_link_text}</Link>
+
             </div>
             <div>
                 {loading ? (
