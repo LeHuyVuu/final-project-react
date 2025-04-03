@@ -8,12 +8,14 @@ import 'primeicons/primeicons.css';
 import { getData } from '../../../context/api';
 import { Link } from 'react-router-dom';
 import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
+import FormattedSold from '../FormattedSold.jsx';
+import { Rating } from 'primereact/rating';
 
 
 const itemTemplate = (item) => {
 
     return (
-          <Link to={`/detail/${item.id}`} >
+        <Link to={`/detail/${item.id}`} >
             <div className="flex flex-col  justify-center item-center rounded-lg shadow-lg p-3 m-1  ">
                 <div className="  justify-center items-center ">
                     <div className="relative">
@@ -21,16 +23,20 @@ const itemTemplate = (item) => {
                         <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg mb-4" /> {/* Main image */}
                     </div>
                     <div className="text-left">
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                            {item.title}
+                        <h4 className=" max-w-60 min-h-12  line-clamp-2 overflow-hidden text-ellipsis mb-2">
+                            {item.brand_name}
                         </h4>
-                        <div className='text-sm max-w-60 text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis'>
-                            <b>{item.brand_name}</b></div>
                         <div className='min-h-[25px]'>
-                            <span className="text-sm text-gray-500 line-through mb-2">{item.oldPrice}</span>
-                            <span className="text-sm text-orange-600 mb-2">{item.discount}</span>
+                            <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
+                            <span className={`ml-3 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
+                                {item.discount}
+                            </span>
                         </div>
                         <div className="text-xl font-bold text-red-600 mb-2">{item.price}</div>
+                        <div className="card flex justify-between">
+                            <Rating value={item.rate} disabled cancel={false} />
+                            <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={item.sold} /></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,6 +73,8 @@ export default function Like() {
                     discount: item.discount ? `-${item.discount_rate}%` : "",
                     rate: item.rating_average,
                     shipping: item.badges_new?.find(b => b.code === "delivery_info_badge")?.text || "Giao hàng tiêu chuẩn",
+                    sold: item.quantity_sold?.value,
+               
                 }));
 
                 setItems(extractedItems);
@@ -86,7 +94,8 @@ export default function Like() {
         <div className=" py-6">
             <div className='flex justify-between'>
                 <div className='flex justify-between'>
-                    <h2 className="text-2xl font-bold text-center mb-4">{title.title}</h2>
+                <h2 className="text-2xl bg-red-300 p-3 font-bold text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
+                {title.title}</h2>
                 </div>
                 <a href="#" className=" text-blue-500">
                     Xem tất cả
