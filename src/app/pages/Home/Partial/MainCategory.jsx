@@ -19,19 +19,21 @@ export default function CategoryCarousel() {
     const b = (index * 100 + 170) % 256;  // Tăng giá trị của b để thay đổi tông màu xanh dương
     return `rgba(${r}, ${g}, ${b}, 0.15)`;  // Sử dụng độ trong suốt 0.2 cho nền mờ
   };
-  
+
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
         const res = await getData("https://api.tiki.vn/raiden/v2/menu-config");
         const data = res.data.menu_block.items.map((item, index) => ({
-          id: item.link.split("/").pop(),  // Lấy mã ID ở cuối của link để làm id cho từng danh mục
+          id: item.link.split("/").pop().slice(1),
           image: item.icon_url,
           title: item.text,
-          backgroundColor: generatePastelColor(index),  // Tạo màu pastel cho mỗi phần tử
+          backgroundColor: generatePastelColor(index), 
+          urlKey: item.link.split("/")[3] // Tạo màu pastel cho mỗi phần tử
         }));
         setCategories(data);
+        console.log({ data });
       } catch (err) {
         console.error("Lỗi khi tải dữ liệu danh mục:", err);
       } finally {
@@ -58,10 +60,10 @@ export default function CategoryCarousel() {
       >
         {categories.map((item) => (
           <SwiperSlide key={item.id} className="border-gray-300 flex rounded-lg flex-col items-center justify-center" style={{ backgroundColor: item.backgroundColor }}>
-            <Link to={`/category/${item.id}`} className="flex flex-col items-center justify-center">
+            <Link to={`/category/${item.id}?urlKey=${item.urlKey}`} className="flex flex-col items-center justify-center">
               <div
                 className="w-20 h-20 flex items-center justify-center mb-2"
-                 // Áp dụng màu nền pastel
+              // Áp dụng màu nền pastel
               >
                 <img src={item.image} alt={item.title} className="object-contain" />
               </div>
