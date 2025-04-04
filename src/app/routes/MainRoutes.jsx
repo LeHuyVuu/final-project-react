@@ -17,6 +17,7 @@ import Cart from "../pages/Cart/Cart.jsx";
 import Payment from "../pages/Payment/Payment.jsx";
 import Menu from "../pages/MenuHeader/Menu.jsx";
 import CategorySideBar from "../pages/CategorySideBar/CategorySideBar.jsx";
+import CheckoutSuccess from "../pages/Success/CheckoutSuccess.jsx";
 
 const MainRoutes = () => {
   return (
@@ -42,7 +43,7 @@ const MainRoutes = () => {
           <Route path='dice' element={<Dice />} />
           <Route path='menu' element={<Menu />} />
           <Route path='categorysidesar' element={<CategorySideBar />} />
-
+          <Route path='/checkout/success' element={<CheckoutSuccess />} />
         </Route>
       </Routes>
     </BrowserRouter>

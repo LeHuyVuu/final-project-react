@@ -9,8 +9,10 @@ import { Checkbox } from "primereact/checkbox";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { sCountItem } from "../../context/store";
+import UserInfo from "../../components/LocationUser/UserInfo";
+import Like from "../Home/Partial/Like";
 
 
 const Cart = () => {
@@ -260,22 +262,22 @@ const Cart = () => {
                                 {Object.keys(groupedBySeller).map((seller) => (
                                     <div key={seller} className="bg-white mb-6 ">
                                         <div className="flex  items-center gap-2 mb-4">
-                                        <div className=" mr-2">
+                                            <div className=" mr-2">
                                                 <Checkbox
                                                     checked={selectAllBySeller[seller] || false}
                                                     onChange={() => handleSelectAllBySeller(seller)}
                                                     inputId={`selectAll-${seller}`}
                                                 /> {/* Chọn tất cả trong cửa hàng */}
-                                             
+
                                             </div>
                                             <div className="text-2xl">
                                                 <i className="pi pi-shopping-bag mr-1"></i>
                                                 <span>  {seller}</span>
                                             </div>
 
-                                            
+
                                         </div>
-                                     
+
                                         {groupedBySeller[seller].map((item) => (
                                             <div key={item.id} className="grid  grid-cols-12 items-center border-b py-4">
                                                 <div className="col-span-4 flex">
@@ -285,7 +287,7 @@ const Cart = () => {
                                                     /> {/* Chọn sản phẩm */}
                                                     <img src={item.thumbnail_url} alt="Product" className="w-20 h-20 object-cover rounded mr-4 ml-2" />
                                                     <div>
-                                                    <h5 className="text-md text-[#1a1a2e] mb-1 min-h-12  line-clamp-2 overflow-hidden text-ellipsis">{item.name}</h5>
+                                                        <h5 className="text-md text-[#1a1a2e] mb-1 min-h-12  line-clamp-2 overflow-hidden text-ellipsis">{item.name}</h5>
 
                                                     </div>
                                                 </div>
@@ -326,8 +328,11 @@ const Cart = () => {
                             </div>
                         </div>
 
+
                         {/* Order Summary */}
                         <div className="w-full mt-20 lg:w-1/3 self-auto">
+                            <UserInfo />
+
                             <Card className="shadow-xl rounded-2xl bg-white p-6">
                                 <h3 className="text-2xl font-bold mb-6 text-[#1a1a2e]">Order Summary</h3>
                                 <div className="flex justify-between mb-3 text-base">
@@ -348,6 +353,10 @@ const Cart = () => {
                                 </button>
                             </Card>
                         </div>
+                    </div>
+                    <div className="mt-10">
+                        <Like />
+
                     </div>
                 </div>
             </main>
