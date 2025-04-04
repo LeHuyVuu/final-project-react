@@ -6,7 +6,6 @@ import { Divider } from "primereact/divider";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox } from "primereact/checkbox";
-import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 import { Link, useNavigate } from "react-router-dom";
