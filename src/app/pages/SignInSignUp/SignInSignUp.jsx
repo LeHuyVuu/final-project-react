@@ -5,6 +5,7 @@ import './SignInSignUp.css';
 import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 import SignUpImage from './LeftImage.png';
 import SignInImage from './RightImage.png';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SignInSignUp() {
 
@@ -284,13 +285,45 @@ export default function SignInSignUp() {
                         </div>
                         <GoogleLogin
                             onSuccess={(response) => {
-                                console.log('Google Login Success:', response);
+                                const decoded = jwtDecode(response.credential);
+                                console.log('Decoded Google Token:', decoded);
+                                // Tạo biến cho các trường trong response
+                                const aud = decoded.aud; // Client ID
+                                const azp = decoded.azp; // Authorized party
+                                const email = decoded.email; // Email người dùng
+                                const email_verified = decoded.email_verified; // Kiểm tra xem email có được xác minh không
+                                const exp = decoded.exp; // Thời gian hết hạn token
+                                const family_name = decoded.family_name; // Họ của người dùng
+                                const given_name = decoded.given_name; // Tên của người dùng
+                                const hd = decoded.hd; // Tên miền của email người dùng (nếu có)
+                                const iat = decoded.iat; // Thời gian tạo token
+                                const iss = decoded.iss; // Issuer (nguồn phát hành token)
+                                const jti = decoded.jti; // Unique token identifier
+                                const name = decoded.name; // Tên đầy đủ của người dùng
+                                const nbf = decoded.nbf; // Thời gian token bắt đầu có hiệu lực
+                                const picture = decoded.picture; // URL ảnh đại diện của người dùng
+                                const sub = decoded.sub; // ID duy nhất của người dùng (được sử dụng cho việc xác thực)
+
+                                // In ra các trường dữ liệu từ decoded token
+                                console.log('aud (Client ID):', aud);
+                                console.log('azp (Authorized Party):', azp);
+                                console.log('Email:', email);
+                                console.log('Email Verified:', email_verified);
+                                console.log('Token Expiration Time:', exp);
+                                console.log('Family Name:', family_name);
+                                console.log('Given Name:', given_name);
+                                console.log('hd (Domain):', hd);
+                                console.log('Issued At (iat):', iat);
+                                console.log('Issuer (iss):', iss);
+                                console.log('JWT ID (jti):', jti);
+                                console.log('Full Name:', name);
+                                console.log('Not Before Time (nbf):', nbf);
+                                console.log('Profile Picture URL:', picture);
+                                console.log('User ID (sub):', sub);
                             }}
                             onError={(error) => {
                                 console.error('Google Login Error:', error);
                             }}
-                            useOneTap
-                            clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
                         />
 
                         <button className=' mt-10 text-left' onClick={moveImage}>Chưa có tài khoản?<span className='text-blue-500 mx-2'>Đăng kí</span></button>
