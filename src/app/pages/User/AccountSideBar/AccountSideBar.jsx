@@ -13,8 +13,9 @@ export default function AccountSideBar() {
         { name: 'Quản lý đơn hàng', icon: 'fa-solid fa-box', link: 'order' },
         { name: 'Hỗ trợ khách hàng', icon: 'fa-solid fa-headset', link: 'help-center' },
         { name: 'Thông báo của tôi', icon: 'fa-solid fa-bell', link: 'notification' },
-        { name: 'Sổ địa chỉ', icon: 'fa-solid fa-map', link: 'aaaaaaaaaaaaaaaaaaa' },
-        { name: 'Thông tin thanh toán', icon: 'fa-solid fa-dollar', link: 'aaaaaaaaaaaaaaaaaaa' },
+        { name: 'Sổ địa chỉ', icon: 'fa-solid fa-map', link: 'address' },
+        { name: 'Quản lý xu', icon: 'fa-solid fa-coins', link: 'coins' },
+        { name: 'Mã giảm giá', icon: 'fa-solid fa-ticket', link: 'voucher' },
         { name: 'Xúc xắc may mắn', icon: 'fa-solid fa-dice', link: '/dice' },
     ];
 
@@ -34,7 +35,7 @@ export default function AccountSideBar() {
             </div>
             {ListOption.map((option, index) => (
                 <Link to={`${option.link}`} key={index} onClick={() => setOption(option.link)}>
-                    <div className='option' style={{ backgroundColor: Option == option.link && '#ddd' }}>
+                    <div className='option' style={{ backgroundColor: Option == option.link && '#cfcfcf' }}>
                         <i className={option.icon}></i>
                         <div className='option-name'>{option.name}</div>
                     </div>
