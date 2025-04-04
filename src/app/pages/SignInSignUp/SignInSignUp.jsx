@@ -365,12 +365,12 @@ export default function SignInSignUp() {
                         <div className='accept-box mt-5 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
                             <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision text-blue-500' target='_blank'> Điều Khoản</a>
 
-                            {/* <div className='form-check'>
+                            <div className='form-check '>
                                 <label>
-                                    <input type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
-                                    Đồng ý điều khoản
+                                    <input className='' type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
+                                   <span> Đồng ý điều khoản</span>
                                 </label>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
 
