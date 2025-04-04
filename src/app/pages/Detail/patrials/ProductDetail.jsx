@@ -65,7 +65,7 @@ const ProductDetail = () => {
 
   const breadcrumbHome = { icon: "pi pi-home", url: "#" };
   const lastItem = { label: productRes.name };
-
+// console.log("productRes", productRes)
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);

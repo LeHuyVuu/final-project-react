@@ -30,7 +30,7 @@ const MainRoutes = () => {
           <Route path="category" element={<Category />} />
           <Route path='/checkout' element={<Payment/>}/>
           <Route path="*" element={<PageNotFound />} />
-          <Route path="category/:cid" element={<Category />} />
+          <Route path="category/:categoryId" element={<Category />} />
           <Route path='login' element={<SignInSignUp />} />
 
           <Route path='account' element={<Account />} >
