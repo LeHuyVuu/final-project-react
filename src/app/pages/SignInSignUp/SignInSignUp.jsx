@@ -198,11 +198,6 @@ export default function SignInSignUp() {
         localStorage.setItem(`address${SignUpPhoneNumber}`, signupData.address);
 
         setSuccessSignUp('Đăng kí thành công!');
-
-        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-        await sleep(1000);
-
-        moveImageBack();
     };
 
     const handleSubmitSignIn = (e) => {
@@ -282,19 +277,11 @@ export default function SignInSignUp() {
                                 {/* <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>Xóa</button> */}
                             </div>
                         </form>
-
                         <div class="flex items-center">
                             <hr class="flex-grow  border-gray-400" />
                             <span class="mx-2 text-gray-600">Hoặc</span>
                             <hr class="flex-grow  border-gray-400" />
                         </div>
-
-
-                        <button className='btn btn-switch' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
-
-                        <hr />
-
-                        <h2>Hình thức đăng nhập khác</h2>
                         <GoogleLogin
                             onSuccess={(response) => {
                                 console.log('Google Login Success:', response);
@@ -385,9 +372,6 @@ export default function SignInSignUp() {
                                 </label>
                             </div>
                         </div>
-
-                        <button className='btn btn-switch' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
-
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>
