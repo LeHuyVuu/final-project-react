@@ -2,22 +2,22 @@
 /*css nút next,prev của swiper------------------------------------------- */
 .swiper-button-next,
 .swiper-button-prev {
-  width: 30px;  /* Điều chỉnh kích thước */
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền */
-  border-radius: 50%;  /* Làm tròn */
-  color: white; /* Màu icon */
-  font-size: 20px; /* Kích thước icon */
+  width: 30px  !important;  
+  height: 30px  !important;
+  background-color: rgba(0, 0, 0, 0.5)  !important;
+  border-radius: 50%  !important;  
+  color: white  !important; 
+  font-size: 20px  !important; 
 }
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-size: 16px;  /* Điều chỉnh icon mũi tên */
+  font-size: 16px  !important;  
 }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  background-color: rgba(0, 0, 0, 0.8); /* Màu khi hover */
+  background-color: rgba(0, 0, 0, 0.8)  !important; 
 }
 /*css cho rating------------------------------------------------ */
 .p-rating .p-rating-item .p-rating-icon.p-icon{

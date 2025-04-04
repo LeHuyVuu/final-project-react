@@ -1,0 +1,29 @@
+/* Tùy chỉnh checkbox */
+.p-checkbox-box {
+    border-radius: 8px; /* Bo góc cho hộp checkbox */
+    border: 2px solid #ccc; /* Đặt màu viền */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển tiếp */
+  }
+  
+  .p-checkbox-box:checked {
+    background-color: #1a1a2e; /* Màu nền khi được chọn */
+    border-color: #1a1a2e; /* Màu viền khi được chọn */
+  }
+  
+  .p-checkbox-box:hover {
+    border-color: #1a1a2e; /* Màu viền khi hover */
+  }
+  
+  
+  
+  .p-checkbox-label {
+    font-size: 16px; /* Cỡ chữ của nhãn */
+    color: #333; /* Màu chữ của nhãn */
+    font-weight: 600; /* Đậm chữ */
+    margin-left: 8px; /* Cách nhãn với checkbox */
+  }
+  
+  .p-checkbox-label:hover {
+    color: #1a1a2e; /* Đổi màu nhãn khi hover */
+  }
+  
