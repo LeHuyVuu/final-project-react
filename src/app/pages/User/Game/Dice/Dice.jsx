@@ -128,11 +128,11 @@ export default function Dice() {
         <div style={{ backgroundColor: '#0055aa' }}>
             <div className='dice-container'>
 
+                <i className='fa-solid fa-coins coins-show'></i>
                 <div className={PointClass}>
                     <div>{PointText}</div>
-                    <i className='fa-solid fa-coins'></i>
+                    {/* <i className='fa-solid fa-coins'></i> */}
                 </div>
-                <i className='fa-solid fa-coins btn-show'></i>
 
                 <div className='heading'>
                     <h1>XÚC XẮC MAY MẮN</h1>
