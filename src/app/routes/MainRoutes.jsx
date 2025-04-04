@@ -5,16 +5,20 @@ import Category from "../pages/Category/Category";
 import ProductDetail from "../pages/Detail/patrials/ProductDetail";
 import Home from "../pages/Home/Home";
 
+import Cart from "../pages/Cart/Cart.jsx";
+import Payment from "../pages/Payment/Payment.jsx";
+
 import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx';
 
 import Account from '../pages/User/Account.jsx';
 import AccountInformation from '../pages/User/AccountInformation/AccountInformation.jsx';
-import Dice from '../pages/User/Game/Dice/Dice.jsx';
+import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
 import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx';
 import Notification from '../pages/User/Notification/Notification.jsx';
-import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
-import Cart from "../pages/Cart/Cart.jsx";
-import Payment from "../pages/Payment/Payment.jsx";
+import Address from '../pages/User/Address/Address.jsx';
+
+import Dice from '../pages/User/Game/Dice/Dice.jsx';
+
 import Menu from "../pages/MenuHeader/Menu.jsx";
 import CategorySideBar from "../pages/CategorySideBar/CategorySideBar.jsx";
 
@@ -38,6 +42,7 @@ const MainRoutes = () => {
             <Route path='order' element={<OrderManagement />} />
             <Route path='help-center' element={<HelpCenter />} />
             <Route path='notification' element={<Notification />} />
+            <Route path='address' element={<Address />} />
           </Route>
           <Route path='dice' element={<Dice />} />
           <Route path='menu' element={<Menu />} />

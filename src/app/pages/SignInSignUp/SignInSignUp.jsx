@@ -198,6 +198,11 @@ export default function SignInSignUp() {
         localStorage.setItem(`address${SignUpPhoneNumber}`, signupData.address);
 
         setSuccessSignUp('Đăng kí thành công!');
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(1000);
+
+        moveImageBack();
     };
 
     const handleSubmitSignIn = (e) => {
@@ -278,7 +283,7 @@ export default function SignInSignUp() {
                             </div>
                         </form>
 
-                        <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
+                        <button className='btn btn-switch' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
 
                         <hr />
 
@@ -368,7 +373,7 @@ export default function SignInSignUp() {
                             </div>
                         </form>
 
-                        <button className='btn' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
+                        <button className='btn btn-switch' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>
