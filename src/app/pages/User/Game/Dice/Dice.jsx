@@ -37,13 +37,20 @@ export default function Dice() {
         [4, 5, 3, 2,],
     ]];
 
+    const [ActiveButton, setActiveButton] = useState(true);
     const [Number, setNumber] = useState(null);
     const [Point, setPoint] = useState(0);
     useEffect(() => {
         setPoint(0);
 
-        if (!Number) return;
-        if (LastGamePlay === 0) return;
+        if (!Number) {
+            setActiveButton(true);
+            return;
+        }
+        if (LastGamePlay === 0) {
+            setActiveButton(true);
+            return;
+        }
 
         setLastGamePlay(p => p - NumberOfDice)
         localStorage.setItem(`gameplay${LoginUser}`, LastGamePlay - NumberOfDice);
@@ -57,6 +64,8 @@ export default function Dice() {
             const LastPoint = localStorage.getItem(`point${LoginUser}`);
             localStorage.setItem(`point${LoginUser}`, parseInt(LastPoint) + newPoint);
             setPoint(newPoint);
+
+            showButton(newPoint);
         }, 5000);
 
         return () => clearTimeout(timer);
@@ -65,8 +74,11 @@ export default function Dice() {
 
 
     const rollDice = async () => {
-
-        if (NumberOfDice > LastGamePlay) return;
+        setActiveButton(false);
+        if (NumberOfDice > LastGamePlay) {
+            setActiveButton(true);
+            return;
+        }
 
         const dices = document.getElementsByClassName('dice');
         let Value = [];
@@ -79,7 +91,6 @@ export default function Dice() {
         await sleep(10);
 
         Array.from(dices).forEach(dice => {
-
             let RandomNumberX = Math.floor((Math.random() * 60)) * (Math.random() < 0.5 ? 1 : -1);
             let RandomAngleX = RandomNumberX * 90;
             let RandomNumberY = Math.floor((Math.random() * 60)) * (Math.random() < 0.5 ? 1 : -1);
@@ -96,13 +107,33 @@ export default function Dice() {
             setNumber(Value);
             dice.style.transform = `rotateX(${RandomAngleX}deg) rotateY(${RandomAngleY}deg) rotateZ(${RandomAngleZ}deg)`;
         });
-
-        // setVALUE();
     };
+
+    const [PointText, setPointText] = useState(localStorage.getItem(`point${LoginUser}`));
+    const [PointClass, setPointClass] = useState('prev-point');
+    const showButton = (newPoint) => {
+        setPointClass('prev-point show-point');
+
+        setTimeout(() => {
+            setPointText(parseInt(PointText) + newPoint);
+        }, 1200);
+
+        setTimeout(() => {
+            setPointClass('prev-point hide-point');
+            setActiveButton(p => true);
+        }, 2000);
+    }
 
     return (
         <div style={{ backgroundColor: '#0055aa' }}>
             <div className='dice-container'>
+
+                <div className={PointClass}>
+                    <div>{PointText}</div>
+                    <i className='fa-solid fa-coins'></i>
+                </div>
+                <i className='fa-solid fa-coins btn-show'></i>
+
                 <div className='heading'>
                     <h1>XÚC XẮC MAY MẮN</h1>
 
@@ -171,11 +202,19 @@ export default function Dice() {
 
                 <p className='available-dice'>Bạn đang có {LastGamePlay} xúc xắc</p>
 
-                <div className='btn-box'>
-                    <button className='btn btn-up-down' onClick={() => NumberOfDice < 3 && setNumberOfDice(p => p + 1)}><i className='fa-solid fa-plus'></i></button>
-                    <button className='btn btn-up-down' onClick={() => NumberOfDice > 1 && setNumberOfDice(p => p - 1)}><i className='fa-solid fa-minus'></i></button>
-                    <button className='btn' onClick={() => { rollDice() }}>CHƠI</button>
-                </div>
+                {ActiveButton ?
+                    <div className='btn-box'>
+                        <button className='btn btn-up-down' onClick={() => NumberOfDice < 3 && setNumberOfDice(p => p + 1)}><i className='fa-solid fa-plus'></i></button>
+                        <button className='btn btn-up-down' onClick={() => NumberOfDice > 1 && setNumberOfDice(p => p - 1)}><i className='fa-solid fa-minus'></i></button>
+                        <button className='btn' onClick={() => { rollDice() }}>CHƠI</button>
+                    </div>
+                    :
+                    <div className='btn-box'>
+                        <button className='btn btn-up-down'><i className='fa-solid fa-plus'></i></button>
+                        <button className='btn btn-up-down'><i className='fa-solid fa-minus'></i></button>
+                        <button className='btn'>CHƠI</button>
+                    </div>
+                }
             </div>
         </div>
     )
