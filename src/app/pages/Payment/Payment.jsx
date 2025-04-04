@@ -17,6 +17,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Like from "../Home/Partial/Like";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { sCountItem } from "../../context/store";
+import UserInfo from "../../components/LocationUser/UserInfo";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -118,6 +120,9 @@ const Payment = () => {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         cartItems = cartItems.filter((cartItem) => cartItem.id !== item.id);  // Loại bỏ sản phẩm đã thanh toán
         localStorage.setItem('cartItems', JSON.stringify(cartItems));  // Cập nhật lại cartItems trong localStorage
+        sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length);
+        // Chuyển hướng đến trang thanh toán thành công
+        navigate('/checkout/success', { state: { item } });
       });
     } else {
       console.error("Invalid product data");
@@ -340,14 +345,10 @@ const Payment = () => {
 
             {/* Order Summary */}
             <div className="w-full mt-20 lg:w-1/3 self-auto">
+              <UserInfo />
               <Card className="shadow-xl rounded-2xl bg-white p-6">
                 <h3 className="text-2xl font-bold mb-6 text-[#1a1a2e]">Order Summary</h3>
-                <div className="flex justify-between mb-3 text-base">
-                  <span>Subtotal:</span>
-                  <span className="font-semibold text-gray-800">
-                    {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(calculateTotal())}
-                  </span>
-                </div>
+
                 <Divider className="my-4" />
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total:</span>
@@ -358,6 +359,7 @@ const Payment = () => {
                 {/* Payment Buttons */}
                 <div className="mt-8 grid grid-cols-3 gap-4">
                   {/* VNPay */}
+
                   <Button onClick={checkOut} className="flex flex-col items-center justify-center rounded-xl p-4 shadow-lg bg-white hover:bg-[#e6e0f4] transition-all border border-[#c9bce9]">
                     <img
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"
@@ -396,7 +398,10 @@ const Payment = () => {
               </Card>
             </div>
           </div>
-        </div>
+          <div className="mt-10">
+            <Like />
+          </div>
+        </div>  
       </main>
     </div>
   );
