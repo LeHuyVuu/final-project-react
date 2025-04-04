@@ -8,7 +8,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox } from "primereact/checkbox";
 import "./Cart.css";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { sCountItem } from "../../context/store";
 import UserInfo from "../../components/LocationUser/UserInfo";
 import Like from "../Home/Partial/Like";

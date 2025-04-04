@@ -26,15 +26,15 @@
             h1 {
                 margin: 0 0 20px;
                 font-size: 32px;
-                font-weight: bold;
-                color: #0055aa;
+                font-weight: 600;
+                color: #3396ff;
             }
 
             h2 {
                 margin: 0 0 16px;
                 font-size: 20px;
-                font-weight: bold;
-                color: #0055aa;
+                
+                color: black;
             }
 
             hr {
@@ -102,7 +102,6 @@
                             user-select: none;
                             cursor: pointer;
                             color: #0055aa;
-                            font-weight: bold;
                             display: flex;
                             align-items: center;
 
@@ -130,7 +129,6 @@
 
                 .forget-link {
                     width: fit-content;
-                    font-weight: bold;
                     color: #3396ff;
                     display: flex;
                     justify-self: end;
@@ -170,7 +168,6 @@
             background-color: #0055aa;
             border-radius: 5px;
             outline: none;
-            font-weight: bold;
             transition: all 0.2s ease;
         }
 
@@ -184,10 +181,11 @@
             background-color: #007bff;
         }
 
-        .btn-reset {
-            flex: 1;
-            background-color: #a2cfff;
-        }
+            .btn-submit {
+                flex: 2;
+                background-color: #3396ff;
+            }
+
 
         .btn-switch {
             flex: 1;
