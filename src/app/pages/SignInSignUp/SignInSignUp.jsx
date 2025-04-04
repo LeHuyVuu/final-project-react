@@ -243,10 +243,10 @@ export default function SignInSignUp() {
             <div className='signinsignup-container'>
                 <div className='card-box'>
                     <div className='card-side card-appear' id='card-signin'>
-                        <h1>ĐĂNG NHẬP</h1>
+                        <h1>Đăng Nhập</h1>
                         <form className='form-box form-box1' onSubmit={handleSubmitSignIn}>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-phone'></i>
+                                {/* <i className='fa-solid fa-phone'></i> */}
                                 <input name='SignInPhoneNumber' className='input form-control' type='text' placeholder='Số điện thoại'
                                     style={{
                                         border: errorSignIn && (
@@ -256,7 +256,7 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
                                 <input name='SignInPassword' className='input form-control' type='password' placeholder='Mật khẩu đăng nhập'
                                     style={{
                                         border: errorSignIn && (
@@ -266,21 +266,20 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
 
-                            <a href='#' className='forget-link'>Forgot password?</a>
+                            <a href='#' className='forget-link'>Quên mật khẩu?</a>
 
                             {errorSignIn && (<div className='error-message'>{errorSignIn}</div>)}
 
                             <div className='btn-box'>
-                                <button type='submit' className='btn btn-submit' id='btn-signin'>ĐĂNG NHẬP</button>
-                                <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
+                                <button type='submit' className='btn btn-submit' id='btn-signin'>Đăng nhập</button>
+                                {/* <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>Xóa</button> */}
                             </div>
                         </form>
-
-                        <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
-
-                        <hr />
-
-                        <h2>Hình thức đăng nhập khác</h2>
+                        <div class="flex items-center">
+                            <hr class="flex-grow  border-gray-400" />
+                            <span class="mx-2 text-gray-600">Hoặc</span>
+                            <hr class="flex-grow  border-gray-400" />
+                        </div>
                         <GoogleLogin
                             onSuccess={(response) => {
                                 console.log('Google Login Success:', response);
@@ -291,13 +290,16 @@ export default function SignInSignUp() {
                             useOneTap
                             clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
                         />
+
+                        <button className=' mt-10 text-left' onClick={moveImage}>Chưa có tài khoản?<span className='text-blue-500 mx-2'>Đăng kí</span></button>
+
                     </div>
 
                     <div className='card-side card-disappear' id='card-signup'>
-                        <h1 className='title'>ĐĂNG KÍ</h1>
+                        <h1 className='title'>Đăng kí</h1>
                         <form className='form-box form-box2' onSubmit={handleSubmitSignUp}>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-phone'></i>
+                                {/* <i className='fa-solid fa-phone'></i> */}
                                 <input name='SignUpPhoneNumber' className='input form-control' type='text' placeholder='Số điện thoại'
                                     style={{
                                         border: errorSignUp && (
@@ -308,7 +310,7 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-user'></i>
+                                {/* <i className='fa-solid fa-user'></i> */}
                                 <input name='SignUpFullName' className='input form-control' type='text' placeholder='Họ tên'
                                     style={{
                                         border: errorSignUp && (
@@ -316,7 +318,7 @@ export default function SignInSignUp() {
                                         ) && '1px solid #dc3545',
                                     }} />
                             </div><div className='form-group form-input'>
-                                <i className='fa-solid fa-envelope'></i>
+                                {/* <i className='fa-solid fa-envelope'></i> */}
                                 <input name='SignUpEmail' className='input form-control' type='email' placeholder='Email đăng kí'
                                     style={{
                                         border: errorSignUp && (
@@ -325,7 +327,7 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
                                 <input name='SignUpPassword' className='input form-control' type='password' placeholder='Mật khẩu đăng kí'
                                     style={{
                                         border: errorSignUp && (
@@ -335,8 +337,8 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
-                                <i className='fa-solid fa-key double-icon'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
+                                {/* <i className='fa-solid fa-key double-icon'></i> */}
                                 <input name='SignUpConfirm' className='input form-control' type='password' placeholder='Xác nhận mật khẩu'
                                     style={{
                                         border: errorSignUp && (
@@ -346,27 +348,28 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
 
-                            <div className='accept-box'>
-                                <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision' target='_blank'><b>ĐIỀU KHOẢN</b></a>
 
-                                <div className='form-check'>
-                                    <label>
-                                        <input type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
-                                        Đồng ý điều khoản
-                                    </label>
-                                </div>
-                            </div>
 
                             {errorSignUp && (<div className='error-message'>{errorSignUp}</div>)}
                             {successSignUp && (<div className='success-message'>{successSignUp}</div>)}
 
                             <div className='btn-box'>
-                                <button type='submit' className='btn btn-submit' id='btn-signup'>ĐĂNG KÍ</button>
-                                <button type='reset' className='btn btn-reset' id='btn-reset-signup' onClick={resetInputsBox2}>XÓA</button>
+                                <button type='submit' className='btn btn-submit' id='btn-signup'>Đăng kí</button>
+                                {/* <button type='reset' className='btn btn-reset' id='btn-reset-signup' onClick={resetInputsBox2}>Xóa</button> */}
                             </div>
                         </form>
 
-                        <button className='btn' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
+                        <button className='mt-4 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
+                        <div className='accept-box mt-5 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
+                            <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision text-blue-500' target='_blank'> Điều Khoản</a>
+
+                            {/* <div className='form-check'>
+                                <label>
+                                    <input type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
+                                    Đồng ý điều khoản
+                                </label>
+                            </div> */}
+                        </div>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>
