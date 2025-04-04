@@ -7,21 +7,23 @@ import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox } from "primereact/checkbox";
 import { useNavigate } from "react-router-dom";
+import "./Cart.css";
 
 const Cart = () => {
     const navigate = useNavigate();
     const toast = useRef(null);
 
-    // Giả sử các sản phẩm trong giỏ hàng được lưu trong localStorage
     const [cartItems, setCartItems] = useState(() => {
         const storedItems = localStorage.getItem("cartItems");
         return storedItems ? JSON.parse(storedItems) : [];
     });
-
     const [selectAll, setSelectAll] = useState(true);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    // Tính tổng giá trị giỏ hàng
+    // Trạng thái để theo dõi việc chọn tất cả trong mỗi cửa hàng
+    const [selectAllBySeller, setSelectAllBySeller] = useState({});
+
+    // Tính tổng giá trị giỏ hàng (không phân biệt seller)
     const calculateTotal = () => {
         return selectedItems.reduce((total, item) => total + item.totalPrice, 0);
     };
@@ -93,41 +95,69 @@ const Cart = () => {
                 return [...prevSelectedItems, itemToAdd];  // Thêm sản phẩm vào danh sách đã chọn
             }
         });
-
-        
     };
 
-    console.log(selectedItems)
-    // Handle "select all" toggle
+    // Handle "select all" toggle for each seller
+    const handleSelectAllBySeller = (seller) => {
+        setSelectAllBySeller(prev => {
+            const newSelectAllBySeller = { ...prev };
+            newSelectAllBySeller[seller] = !newSelectAllBySeller[seller];
+
+            if (newSelectAllBySeller[seller]) {
+                // Chọn tất cả sản phẩm của seller
+                setSelectedItems(prevSelectedItems => [
+                    ...prevSelectedItems,
+                    ...cartItems.filter(item => item.current_seller === seller && !prevSelectedItems.some(selectedItem => selectedItem.id === item.id))
+                ]);
+            } else {
+                // Bỏ chọn tất cả sản phẩm của seller
+                setSelectedItems(prevSelectedItems => prevSelectedItems.filter(item => item.current_seller !== seller));
+            }
+
+            return newSelectAllBySeller;
+        });
+    };
+
+    // Handle "select all" toggle for entire cart
     const handleSelectAll = () => {
         if (selectAll) {
-            // Nếu tất cả sản phẩm đã được chọn, bỏ chọn tất cả
-            setSelectedItems([]);
+            setSelectedItems([]);  // Bỏ chọn tất cả
         } else {
-            // Nếu chưa chọn tất cả, chọn tất cả sản phẩm
-            setSelectedItems(cartItems);
+            setSelectedItems(cartItems);  // Chọn tất cả sản phẩm
         }
         setSelectAll(!selectAll);  // Đổi trạng thái selectAll
     };
+
+
 
     // Handle checkout and pass selected items
     const handleCheckout = () => {
         navigate("/checkout", { state: { productToBuy: selectedItems } });
     };
 
+    // Gom nhóm theo current_seller
+    const groupedBySeller = cartItems.reduce((acc, item) => {
+        const seller = item.current_seller;
+        if (!acc[seller]) {
+            acc[seller] = [];
+        }
+        acc[seller].push(item);
+        return acc;
+    }, {});
+
     return (
         <div className="font-[Montserrat] bg-gray-100 min-h-screen">
             <Toast ref={toast} />
             <ConfirmDialog />
 
-            <main className="py-10">
+            <main className="py-10 px-10">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items */}
                         <div className="w-full lg:w-2/3">
                             <div>
                                 <div className="flex justify-between items-center mb-10">
-                                    <div className="font-extrabold text-5xl text-gray-800 leading-tight mb-6">
+                                    <div className=" text-3xl text-gray-800 mb-6">
                                         Giỏ Hàng
                                     </div>
                                     <div className="flex items-center space-x-2">
@@ -147,18 +177,18 @@ const Cart = () => {
                                             inputId="selectAll"
                                             checked={selectAll}
                                             onChange={handleSelectAll}
-                                        />
+                                        /> {/* Chọn tất cả trong giỏ */}
                                         <label htmlFor="selectAll" className="text-gray-800 font-semibold text-xl ml-2">
                                             Tất cả sản phẩm ({cartItems.length})
                                         </label>
                                     </div>
-                                    <div className="col-span-2 text-center text-gray-500 text-sm font-semibold text-xl">
+                                    <div className="col-span-2 text-center text-gray-500 font-semibold text-xl">
                                         Đơn giá
                                     </div>
-                                    <div className="col-span-3 text-center text-gray-500 text-sm font-semibold text-xl ml-8">
+                                    <div className="col-span-3 text-center text-gray-500 font-semibold text-xl ml-8">
                                         Số lượng
                                     </div>
-                                    <div className="col-span-2 text-center text-gray-500 text-sm font-semibold text-xl">
+                                    <div className="col-span-2 text-center text-gray-500 font-semibold text-xl">
                                         Thành tiền
                                     </div>
                                     <div className="col-span-1 text-center ml-2">
@@ -174,53 +204,71 @@ const Cart = () => {
                                     </div>
                                 </div>
 
-                                {/* Loop through cart items and display each as a card */}
-                                {cartItems.map((item) => (
-                                    <div key={item.id} className="grid grid-cols-12 items-center border-b py-4">
-                                        <div className="col-span-4 flex items-center">
-                                            <Checkbox
-                                                checked={selectedItems.some(selectedItem => selectedItem.id === item.id)}
-                                                onChange={() => handleSelectItem(item.id)}
-                                            />
-                                            <img src={item.thumbnail_url} alt="Product" className="w-20 h-20 object-cover rounded mr-4 ml-2" />
-                                            <div>
-                                                <h5 className="text-lg font-semibold text-[#1a1a2e] mb-1">{item.name}</h5>
-                                                <div className="flex items-center text-sm text-gray-500 mb-1">
-                                                    <i className="pi pi-shopping-bag mr-1"></i>
-                                                    <span> {item.current_seller}</span>
+                                {/* Shop-wise Selection */}
+                                {Object.keys(groupedBySeller).map((seller) => (
+                                    <div key={seller} className="bg-white mb-6 ">
+                                        <div className="flex  items-center gap-2 mb-4">
+                                        <div className=" mr-2">
+                                                <Checkbox
+                                                    checked={selectAllBySeller[seller] || false}
+                                                    onChange={() => handleSelectAllBySeller(seller)}
+                                                    inputId={`selectAll-${seller}`}
+                                                /> {/* Chọn tất cả trong cửa hàng */}
+                                             
+                                            </div>
+                                            <div className="text-2xl">
+                                                <i className="pi pi-shopping-bag mr-1"></i>
+                                                <span>  {seller}</span>
+                                            </div>
+
+                                            
+                                        </div>
+                                     
+                                        {groupedBySeller[seller].map((item) => (
+                                            <div key={item.id} className="grid  grid-cols-12 items-center border-b py-4">
+                                                <div className="col-span-4 flex">
+                                                    <Checkbox
+                                                        checked={selectedItems.some(selectedItem => selectedItem.id === item.id)}
+                                                        onChange={() => handleSelectItem(item.id)}
+                                                    /> {/* Chọn sản phẩm */}
+                                                    <img src={item.thumbnail_url} alt="Product" className="w-20 h-20 object-cover rounded mr-4 ml-2" />
+                                                    <div>
+                                                    <h5 className="text-md text-[#1a1a2e] mb-1 min-h-12  line-clamp-2 overflow-hidden text-ellipsis">{item.name}</h5>
+
+                                                    </div>
+                                                </div>
+                                                <div className="col-span-2 text-center text-red font-medium">
+                                                    <p className="text-gray-500 m-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
+                                                </div>
+                                                <div className="col-span-3 flex justify-center">
+                                                    <InputNumber
+                                                        value={item.quantity}
+                                                        min={1}
+                                                        showButtons
+                                                        buttonLayout="horizontal"
+                                                        incrementButtonIcon="pi pi-plus"
+                                                        decrementButtonIcon="pi pi-minus"
+                                                        inputClassName="w-14 text-center text-sm px-2 py-1 rounded-md border border-gray-300"
+                                                        className="w-[120px]"
+                                                        onValueChange={(e) => handleQuantityChange(item.id, e.value)}
+                                                    />
+                                                </div>
+                                                <div className="col-span-2 text-center text-red font-medium">
+                                                    <p className="text-gray-500 m-0">
+                                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.totalPrice)}
+                                                    </p>
+                                                </div>
+                                                <div className="col-span-1 text-center">
+                                                    <Button
+                                                        icon="pi pi-trash"
+                                                        severity="contrast"
+                                                        size="small"
+                                                        className="ml-2"
+                                                        onClick={() => removeItem(item.id)}
+                                                    />
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="col-span-2 text-center text-red font-medium">
-                                            <p className="text-gray-500 m-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
-                                        </div>
-                                        <div className="col-span-3 flex justify-center">
-                                            <InputNumber
-                                                value={item.quantity}
-                                                min={1}
-                                                showButtons
-                                                buttonLayout="horizontal"
-                                                incrementButtonIcon="pi pi-plus"
-                                                decrementButtonIcon="pi pi-minus"
-                                                inputClassName="w-14 text-center text-sm px-2 py-1 rounded-md border border-gray-300"
-                                                className="w-[120px]"
-                                                onValueChange={(e) => handleQuantityChange(item.id, e.value)}
-                                            />
-                                        </div>
-                                        <div className="col-span-2 text-center text-red font-medium">
-                                            <p className="text-gray-500 m-0">
-                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.totalPrice)}
-                                            </p>
-                                        </div>
-                                        <div className="col-span-1 text-center">
-                                            <Button
-                                                icon="pi pi-trash"
-                                                severity="contrast"
-                                                size="small"
-                                                className="ml-2"
-                                                onClick={() => removeItem(item.id)}
-                                            />
-                                        </div>
+                                        ))}
                                     </div>
                                 ))}
                             </div>
