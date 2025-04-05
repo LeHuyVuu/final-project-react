@@ -1,41 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel } from 'primereact/carousel';
-import { Button } from 'primereact/button';
-
-const banners = [
-    {
-        id: 1,
-        image: 'https://i.pinimg.com/736x/19/5c/2e/195c2e1cb4ae14837237fe846b757b9a.jpg',
-        title: 'Thực phẩm bổ sung\nNăng lượng bền bỉ',
-        buttonText: 'Mua ngay',
-        link: '#',
-    },
-    {
-        id: 2,
-        image: 'https://i.pinimg.com/736x/19/5c/2e/195c2e1cb4ae14837237fe846b757b9a.jpg',
-        title: 'Sản phẩm thuần chay\nChuẩn xanh lành tính',
-        buttonText: 'Mua ngay',
-        link: '#',
-    },
-    {
-        id: 3,
-        image: 'https://i.pinimg.com/736x/19/5c/2e/195c2e1cb4ae14837237fe846b757b9a.jpg',
-        title: 'Sản phẩm thuần chay\nChuẩn xanh lành tính',
-        buttonText: 'Mua ngay',
-        link: '#',
-    },
-    {
-        id: 4,
-        image: 'https://i.pinimg.com/736x/19/5c/2e/195c2e1cb4ae14837237fe846b757b9a.jpg',
-        title: 'Sản phẩm thuần chay\Chuẩn xanh lành tính',
-        buttonText: 'Mua ngay',
-        link: '#',
-    }
-];
 import { getData } from '../../../context/api';
+import SkeletonLoader from '../../../components/SkeletonLoader/SkeletonLoader.jsx';
+
 
 export default function Banner() {
     const [banners, setBanners] = useState([]);
+    const [loading, setLoading] = useState(false);
 
 
     const bannerTemplate = (banner) => (
@@ -46,6 +17,8 @@ export default function Banner() {
 
     useEffect(() => {
         const fetchDataCarousel = async () => {
+            setLoading(true);
+            
             try {
                 // Fetching data from API, replace with your API endpoint
                 const res = await getData("https://tka.tiki.vn/widget/api/v1/banners-group?group=banner_carousel_2_8");
@@ -63,6 +36,8 @@ export default function Banner() {
                 setBanners(extractedBanners);
             } catch (error) {
                 console.error('Error fetching banners:', error);
+            }finally {
+                setLoading(false);
             }
         };
 
@@ -71,12 +46,18 @@ export default function Banner() {
 
     return (
         <div>
+            {loading ? (
+                 <div className="grid grid-cols-2 gap-4">
+                 <SkeletonLoader type="image" count={2} width="100%" height="350px" />
+             </div>
+            ) : (
             <Carousel value={banners}
                 itemTemplate={bannerTemplate}
                 numVisible={2}
                 numScroll={1}
                 circular
                 autoplayInterval={4000} />
+            )}
         </div>
     );
 }

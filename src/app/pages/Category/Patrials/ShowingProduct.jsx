@@ -17,98 +17,37 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
-function ShowingProduct() {
-  const [allProducts] = useState([
-    {
-      id: 1,
-      name: "CHÂN VÁY BẦU MÙA HÈ QBN1204",
-      brand: "OEM",
-      price: 277300,
-      originalPrice: 295000,
-      discount: 6,
-      variations: ["2 Kiểu dáng", "4 Size"],
-      delivery: "Giao thứ 6, 04/04",
-      promo: "Giảm 40K",
-      image:
-        "https://salt.tikicdn.com/cache/750x750/ts/product/41/ae/13/4ea1a3b588d6c276affbfb789785ab32.jpg",
-      freeShip: true,
-      materials: ["cotton"],
-      patterns: ["plain"],
-      colors: ["blue", "black"],
-      rating: 4.5,
-      fastDelivery: true,
-      reviews: 127,
-    },
-    {
-      id: 2,
-      name: "Đầm bầu sơ mi công sở dáng dài DR3122",
-      brand: "OEM",
-      price: 415000,
-      originalPrice: 437000,
-      discount: 5,
-      variations: ["4 Size"],
-      delivery: "Giao thứ 6, 04/04",
-      promo: "Giảm 40K",
-      image:
-        "https://salt.tikicdn.com/cache/750x750/ts/product/41/ae/13/4ea1a3b588d6c276affbfb789785ab32.jpg",
-      freeShip: true,
-      materials: ["wool"],
-      patterns: ["floral"],
-      colors: ["brown", "pink"],
-      rating: 3.5,
-      fastDelivery: false,
-      reviews: 56,
-    },
-    {
-      id: 3,
-      name: "Đầm bầu suông linen thiết kế kiểu dáng sơ mi, có túi chéo db61",
-      brand: "ARCTIC HUNTER",
-      price: 300800,
-      originalPrice: 320000,
-      discount: 6,
-      variations: ["4 Màu sắc", "4 Kích cỡ"],
-      delivery: "Giao thứ 6, 04/04",
-      image:
-        "https://salt.tikicdn.com/cache/750x750/ts/product/41/ae/13/4ea1a3b588d6c276affbfb789785ab32.jpg",
-      authentic: true,
-      materials: ["bat"],
-      patterns: ["plain"],
-      colors: ["brown", "black"],
-      rating: 5,
-      fastDelivery: true,
-      reviews: 203,
-    },
-    {
-      id: 4,
-      name: "Váy bầu dáng suông mặc hè chất liệu linen, Đầm bầu sơ mi nữ kèm đai eo B161",
-      brand: "ARCTIC HUNTER",
-      price: 234060,
-      originalPrice: 249000,
-      discount: 6,
-      variations: ["2 Màu", "4 Kích cỡ"],
-      delivery: "Giao thứ 6, 04/04",
-      image:
-        "https://salt.tikicdn.com/cache/750x750/ts/product/41/ae/13/4ea1a3b588d6c276affbfb789785ab32.jpg",
-      authentic: true,
-      materials: ["lace"],
-      patterns: ["floral"],
-      colors: ["pink", "blue"],
-      rating: 4,
-      fastDelivery: false,
-      reviews: 89,
-    },
-  ]);
-
+function ShowingProduct({ categoryId, categoryName, categoryUrlKey }) {
+  const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    perPage: 10,
+  });
+
+  // API Configuration
+  const API_BASE_URL = "https://tiki.vn/api/personalish/v1/blocks/listings";
+  const API_PARAMS = {
+    limit: 10,
+    sort: "top_seller",
+    page: 1,
+    urlKey: categoryUrlKey || "dam-dang-xoe",
+    category: categoryId || 27582,
+  };
+
   const [sortOptions] = useState([
-    { label: "Phổ biến", value: "popular" },
-    { label: "Bán chạy", value: "topDeal" },
-    { label: "Hàng mới", value: "newProduct" },
-    { label: "Giá thấp đến cao", value: "lowToHigh" },
-    { label: "Giá cao đến thấp", value: "highToLow" },
+    { label: "Phổ biến", value: "default" },
+    { label: "Bán chạy", value: "top_seller" },
+    { label: "Hàng mới", value: "newest" },
+    { label: "Giá thấp đến cao", value: "price,asc" },
+    { label: "Giá cao đến thấp", value: "price,desc" },
   ]);
 
-  const [sortKey, setSortKey] = useState("topDeal");
+  const [sortKey, setSortKey] = useState("top_seller");
   const [filters, setFilters] = useState({
     materials: [],
     patterns: [],
@@ -167,6 +106,95 @@ function ShowingProduct() {
     { name: "Vàng", key: "yellow", hex: "#facc15" },
     { name: "Tím", key: "purple", hex: "#a855f7" },
   ];
+
+  // Fetch data from Tiki API
+  const fetchProducts = async (page = 1, sort = sortKey) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const queryParams = new URLSearchParams({
+        ...API_PARAMS,
+        page: page.toString(),
+        sort: sort,
+      });
+
+      const response = await fetch(`${API_BASE_URL}?${queryParams}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      // Transform API data to match our component structure
+      const transformedProducts = data.data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        brand: item.brand_name,
+        price: item.price,
+        originalPrice: item.original_price,
+        discount: item.discount_rate,
+        variations:
+          item.badges_new
+            ?.find((badge) => badge.code === "variant_count")
+            ?.arr_text?.map((text) => text.value) || [],
+        delivery:
+          item.badges_new?.find((badge) => badge.code === "delivery_info_badge")
+            ?.text || "Giao hàng tiêu chuẩn",
+        promo:
+          item.discount > 0 ? `Giảm ${item.discount.toLocaleString()}đ` : null,
+        image: item.thumbnail_url,
+        freeShip:
+          item.visible_impression_info?.amplitude?.is_freeship_xtra || false,
+        materials: [], // API doesn't provide this
+        patterns: [], // API doesn't provide this
+        colors: item.option_color || [],
+        rating: item.rating_average,
+        fastDelivery:
+          item.badges_new?.some((badge) => badge.code === "tikinow") || false,
+        reviews: item.review_count,
+        authentic:
+          item.badges_new?.some((badge) => badge.code === "authentic_brand") ||
+          false,
+        quantitySold: item.quantity_sold?.value || 0,
+      }));
+
+      // Update pagination info
+      setPagination({
+        currentPage: data.paging.current_page,
+        totalPages: data.paging.last_page,
+        totalItems: data.paging.total,
+        perPage: data.paging.per_page,
+      });
+
+      setAllProducts(transformedProducts);
+      setProducts(transformedProducts);
+    } catch (err) {
+      setError("Không thể tải dữ liệu sản phẩm");
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch and when category changes
+  useEffect(() => {
+    if (categoryId) {
+      fetchProducts();
+    }
+  }, [categoryId]);
+
+  // Handle sort change
+  useEffect(() => {
+    if (categoryId) {
+      fetchProducts(1, sortKey);
+    }
+  }, [sortKey, categoryId]);
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    fetchProducts(page, sortKey);
+  };
 
   // Count total active filters
   useEffect(() => {
@@ -329,7 +357,7 @@ function ShowingProduct() {
               className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
             />
 
-            {/* Quick Actions Overlay - shows on hover */}
+            {/* Quick Actions Overlay */}
             <div
               className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-3 transition-opacity duration-300 ${
                 isHovered ? "opacity-100" : "opacity-0"
@@ -356,23 +384,20 @@ function ShowingProduct() {
             </div>
 
             {product.freeShip && (
-              <div className="absolute bottom-0 left-0    ">
-               <img src="https://salt.tikicdn.com/ts/upload/b2/8d/56/3086efc2194320a6b83fba7530de7c78.png" alt="" />
-              </div>
-            )}
-             {product.freeShip && product.freeShip && (
-              <div className="absolute bottom-0 right-0 px-3  ">
-               <img src="https://salt.tikicdn.com/ts/upload/f7/9e/83/ab28365ea395893fe5abac88b5103444.png" alt="" />
+              <div className="absolute bottom-0 left-0">
+                <img
+                  src="https://salt.tikicdn.com/ts/upload/b2/8d/56/3086efc2194320a6b83fba7530de7c78.png"
+                  alt=""
+                />
               </div>
             )}
 
             {product.authentic && (
               <div className="absolute bottom-0 right-0">
-                {/* <span className="flex items-center bg-blue-600 text-white text-xs font-bold p-1 rounded-sm shadow-sm">
-                  <span className="mr-0.5 text-white">✓</span>
-                  CHÍNH HÃNG
-                </span> */}
-                <img  src="https://salt.tikicdn.com/ts/upload/c2/bc/6d/ff18cc8968e2bbb43f7ac58efbfafdff.png" alt="" />
+                <img
+                  src="https://salt.tikicdn.com/ts/upload/c2/bc/6d/ff18cc8968e2bbb43f7ac58efbfafdff.png"
+                  alt=""
+                />
               </div>
             )}
           </div>
@@ -383,7 +408,7 @@ function ShowingProduct() {
                 <span className="text-red-500 font-bold text-base">
                   {formatCurrency(product.price)}
                 </span>
-                {product.discount > 0 && (
+                {product.originalPrice > product.price && (
                   <span className="ml-2 text-gray-400 text-xs line-through">
                     {formatCurrency(product.originalPrice)}
                   </span>
@@ -421,7 +446,7 @@ function ShowingProduct() {
                 ))}
             </div>
 
-            {product.promo ? (
+            {product.promo && (
               <div className="flex items-center text-xs text-blue-600 mb-1">
                 <FontAwesomeIcon
                   icon={faTag}
@@ -430,8 +455,6 @@ function ShowingProduct() {
                 />
                 {product.promo}
               </div>
-            ) : (
-              <div className="mb-1 h-4"></div>
             )}
 
             <div className="flex justify-between items-center mt-auto">
@@ -454,7 +477,7 @@ function ShowingProduct() {
       {/* Header with applied filters counter */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-medium text-gray-800">
-          Tất cả sản phẩm
+          {categoryName || "Tất cả sản phẩm"}
           {filtersApplied > 0 && (
             <Badge
               value={filtersApplied}
@@ -473,6 +496,16 @@ function ShowingProduct() {
           />
         )}
       </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && <div className="text-center py-8 text-red-500">{error}</div>}
 
       {/* Main Categories */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
@@ -507,7 +540,6 @@ function ShowingProduct() {
           <div>
             <p className="text-gray-500 text-sm mb-2.5 font-medium">Họa tiết</p>
             <div className="flex flex-wrap gap-2">
-            
               {patterns.map((pattern) => (
                 <div
                   key={pattern.key}
@@ -533,12 +565,10 @@ function ShowingProduct() {
           <div>
             <p className="text-gray-500 text-sm mb-2.5 font-medium">Màu sắc</p>
             <div className="flex flex-wrap gap-2">
-              
               {filters.colors.length > 0 &&
                 colors
                   .filter((color) => filters.colors.includes(color.key))
                   .map((color) => (
-                    
                     <div
                       key={color.key}
                       className="px-3 py-1.5 rounded-full border text-xs cursor-pointer bg-blue-50 border-blue-400 text-blue-600 shadow-sm flex items-center group"
@@ -624,10 +654,14 @@ function ShowingProduct() {
                 htmlFor="nowShipping"
                 className="text-xs flex items-center"
               >
-                {/* <span className="text-red-500 font-bold mr-1">NOW</span>
-                Giao siêu tốc 2H */}
-                <img src="https://salt.tikicdn.com/ts/tka/a8/31/b6/802e2c99dcce64c67aa2648edb15dd25.png" alt="Giao siêu tốc 2H" className=" h-[25px]"  />
-                <span className="text-red-500 font-bold mx-1 cursor-pointer ">Giao siêu tốc 2H</span>
+                <img
+                  src="https://salt.tikicdn.com/ts/tka/a8/31/b6/802e2c99dcce64c67aa2648edb15dd25.png"
+                  alt="Giao siêu tốc 2H"
+                  className=" h-[25px]"
+                />
+                <span className="text-red-500 font-bold mx-1 cursor-pointer ">
+                  Giao siêu tốc 2H
+                </span>
               </label>
             </div>
             <div className="flex items-center">
@@ -637,16 +671,17 @@ function ShowingProduct() {
                 checked={checkboxFilters.topDeal}
                 onChange={(e) => handleCheckboxChange(e, "topDeal")}
               />
-              <label
-                htmlFor="topDeal"
-                className="text-xs flex items-center"
-              >
-              
-                <img src="https://salt.tikicdn.com/ts/upload/b5/aa/48/2305c5e08e536cfb840043df12818146.png" alt="Giao siêu tốc 2H" className=" h-[25px]"  />
-                <span className="text-red-500 font-bold mx-1 cursor-pointer ">Siêu rẻ</span>
+              <label htmlFor="topDeal" className="text-xs flex items-center">
+                <img
+                  src="https://salt.tikicdn.com/ts/upload/b5/aa/48/2305c5e08e536cfb840043df12818146.png"
+                  alt="Giao siêu tốc 2H"
+                  className=" h-[25px]"
+                />
+                <span className="text-red-500 font-bold mx-1 cursor-pointer ">
+                  Siêu rẻ
+                </span>
               </label>
             </div>
-
 
             <div className="flex items-center">
               <Checkbox
@@ -656,8 +691,11 @@ function ShowingProduct() {
                 onChange={(e) => handleCheckboxChange(e, "freeShip")}
               />
               <label htmlFor="freeShip" className="text-xs text-gray-700">
-                {/* <span className="text-blue-500 font-bold">FREESHIP</span> XTRA */}
-                <img src="https://salt.tikicdn.com/ts/upload/2f/20/77/0f96cfafdf7855d5e7fe076dd4f34ce0.png" alt="" className=" h-[25px]"/>
+                <img
+                  src="https://salt.tikicdn.com/ts/upload/2f/20/77/0f96cfafdf7855d5e7fe076dd4f34ce0.png"
+                  alt=""
+                  className=" h-[25px]"
+                />
               </label>
             </div>
 
@@ -704,7 +742,7 @@ function ShowingProduct() {
 
       {/* Products Results Summary */}
       <div className="text-sm text-gray-600 mb-3">
-        Hiển thị {products.length} sản phẩm{" "}
+        Hiển thị {pagination.totalItems} sản phẩm{" "}
         {filtersApplied > 0 ? "(đã lọc)" : ""}
       </div>
 
@@ -737,29 +775,48 @@ function ShowingProduct() {
         )}
       </div>
 
-      {/* Pagination (Simplified) */}
+      {/* Updated Pagination */}
       {products.length > 0 && (
         <div className="flex justify-center mt-8">
           <div className="flex items-center gap-1">
-            <button className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors">
+            <button
+              className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              disabled={pagination.currentPage === 1}
+            >
               &lt;
             </button>
-            <button className="w-10 h-10 rounded border border-blue-500 bg-blue-500 text-white flex items-center justify-center">
-              1
-            </button>
-            <button className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors">
-              2
-            </button>
-            <button className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors">
-              3
-            </button>
-            <span className="w-10 h-10 flex items-center justify-center">
-              ...
-            </span>
-            <button className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors">
-              10
-            </button>
-            <button className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors">
+
+            {[...Array(pagination.totalPages)].map((_, index) => {
+              const page = index + 1;
+              if (
+                page === 1 ||
+                page === pagination.totalPages ||
+                (page >= pagination.currentPage - 1 &&
+                  page <= pagination.currentPage + 1)
+              ) {
+                return (
+                  <button
+                    key={page}
+                    className={`w-10 h-10 rounded border flex items-center justify-center transition-colors ${
+                      page === pagination.currentPage
+                        ? "border-blue-500 bg-blue-500 text-white"
+                        : "border-gray-300 bg-white hover:border-blue-500 hover:text-blue-500"
+                    }`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                );
+              }
+              return null;
+            })}
+
+            <button
+              className="w-10 h-10 rounded border border-gray-300 flex items-center justify-center bg-white hover:border-blue-500 hover:text-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              disabled={pagination.currentPage === pagination.totalPages}
+            >
               &gt;
             </button>
           </div>

@@ -10,7 +10,9 @@ import "./styleDetail.css";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
 import { getData } from "../../../context/api";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { sCountItem } from "../../../context/store";
+import Like from "../../Home/Partial/Like";
 
 // Define custom colors
 const COLORS = {
@@ -31,7 +33,7 @@ const COLORS = {
 const ProductDetail = () => {
   const { id } = useParams();  // Lấy productID từ URL
   const [productRes, setProductRes] = useState({});
-  console.log({id})
+  console.log({ id })
   // Gọi API khi component được render
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +54,7 @@ const ProductDetail = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
-      currency: "VND",  
+      currency: "VND",
       minimumFractionDigits: 0,
     }).format(price);
   };
@@ -64,7 +66,7 @@ const ProductDetail = () => {
 
   const breadcrumbHome = { icon: "pi pi-home", url: "#" };
   const lastItem = { label: productRes.name };
-
+  // console.log("productRes", productRes)
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -91,21 +93,92 @@ const ProductDetail = () => {
     "Tặng kèm Bộ 4 ly thủy tinh Nescafe cao cấp",
   ];
 
+  const [review, setReview] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getData(`https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`);
+      setReview(res.data);
+      console.log(res.data);
+    }
 
+    fetchData();
+  }, [id])
+
+  const navigate = useNavigate();
+  const handleBuyNow = () => {
+    const authen = localStorage.getItem("LoginUser");
+    console.log(authen)
+    if (authen != null) {
+      const productToBuy = {
+        id: productRes.id,
+        name: productRes?.name,
+        current_seller: productRes?.current_seller?.name,
+        price: productRes?.price,
+        quantity: quantity,
+        original_price: productRes?.original_price,
+        thumbnail_url: productRes?.thumbnail_url
+      };
+      navigate("/checkout", { state: { productToBuy } });
+    } else {
+      navigate("/login");
+    }
+  };
+
+
+  const handleAddToCart = () => {
+    const authen = localStorage.getItem("LoginUser");
+    console.log(authen)
+    if (authen != null) {
+      const productToAddCart = {
+        id: productRes.id,
+        name: productRes?.name,
+        current_seller: productRes?.current_seller?.name,
+        price: productRes?.price,
+        quantity: quantity,
+        original_price: productRes?.original_price,
+        thumbnail_url: productRes?.thumbnail_url,
+        totalPrice: productRes.price * quantity,  // Tính totalPrice khi thêm sản phẩm vào giỏ hàng
+      };
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+      const existingProductIndex = cartItems.findIndex(
+        (item) => item.id === productToAddCart.id
+      );
+
+      if (existingProductIndex !== -1) {
+        cartItems[existingProductIndex].quantity += quantity;
+      } else {
+        cartItems.push(productToAddCart);
+      }
+
+
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length)
+      // console.log(JSON.parse(localStorage.getItem("cartItems"))?.length)
+      // console.log("Product added to cart:", productToAddCart);
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <>
+      <sCountItem.DevTool name="count" />
       <div className="bg-white text-black">
-        <div className="p-4 mb-2">
+        <div className="p-2 mt-5 max-w-7xl mx-auto">
           <BreadCrumb
             model={breadcrumbItems}
             home={breadcrumbHome}
             end={lastItem}
-            className="bg-transparent border-none p-2"
+            className="bg-transparent border-none p-1 text-[12px] max-w-7xl"
           />
         </div>
 
+
+
         <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
+
           {/* Image Section */}
           <div className="flex-1 max-w-lg lg:max-w-xl">
             <div className="flex flex-col w-full bg-white sticky top-3 gap-4 p-4 border border-gray-200 rounded-xl shadow-sm">
@@ -204,11 +277,7 @@ const ProductDetail = () => {
                   Điểm nổi bật:
                 </h3>
                 <ul className="pl-6 text-gray-900 flex flex-col gap-2.5">
-                  {features.map((feature, index) => (
-                    <li key={index} className="text-[15px] leading-relaxed">
-                      {feature}
-                    </li>
-                  ))}
+                  {productRes?.short_description}
                 </ul>
               </div>
             </div>
@@ -231,7 +300,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Product Title */}
-            <h1 className="text-2xl font-semibold mb-4 text-red-500 leading-tight tracking-tight">
+            <h1 className="text-2xl font-semibold mb-4 text-gray-900 leading-tight tracking-tight">
               {productRes?.name}
             </h1>
 
@@ -270,7 +339,7 @@ const ProductDetail = () => {
                       {formatPrice(productRes?.list_price)}
                     </span>
                   )}
-                  <span className="text-3xl text-blue-500 font-bold tracking-tight">
+                  <span className="text-3xl text-red-500 font-bold tracking-tight">
                     {formatPrice(productRes?.price)}
                   </span>
                 </div>
@@ -304,30 +373,32 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {/* Gift Box */}
-            <div className="mb-7 border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
-                <i className="pi pi-gift text-blue-500"></i>
-                Quà tặng kèm
-              </h3>
-              <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
-                <img
-                  src="https://salt.tikicdn.com/ts/product/1e/d6/5f/dea185fcc72b26b6314f8d3f1f27a948.png"
-                  alt="Quà tặng"
-                  className="w-[70px] h-[70px] object-contain border border-gray-300 rounded-lg p-1 bg-white"
-                />
-                <div>
-                  <p className="m-0 mb-2 text-[15px] font-semibold text-gray-900">
-                    Bộ 4 ly thủy tinh Nescafe
-                  </p>
-                  <Tag
-                    value="MIỄN PHÍ"
-                    severity="info"
-                    className="text-xs bg-blue-500 text-white rounded px-2 py-0.5 font-semibold"
+            {productRes?.gift_item_title !== "0 quà tặng kèm" && (
+              <div className="mb-7 border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                  <i className="pi pi-gift text-blue-500"></i>
+                  {productRes?.gift_item_title}
+                </h3>
+                <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
+                  <img
+                    src={productRes?.product_links?.[0]?.thumbnail_url}
+                    alt="Quà tặng"
+                    className="w-[70px] h-[70px] object-contain border border-gray-300 rounded-lg p-1 bg-white"
                   />
+                  <div>
+                    <p className="m-0 mb-2 text-[15px] font-semibold text-gray-900">
+                      {productRes?.product_links?.[0]?.name}
+                    </p>
+                    <Tag
+                      value="MIỄN PHÍ"
+                      severity="info"
+                      className="text-xs bg-blue-500 text-white rounded px-2 py-0.5 font-semibold"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
 
             {/* Quantity Selector */}
             <div className="flex items-center gap-4 mb-7 p-4 bg-gray-50 rounded-xl">
@@ -361,23 +432,25 @@ const ProductDetail = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4 mb-7">
+            <div className="flex gap-4">
               <Button
                 className="p-button-raised flex-1 bg-white border-2 border-blue-500 text-blue-500 font-semibold rounded-lg px-5 py-3 text-base transition-all duration-200"
                 label="Thêm vào giỏ hàng"
                 icon="pi pi-shopping-cart"
+                onClick={handleAddToCart}
               />
               <Button
                 className="p-button-outlined flex-1 bg-blue-500 border-2 border-blue-500 text-white font-semibold rounded-lg px-5 py-3 text-base shadow-md transition-all duration-200"
                 label="Mua ngay"
                 icon="pi pi-check"
+                onClick={handleBuyNow}
               />
             </div>
 
             <Divider className="mb-6" />
 
             {/* Benefits Section */}
-            <div className="bg-red-400 rounded-xl p-5 mb-7 flex flex-col gap-4">
+            <div className="bg-white rounded-xl p-5 mb-7 flex flex-col gap-4">
               {productRes?.benefits?.map((benefit, index) => (
                 <div
                   key={index}
@@ -397,7 +470,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Delivery Information */}
-            <div className="mb-7 flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
+            <div className=" flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
               <h3 className="text-lg font-semibold m-0 mb-2 text-gray-900 flex items-center gap-2">
                 <i className="pi pi-truck text-blue-500"></i>
                 Thông tin vận chuyển
@@ -445,10 +518,10 @@ const ProductDetail = () => {
                 </span>
               }
             >
-              <div className="p-8 text-gray-900 leading-relaxed">
+              <div className="py-8 pb-8 text-gray-900 leading-relaxed">
                 <div
                   dangerouslySetInnerHTML={createMarkup(productRes?.description)}
-                  className="text-[15px] text-red-600"
+                  className="text-[15px] text-gray-600"
                 ></div>
               </div>
             </TabPanel>
@@ -461,7 +534,7 @@ const ProductDetail = () => {
                 </span>
               }
             >
-              <div className="p-8">
+              <div className="py-8 pb-8">
                 <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
                   <table className="w-full">
                     <tbody>
@@ -497,16 +570,19 @@ const ProductDetail = () => {
               }
             >
               <ProductReviews
+                id={productRes?.id}
                 rating={productRes?.rating_average}
                 reviewCount={productRes?.review_count}
+                review={review}
               />
             </TabPanel>
           </TabView>
         </div>
 
         {/* Related Products Section */}
-        <div className="px-4 pb-10">
-          <RelatedProducts />
+        <div className=" max-w-7xl mx-auto mt-11">
+          {/* <RelatedProducts /> */}
+          <Like/>
         </div>
       </div>
 
@@ -582,7 +658,7 @@ const ProductDetail = () => {
           </div>
 
           {/* Image Counter */}
-          <div className="absolute bottom-5 left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
+          <div className="absolute bottom-3  left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
             {selectedImage + 1} / {productRes?.images?.length}
           </div>
         </div>

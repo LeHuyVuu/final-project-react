@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
+import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
 import SignUpImage from './LeftImage.png';
 import SignInImage from './RightImage.png';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
+import { jwtDecode } from 'jwt-decode';
 
 export default function SignInSignUp() {
 
@@ -52,11 +53,17 @@ export default function SignInSignUp() {
     };
 
     const navigate = useNavigate();
+    const LoginUser = localStorage.getItem('LoginUser');
+    useEffect(() => {
+        if (LoginUser) {
+            navigate('/');
+        }
+    }, [LoginUser, navigate]);
+
 
 
     const [Accept, setAccept] = useState(false);
 
-    const [MaxUserID, setMaxUserID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errorSignIn, setErrorSignIn] = useState(null);
     const [errorSignUp, setErrorSignUp] = useState(null);
@@ -74,9 +81,9 @@ export default function SignInSignUp() {
             return;
         }
 
-        const isExistPhoneNumber = localStorage.getItem(`phoneNumber${SignInPhoneNumber}`);
+        const isExistId = localStorage.getItem(`id${SignInPhoneNumber}`);
         const isExistPassword = localStorage.getItem(`password${SignInPhoneNumber}`);
-        if (isExistPhoneNumber == SignInPhoneNumber && isExistPassword == SignInPassword) {
+        if (isExistId == SignInPhoneNumber && isExistPassword == SignInPassword) {
             localStorage.removeItem('LoginUser');
             localStorage.setItem('LoginUser', SignInPhoneNumber);
             navigate('/');
@@ -84,46 +91,9 @@ export default function SignInSignUp() {
             setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
             return;
         }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/Login/authenticate',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({
-        //                 email: SignInEmail,
-        //                 password: SignInPassword,
-        //             }),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     localStorage.removeItem('token');
-        //     localStorage.setItem('token', data.token);
-        //     localStorage.removeItem('UserId');
-        //     localStorage.setItem('UserId', data.id);
-        //     localStorage.removeItem('UserRole');
-        //     localStorage.setItem('UserRole', data.role);
-        //     localStorage.removeItem('isLogIn');
-        //     localStorage.setItem('isLogIn', 'true');
-
-        //     if (data.role && data.role === 'User') {
-        //         navigate('/user/information');
-        //     } else {
-        //         navigate('/');
-        //     }
-        // } catch (error) {
-        //     setErrorSignIn('Tài khoản hoặc mật khẩu không chính xác');
-        //     setLoading(false);
-        // }
     };
 
-    const SignUp = async (SignUpFullName, SignUpPhoneNumber, SignUpPassword, SignUpConfirm) => {
+    const SignUp = async (SignUpPhoneNumber, SignUpFullName, SignUpEmail, SignUpPassword, SignUpConfirm) => {
 
         console.log('Accept: ', Accept);
 
@@ -146,6 +116,12 @@ export default function SignInSignUp() {
         if (!SignUpFullName) {
             console.error('Invalid full name');
             setErrorSignUp('Họ tên không hợp lệ');
+            return;
+        }
+
+        if (!SignUpEmail) {
+            console.error('Invalid email');
+            setErrorSignUp('Email không hợp lệ');
             return;
         }
 
@@ -178,80 +154,59 @@ export default function SignInSignUp() {
         }
 
         const signupData = {
+            id: SignUpPhoneNumber,
             phoneNumber: SignUpPhoneNumber,
             password: SignUpPassword,
             name: SignUpFullName,
+            email: SignUpEmail,
             nickname: '',
             birthday: '',
             sex: '',
-            nation: '',
+            nationality: '',
             image: 'https://i.pinimg.com/474x/46/7f/be/467fbe9b03913de9dcd39eb0ee1e06ab.jpg',
             role: 'User',
             type: 'Regular',
             point: 0,
+            gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
+            // address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
         };
         console.log('Sign Up Data:', signupData);
 
-        const isExist = localStorage.getItem(`phoneNumber${SignUpPhoneNumber}`);
+        const isExist = localStorage.getItem(`id${SignUpPhoneNumber}`);
         if (isExist == SignUpPhoneNumber) {
             setErrorSignUp('Tài khoản đã tồn tại');
             return;
         }
 
+        localStorage.setItem(`id${SignUpPhoneNumber}`, signupData.id);
         localStorage.setItem(`phoneNumber${SignUpPhoneNumber}`, signupData.phoneNumber);
         localStorage.setItem(`password${SignUpPhoneNumber}`, signupData.password);
         localStorage.setItem(`name${SignUpPhoneNumber}`, signupData.name);
+        localStorage.setItem(`email${SignUpPhoneNumber}`, signupData.email);
         localStorage.setItem(`nickname${SignUpPhoneNumber}`, signupData.nickname);
         localStorage.setItem(`birthday${SignUpPhoneNumber}`, signupData.birthday);
         localStorage.setItem(`sex${SignUpPhoneNumber}`, signupData.sex);
-        localStorage.setItem(`nation${SignUpPhoneNumber}`, signupData.nation);
+        localStorage.setItem(`nationality${SignUpPhoneNumber}`, signupData.nationality);
         localStorage.setItem(`image${SignUpPhoneNumber}`, signupData.image);
         localStorage.setItem(`role${SignUpPhoneNumber}`, signupData.role);
         localStorage.setItem(`type${SignUpPhoneNumber}`, signupData.type);
         localStorage.setItem(`point${SignUpPhoneNumber}`, signupData.point);
+        localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
 
-        // try {
-        //     const userResponse = await fetch(`https://localhost:7166/api/User/GetUserByEmail/${SignUpEmail}`);
-        //     if (!userResponse.ok) throw new Error('Network response was not ok');
-        //     const userData = await userResponse.json();
-        //     if (userData.email === SignUpEmail) {
-        //         setSignUpEmailError('Email đã tồn tại');
-        //         return;
-        //     }
-        // } catch (error) {
-        //     setLoading(false);
-        // }
-
-        // try {
-        //     const response = await fetch('https://localhost:7166/api/User',
-        //         {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify(signupData),
-        //         }
-        //     );
-
-        //     if (!response.ok) throw new Error('Network response was not ok');
-        //     const data = await response.json();
-        //     setLoading(false);
-
-        //     if (data.role && data.role === 'User') {
-        //         setSuccessSignUp('Đăng kí thành công!');
-        //         // moveImageBack();
-        //     }
-        // } catch (error) {
-        //     setErrorSignUp('Đăng kí thất bại');
-        //     console.log('Đăng kí thất bại:', error);
-        //     setLoading(false);
-        // }
+        localStorage.setItem(`address${SignUpPhoneNumber}-name-0`, signupData.name);
+        localStorage.setItem(`address${SignUpPhoneNumber}-phone-0`, signupData.phoneNumber);
+        localStorage.setItem(`address${SignUpPhoneNumber}-address-0`, '');
+        localStorage.setItem(`address${SignUpPhoneNumber}-typeaddress-0`, '');
+        localStorage.setItem(`address${SignUpPhoneNumber}-default-0`, '');
 
         setSuccessSignUp('Đăng kí thành công!');
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(1500);
+        moveImageBack();
     };
 
     const handleSubmitSignIn = (e) => {
@@ -267,19 +222,22 @@ export default function SignInSignUp() {
         e.preventDefault();
         setSuccessSignUp(null);
         setErrorSignUp(null);
-        const SignUpFullName = e.target.SignUpFullName.value;
         const SignUpPhoneNumber = e.target.SignUpPhoneNumber.value;
+        const SignUpFullName = e.target.SignUpFullName.value;
+        const SignUpEmail = e.target.SignUpEmail.value;
         const SignUpPassword = e.target.SignUpPassword.value;
         const SignUpConfirm = e.target.SignUpConfirm.value;
         console.log({
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm,
         });
         SignUp(
-            SignUpFullName,
             SignUpPhoneNumber,
+            SignUpFullName,
+            SignUpEmail,
             SignUpPassword,
             SignUpConfirm
         );
@@ -288,21 +246,7 @@ export default function SignInSignUp() {
     const handleAccept = () => {
         setAccept(p => !p);
         console.log(Accept);
-        console.log('ABC');
-
-        // const fetchMaxID = async () => {
-        //     try {
-        //         const userResponse = await fetch('https://localhost:7166/api/User/GetIDandName');
-        //         if (!userResponse.ok) throw new Error('Network response was not ok');
-        //         const userData = await userResponse.json();
-        //         const MaxUserID = userData.reduce((max, user) => Math.max(max, user.id), 0);
-        //         setMaxUserID(MaxUserID);
-        //         console.log('Max User ID:', MaxUserID);
-        //     } catch (error) {
-        //         console.error('Error fetching users:', error);
-        //     }
-        // };
-        // await fetchMaxID();
+        // console.log('ABC');
     };
 
     return (
@@ -310,10 +254,10 @@ export default function SignInSignUp() {
             <div className='signinsignup-container'>
                 <div className='card-box'>
                     <div className='card-side card-appear' id='card-signin'>
-                        <h1>ĐĂNG NHẬP</h1>
+                        <h1>Đăng Nhập</h1>
                         <form className='form-box form-box1' onSubmit={handleSubmitSignIn}>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-phone'></i>
+                                {/* <i className='fa-solid fa-phone'></i> */}
                                 <input name='SignInPhoneNumber' className='input form-control' type='text' placeholder='Số điện thoại'
                                     style={{
                                         border: errorSignIn && (
@@ -323,7 +267,7 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
                                 <input name='SignInPassword' className='input form-control' type='password' placeholder='Mật khẩu đăng nhập'
                                     style={{
                                         border: errorSignIn && (
@@ -333,41 +277,72 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
 
-                            <a href='#' className='forget-link'>Forgot password?</a>
+                            <a href='#' className='forget-link'>Quên mật khẩu?</a>
 
                             {errorSignIn && (<div className='error-message'>{errorSignIn}</div>)}
 
                             <div className='btn-box'>
-                                <button type='submit' className='btn btn-submit' id='btn-signin'>ĐĂNG NHẬP</button>
-                                <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>XÓA</button>
+                                <button type='submit' className='btn btn-submit' id='btn-signin'>Đăng nhập</button>
+                                {/* <button type='reset' className='btn btn-reset' id='btn-reset-signin' onClick={resetInputsBox1}>Xóa</button> */}
                             </div>
-
-                            <button id='btn btn-switch-signup' className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
-                            {/* Google Login Button */}
-                            <GoogleLogin
-                                onSuccess={(response) => {
-                                    console.log('Google Login Success:', response);
-                                    // Handle the Google Login success logic here
-                                }}
-                                onError={(error) => {
-                                    console.error('Google Login Error:', error);
-                                }}
-                                useOneTap
-                                clientId="456747866058-bogtqirkbf1sqrj2ee48275h0157domk.apps.googleusercontent.com"
-                            />
-
                         </form>
+                        <div class="flex items-center">
+                            <hr class="flex-grow  border-gray-400" />
+                            <span class="mx-2 text-gray-600">Hoặc</span>
+                            <hr class="flex-grow  border-gray-400" />
+                        </div>
+                        <GoogleLogin
+                            onSuccess={(response) => {
+                                const decoded = jwtDecode(response.credential);
+                                console.log('Decoded Google Token:', decoded);
+                                // Tạo biến cho các trường trong response
+                                const aud = decoded.aud; // Client ID
+                                const azp = decoded.azp; // Authorized party
+                                const email = decoded.email; // Email người dùng
+                                const email_verified = decoded.email_verified; // Kiểm tra xem email có được xác minh không
+                                const exp = decoded.exp; // Thời gian hết hạn token
+                                const family_name = decoded.family_name; // Họ của người dùng
+                                const given_name = decoded.given_name; // Tên của người dùng
+                                const hd = decoded.hd; // Tên miền của email người dùng (nếu có)
+                                const iat = decoded.iat; // Thời gian tạo token
+                                const iss = decoded.iss; // Issuer (nguồn phát hành token)
+                                const jti = decoded.jti; // Unique token identifier
+                                const name = decoded.name; // Tên đầy đủ của người dùng
+                                const nbf = decoded.nbf; // Thời gian token bắt đầu có hiệu lực
+                                const picture = decoded.picture; // URL ảnh đại diện của người dùng
+                                const sub = decoded.sub; // ID duy nhất của người dùng (được sử dụng cho việc xác thực)
 
-                        <button className='btn' onClick={moveImage}>CHƯA CÓ TÀI KHOẢN?</button>
+                                // In ra các trường dữ liệu từ decoded token
+                                console.log('aud (Client ID):', aud);
+                                console.log('azp (Authorized Party):', azp);
+                                console.log('Email:', email);
+                                console.log('Email Verified:', email_verified);
+                                console.log('Token Expiration Time:', exp);
+                                console.log('Family Name:', family_name);
+                                console.log('Given Name:', given_name);
+                                console.log('hd (Domain):', hd);
+                                console.log('Issued At (iat):', iat);
+                                console.log('Issuer (iss):', iss);
+                                console.log('JWT ID (jti):', jti);
+                                console.log('Full Name:', name);
+                                console.log('Not Before Time (nbf):', nbf);
+                                console.log('Profile Picture URL:', picture);
+                                console.log('User ID (sub):', sub);
+                            }}
+                            onError={(error) => {
+                                console.error('Google Login Error:', error);
+                            }}
+                        />
 
-                        <hr />
+                        <button className=' mt-10 text-left' onClick={moveImage}>Chưa có tài khoản?<span className='text-blue-500 mx-2'>Đăng kí</span></button>
+
                     </div>
 
                     <div className='card-side card-disappear' id='card-signup'>
-                        <h1 className='title'>ĐĂNG KÍ</h1>
+                        <h1 className='title'>Đăng kí</h1>
                         <form className='form-box form-box2' onSubmit={handleSubmitSignUp}>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-phone'></i>
+                                {/* <i className='fa-solid fa-phone'></i> */}
                                 <input name='SignUpPhoneNumber' className='input form-control' type='text' placeholder='Số điện thoại'
                                     style={{
                                         border: errorSignUp && (
@@ -378,16 +353,24 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-user'></i>
+                                {/* <i className='fa-solid fa-user'></i> */}
                                 <input name='SignUpFullName' className='input form-control' type='text' placeholder='Họ tên'
                                     style={{
                                         border: errorSignUp && (
                                             errorSignUp == 'Họ tên không hợp lệ'
                                         ) && '1px solid #dc3545',
                                     }} />
+                            </div><div className='form-group form-input'>
+                                {/* <i className='fa-solid fa-envelope'></i> */}
+                                <input name='SignUpEmail' className='input form-control' type='email' placeholder='Email đăng kí'
+                                    style={{
+                                        border: errorSignUp && (
+                                            errorSignUp == 'Email không hợp lệ')
+                                            && '1px solid #dc3545',
+                                    }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
                                 <input name='SignUpPassword' className='input form-control' type='password' placeholder='Mật khẩu đăng kí'
                                     style={{
                                         border: errorSignUp && (
@@ -397,8 +380,8 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
                             <div className='form-group form-input'>
-                                <i className='fa-solid fa-key'></i>
-                                <i className='fa-solid fa-key double-icon'></i>
+                                {/* <i className='fa-solid fa-key'></i> */}
+                                {/* <i className='fa-solid fa-key double-icon'></i> */}
                                 <input name='SignUpConfirm' className='input form-control' type='password' placeholder='Xác nhận mật khẩu'
                                     style={{
                                         border: errorSignUp && (
@@ -408,27 +391,28 @@ export default function SignInSignUp() {
                                     }} />
                             </div>
 
-                            <div className='accept-box'>
-                                <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision' target='_blank'><b>ĐIỀU KHOẢN</b></a>
 
-                                <div className='form-check'>
-                                    <label>
-                                        <input type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
-                                        Đồng ý điều khoản
-                                    </label>
-                                </div>
-                            </div>
 
                             {errorSignUp && (<div className='error-message'>{errorSignUp}</div>)}
                             {successSignUp && (<div className='success-message'>{successSignUp}</div>)}
 
                             <div className='btn-box'>
-                                <button type='submit' className='btn btn-submit' id='btn-signup'>ĐĂNG KÍ</button>
-                                <button type='reset' className='btn btn-reset' id='btn-reset-signup' onClick={resetInputsBox2}>XÓA</button>
+                                <button type='submit' className='btn btn-submit' id='btn-signup'>Đăng kí</button>
+                                {/* <button type='reset' className='btn btn-reset' id='btn-reset-signup' onClick={resetInputsBox2}>Xóa</button> */}
                             </div>
                         </form>
 
-                        <button className='btn' onClick={moveImageBack}>ĐÃ CÓ TÀI KHOẢN?</button>
+                        <button className='mt-4 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
+                        <div className='accept-box mt-5 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
+                            <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision text-blue-500' target='_blank'> Điều Khoản</a>
+
+                            <div className='form-check  '>
+                                <label className='flex items-center justify-center gap-2'>
+                                    <input className='' type='checkbox' checked={Accept} name='Accept' onChange={handleAccept} />
+                                    Đồng ý điều khoản
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>
