@@ -107,39 +107,37 @@ const Search = () => {
     };
 
     return (
-        <div className="relative flex justify-end items-center pr-4 md:pr-8">
-            <div className="relative group w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
-                <div className="relative">
-                    <input
-                        type="search"
-                        name="q"
-                        id="HeaderSearchInput"
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") handleSearch();
-                        }}
-                        className="w-full border border-gray-200 rounded-full py-4 px-6 pl-14 text-lg text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 shadow-sm hover:shadow-md"
-                        placeholder="Search products..."
-                    />
-                    <div className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-blue-500 transition-colors duration-200">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-7 w-7"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
-                    </div>
-                </div>
+          <div className="flex justify-center">
+          <div className="search relative group w-full">
+            <div className="header-search">
+              <input
+                type="search"
+                name="q"
+                id="HeaderSearchInput"
+                className="header-search__input input__field input__field--has-button border border-gray-300 rounded-full py-2 px-4 pl-10 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                placeholder="Search products..."
+              />
+              <div className="absolute left-2 top-2.5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
             </div>
+          </div>
+      
+        
+     
 
             {isLoading && (
                 <div className="absolute top-full left-0 w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-20 text-gray-500 text-base">

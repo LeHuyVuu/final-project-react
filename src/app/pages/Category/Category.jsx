@@ -18,8 +18,8 @@ function Category() {
 
       return (
         <>
-         <CategoryExplore categoryId={normalizedCategoryId} urlKey={urlKey} />
-         <CategoryBrowser categoryId={normalizedCategoryId} urlKey={urlKey} />
+         
+         
           <ProductListing  />
         </>
       );

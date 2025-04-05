@@ -24,6 +24,8 @@ import {
   getFilteredProducts,
   getPaginationInfo,
 } from "../../../context/api";
+import CategoryBrowser from "./CategoryBrowser";
+// import CategoryExplore from "./CategoryExplore";
 // import { testCategoryDetail } from "../../../context/apiDebug";
 
 const ProductListing = () => {
@@ -688,16 +690,9 @@ const ProductListing = () => {
                 )}
               </div>
 
-             
-                <div className="absolute bottom-0 left-0">
-                  <img
-                    src={product.badges_v3[0]?.image || ""}
-                    alt=""
-                  />
-                </div>
-           
-
-              
+              <div className="absolute bottom-0 left-0">
+                <img src={product.badges_v3[0]?.image || ""} alt="" />
+              </div>
 
               {/* {product.badges_new?.some(
                 (badge) => badge.code === "authentic_brand"
@@ -1003,9 +998,11 @@ const ProductListing = () => {
           <BreadCrumb model={getBreadcrumbItems()} home={breadcrumbHome} />
         </div>
       )}
+      <CategoryBrowser categoryId={normalizedCategoryId} urlKey={urlKey} />
+      {/* <CategoryExplore  /> */}
 
       {/* Header with applied filters counter */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center my-4">
         <h2 className="text-xl font-medium text-gray-800">
           {categoryInfo?.name || "Sản phẩm"}
           {filtersApplied > 0 && (
@@ -1029,296 +1026,311 @@ const ProductListing = () => {
 
       {/* Main Categories */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
-        <div className="flex flex-col space-y-4">
-          {/* Khoảng giá - Luôn hiển thị đầu tiên */}
-          {filterOptions?.priceRanges &&
-            filterOptions.priceRanges.length > 0 && (
-              <div>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  Khoảng giá
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filterOptions.priceRanges.map((priceRange) => (
-                    <div
-                      key={priceRange.key}
-                      className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer border-gray-300 text-gray-700 hover:border-gray-400 ${
-                        filters.price === priceRange.key
-                          ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                          : ""
-                      }`}
-                      onClick={() => handlePriceChange(priceRange.key)}
-                    >
-                      {priceRange.name}{" "}
-                      {priceRange.count > 0 && (
-                        <span className="text-gray-500">
-                          ({priceRange.count})
-                        </span>
-                      )}
-                    </div>
-                  ))}
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col space-y-4">
+            {/* Khoảng giá - Luôn hiển thị đầu tiên */}
+            {filterOptions?.priceRanges &&
+              filterOptions.priceRanges.length > 0 && (
+                <div>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    Khoảng giá
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.priceRanges.map((priceRange) => (
+                      <div
+                        key={priceRange.key}
+                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer border-gray-300 text-gray-700 hover:border-gray-400 ${
+                          filters.price === priceRange.key
+                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                            : ""
+                        }`}
+                        onClick={() => handlePriceChange(priceRange.key)}
+                      >
+                        {priceRange.name}{" "}
+                        {priceRange.count > 0 && (
+                          <span className="text-gray-500">
+                            ({priceRange.count})
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-          {/* -------------------- Màu sắc (option_color) -------------------- */}
-          {visibleFilters.includes("option_color") &&
-            filterOptions?.colors &&
-            filterOptions.colors.length > 0 && (
-              <div>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  Màu sắc
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filters.colors &&
-                    filters.colors.length > 0 &&
-                    filterOptions.colors
-                      .filter((color) => filters.colors.includes(color.key))
-                      .map((color) => (
+            {/* -------------------- Màu sắc (option_color) -------------------- */}
+            {visibleFilters.includes("option_color") &&
+              filterOptions?.colors &&
+              filterOptions.colors.length > 0 && (
+                <div>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    Màu sắc
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filters.colors &&
+                      filters.colors.length > 0 &&
+                      filterOptions.colors
+                        .filter((color) => filters.colors.includes(color.key))
+                        .map((color) => (
+                          <div
+                            key={color.key}
+                            className="px-3 py-1.5 rounded-full border text-xs cursor-pointer bg-blue-50 border-blue-400 text-blue-600 shadow-sm flex items-center group"
+                            onClick={() => toggleColorFilter(color.key)}
+                          >
+                            <span
+                              className="w-3 h-3 rounded-full mr-1.5"
+                              style={{ backgroundColor: color.hex }}
+                            ></span>
+                            {color.name}
+                            <FontAwesomeIcon
+                              icon={faTimes}
+                              className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                              size="xs"
+                            />
+                          </div>
+                        ))}
+                    <Button
+                      className="p-button-outlined p-button-sm rounded-full text-xs py-1.5 px-3 border-gray-300 text-gray-700 flex items-center gap-1"
+                      onClick={(e) => colorPanelRef.current.toggle(e)}
+                      label={
+                        !filters.colors || filters.colors.length === 0
+                          ? "Chọn màu"
+                          : "Thêm màu"
+                      }
+                      icon={
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          size="xs"
+                          className="mr-1"
+                        />
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+            {/* -------------------- Thương hiệu (brand) -------------------- */}
+            {visibleFilters.includes("brand") &&
+              filterOptions?.brands &&
+              filterOptions.brands.length > 0 && (
+                <div>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    Thương hiệu
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.brands
+                      .slice(0, 5) // Chỉ hiện 5 thương hiệu đầu tiên
+                      .map((brand) => (
                         <div
-                          key={color.key}
-                          className="px-3 py-1.5 rounded-full border text-xs cursor-pointer bg-blue-50 border-blue-400 text-blue-600 shadow-sm flex items-center group"
-                          onClick={() => toggleColorFilter(color.key)}
+                          key={brand.key}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                            filters.brands?.includes(brand.key)
+                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                              : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          }`}
+                          onClick={() =>
+                            onFilterChange(
+                              { checked: !filters.brands?.includes(brand.key) },
+                              "brands",
+                              brand
+                            )
+                          }
                         >
-                          <span
-                            className="w-3 h-3 rounded-full mr-1.5"
-                            style={{ backgroundColor: color.hex }}
-                          ></span>
-                          {color.name}
-                          <FontAwesomeIcon
-                            icon={faTimes}
-                            className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                            size="xs"
-                          />
+                          {brand.name}{" "}
+                          {brand.count > 0 && (
+                            <span className="text-gray-500">
+                              ({brand.count})
+                            </span>
+                          )}
                         </div>
                       ))}
-                  <Button
-                    className="p-button-outlined p-button-sm rounded-full text-xs py-1.5 px-3 border-gray-300 text-gray-700 flex items-center gap-1"
-                    onClick={(e) => colorPanelRef.current.toggle(e)}
-                    label={
-                      !filters.colors || filters.colors.length === 0
-                        ? "Chọn màu"
-                        : "Thêm màu"
-                    }
-                    icon={
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        size="xs"
-                        className="mr-1"
-                      />
-                    }
-                  />
-                </div>
-              </div>
-            )}
-
-          {/* -------------------- Thương hiệu (brand) -------------------- */}
-          {visibleFilters.includes("brand") &&
-            filterOptions?.brands &&
-            filterOptions.brands.length > 0 && (
-              <div>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  Thương hiệu
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filterOptions.brands
-                    .slice(0, 5) // Chỉ hiện 5 thương hiệu đầu tiên
-                    .map((brand) => (
-                      <div
-                        key={brand.key}
-                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                          filters.brands?.includes(brand.key)
-                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                            : "border-gray-300 text-gray-700 hover:border-gray-400"
-                        }`}
-                        onClick={() =>
-                          onFilterChange(
-                            { checked: !filters.brands?.includes(brand.key) },
-                            "brands",
-                            brand
-                          )
-                        }
+                    {filterOptions.brands.length > 5 && (
+                      <button
+                        className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                        onClick={() => setShowAllFiltersDialog(true)}
                       >
-                        {brand.name}{" "}
-                        {brand.count > 0 && (
-                          <span className="text-gray-500">({brand.count})</span>
-                        )}
-                      </div>
-                    ))}
-                  {filterOptions.brands.length > 5 && (
-                    <button
-                      className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
-                      onClick={() => setShowAllFiltersDialog(true)}
-                    >
-                      + {filterOptions.brands.length - 5} thương hiệu khác
-                    </button>
-                  )}
+                        + {filterOptions.brands.length - 5} thương hiệu khác
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-          {/* -------------------- Chất liệu (cloth_material) -------------------- */}
-          {visibleFilters.includes("cloth_material") &&
-            filterOptions?.materials &&
-            filterOptions.materials.length > 0 && (
-              <div>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  Chất liệu
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filterOptions.materials
-                    .slice(0, 5) // Chỉ hiện 5 chất liệu đầu tiên
-                    .map((material) => (
-                      <div
-                        key={material.key}
-                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                          filters.materials?.includes(material.key)
-                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                            : "border-gray-300 text-gray-700 hover:border-gray-400"
-                        }`}
-                        onClick={() =>
-                          onFilterChange(
-                            {
-                              checked: !filters.materials?.includes(
-                                material.key
-                              ),
-                            },
-                            "materials",
-                            material
-                          )
-                        }
+            {/* -------------------- Chất liệu (cloth_material) -------------------- */}
+            {visibleFilters.includes("cloth_material") &&
+              filterOptions?.materials &&
+              filterOptions.materials.length > 0 && (
+                <div>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    Chất liệu
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.materials
+                      .slice(0, 5) // Chỉ hiện 5 chất liệu đầu tiên
+                      .map((material) => (
+                        <div
+                          key={material.key}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                            filters.materials?.includes(material.key)
+                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                              : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          }`}
+                          onClick={() =>
+                            onFilterChange(
+                              {
+                                checked: !filters.materials?.includes(
+                                  material.key
+                                ),
+                              },
+                              "materials",
+                              material
+                            )
+                          }
+                        >
+                          {material.name}{" "}
+                          {material.count > 0 && (
+                            <span className="text-gray-500">
+                              ({material.count})
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    {filterOptions.materials.length > 5 && (
+                      <button
+                        className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                        onClick={() => setShowAllFiltersDialog(true)}
                       >
-                        {material.name}{" "}
-                        {material.count > 0 && (
-                          <span className="text-gray-500">
-                            ({material.count})
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  {filterOptions.materials.length > 5 && (
-                    <button
-                      className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
-                      onClick={() => setShowAllFiltersDialog(true)}
-                    >
-                      + {filterOptions.materials.length - 5} chất liệu khác
-                    </button>
-                  )}
+                        + {filterOptions.materials.length - 5} chất liệu khác
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-          {/* -------------------- Họa tiết (fashion_pattern) -------------------- */}
-          {visibleFilters.includes("fashion_pattern") &&
-            filterOptions?.patterns &&
-            filterOptions.patterns.length > 0 && (
-              <div>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  Họa tiết
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filterOptions.patterns
-                    .slice(0, 5) // Chỉ hiện 5 họa tiết đầu tiên
-                    .map((pattern) => (
-                      <div
-                        key={pattern.key}
-                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                          filters.patterns?.includes(pattern.key)
-                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                            : "border-gray-300 text-gray-700 hover:border-gray-400"
-                        }`}
-                        onClick={() =>
-                          onFilterChange(
-                            {
-                              checked: !filters.patterns?.includes(pattern.key),
-                            },
-                            "patterns",
-                            pattern
-                          )
-                        }
+            {/* -------------------- Họa tiết (fashion_pattern) -------------------- */}
+            {visibleFilters.includes("fashion_pattern") &&
+              filterOptions?.patterns &&
+              filterOptions.patterns.length > 0 && (
+                <div>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    Họa tiết
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filterOptions.patterns
+                      .slice(0, 5) // Chỉ hiện 5 họa tiết đầu tiên
+                      .map((pattern) => (
+                        <div
+                          key={pattern.key}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                            filters.patterns?.includes(pattern.key)
+                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                              : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          }`}
+                          onClick={() =>
+                            onFilterChange(
+                              {
+                                checked: !filters.patterns?.includes(
+                                  pattern.key
+                                ),
+                              },
+                              "patterns",
+                              pattern
+                            )
+                          }
+                        >
+                          {pattern.name}{" "}
+                          {pattern.count > 0 && (
+                            <span className="text-gray-500">
+                              ({pattern.count})
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    {filterOptions.patterns.length > 5 && (
+                      <button
+                        className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                        onClick={() => setShowAllFiltersDialog(true)}
                       >
-                        {pattern.name}{" "}
-                        {pattern.count > 0 && (
-                          <span className="text-gray-500">
-                            ({pattern.count})
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  {filterOptions.patterns.length > 5 && (
-                    <button
-                      className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
-                      onClick={() => setShowAllFiltersDialog(true)}
-                    >
-                      + {filterOptions.patterns.length - 5} họa tiết khác
-                    </button>
-                  )}
+                        + {filterOptions.patterns.length - 5} họa tiết khác
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-          {/* Hiển thị các filter động khác từ visibleFilters */}
-          {visibleFilters.map((filterCode) => {
-            // Bỏ qua các filter đã được xử lý cụ thể ở trên
-            if (
-              [
-                "option_color",
-                "brand",
-                "cloth_material",
-                "fashion_pattern",
-              ].includes(filterCode)
-            ) {
-              return null;
-            }
+            {/* Hiển thị các filter động khác từ visibleFilters */}
+            {visibleFilters.map((filterCode) => {
+              // Bỏ qua các filter đã được xử lý cụ thể ở trên
+              if (
+                [
+                  "option_color",
+                  "brand",
+                  "cloth_material",
+                  "fashion_pattern",
+                ].includes(filterCode)
+              ) {
+                return null;
+              }
 
-            // Xem filter này có trong dynamic filters không
-            const filterData = filterOptions.dynamicFilters?.[filterCode];
-            if (!filterData) return null;
+              // Xem filter này có trong dynamic filters không
+              const filterData = filterOptions.dynamicFilters?.[filterCode];
+              if (!filterData) return null;
 
-            return (
-              <div key={filterCode}>
-                <p className="text-gray-500 text-sm mb-2.5 font-medium">
-                  {filterData.display_name}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {filterData.values
-                    .slice(0, 5) // Chỉ hiện 5 tùy chọn đầu tiên
-                    .map((item) => (
-                      <div
-                        key={item.key}
-                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                          dynamicFilters[filterCode]?.includes(item.key)
-                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                            : "border-gray-300 text-gray-700 hover:border-gray-400"
-                        }`}
-                        onClick={() => {
-                          handleDynamicFilterChange(
-                            filterCode,
-                            !dynamicFilters[filterCode]?.includes(item.key),
-                            item.key
-                          );
-                        }}
+              return (
+                <div key={filterCode}>
+                  <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                    {filterData.display_name}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {filterData.values
+                      .slice(0, 5) // Chỉ hiện 5 tùy chọn đầu tiên
+                      .map((item) => (
+                        <div
+                          key={item.key}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                            dynamicFilters[filterCode]?.includes(item.key)
+                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                              : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          }`}
+                          onClick={() => {
+                            handleDynamicFilterChange(
+                              filterCode,
+                              !dynamicFilters[filterCode]?.includes(item.key),
+                              item.key
+                            );
+                          }}
+                        >
+                          {item.name}{" "}
+                          {item.count > 0 && (
+                            <span className="text-gray-500">
+                              ({item.count})
+                            </span>
+                          )}
+                        </div>
+                      ))}
+
+                    {filterData.values.length > 5 && (
+                      <button
+                        className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                        onClick={() => setShowAllFiltersDialog(true)}
                       >
-                        {item.name}{" "}
-                        {item.count > 0 && (
-                          <span className="text-gray-500">({item.count})</span>
-                        )}
-                      </div>
-                    ))}
-
-                  {filterData.values.length > 5 && (
-                    <button
-                      className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
-                      onClick={() => setShowAllFiltersDialog(true)}
-                    >
-                      + {filterData.values.length - 5} lựa chọn khác
-                    </button>
-                  )}
+                        + {filterData.values.length - 5} lựa chọn khác
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
 
-          {/* Nút hiển thị tất cả bộ lọc */}
+            {/* Nút hiển thị tất cả bộ lọc */}
+
+            {/* Link đến trang tìm kiếm */}
+            {/* <div className="mt-4 text-sm text-blue-600">
+            <Link to={`/search?q=${categoryInfo?.name || ""}`}>
+              Xem thêm sản phẩm {categoryInfo?.name || "liên quan"}
+            </Link>
+          </div> */}
+          </div>
           <div className="mt-2">
             <Button
               label="Hiển thị tất cả bộ lọc"
@@ -1327,13 +1339,6 @@ const ProductListing = () => {
               onClick={openFilterDialog}
             />
           </div>
-
-          {/* Link đến trang tìm kiếm */}
-          {/* <div className="mt-4 text-sm text-blue-600">
-            <Link to={`/search?q=${categoryInfo?.name || ""}`}>
-              Xem thêm sản phẩm {categoryInfo?.name || "liên quan"}
-            </Link>
-          </div> */}
         </div>
 
         {/* Color Overlay Panel */}
@@ -1597,7 +1602,7 @@ const ProductListing = () => {
                     </span>
                     Màu sắc
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {filterOptions.colors.map((color) => (
                       <div key={color.key} className="flex items-center">
                         <Checkbox
@@ -2021,7 +2026,7 @@ const ProductListing = () => {
           )
         }
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {products.length > 0 ? (
             products.map((product) => (
               <div key={product.id}>{itemTemplate(product)}</div>
