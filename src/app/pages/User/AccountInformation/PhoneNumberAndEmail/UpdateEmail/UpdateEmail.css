@@ -50,6 +50,13 @@
                 color: #dc3545;
             }
 
+            .success-message {
+                height: 24px;
+                font-size: 14px;
+                font-style: italic;
+                color: #28a745;
+            }
+
             .btn {
                 text-align: center;
                 border: none;

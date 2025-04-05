@@ -20,7 +20,7 @@ export default function PhoneNumberAndEmail() {
             items: [
                 { icon: 'fa-solid fa-lock', label: 'Đổi mật khẩu', value: null, button: 'Cập nhật', link: 'pasword' },
                 { icon: 'fa-solid fa-shield', label: 'Thiết lập mã PIN', value: null, button: 'Thiết lập', link: 'pin' },
-                { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu', link: '' },
+                { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu', link: 'delete-account' },
             ]
         },
         {

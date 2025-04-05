@@ -17,6 +17,7 @@ import UpdatePhoneNumber from '../pages/User/AccountInformation/PhoneNumberAndEm
 import UpdateEmail from '../pages/User/AccountInformation/PhoneNumberAndEmail/UpdateEmail/UpdateEmail.jsx';
 import ChangePassword from '../pages/User/AccountInformation/PhoneNumberAndEmail/ChangePassword/ChangePassword.jsx';
 import UpdatePIN from '../pages/User/AccountInformation/PhoneNumberAndEmail/UpdatePIN/UpdatePIN.jsx';
+import DeleteAccount from '../pages/User/AccountInformation/PhoneNumberAndEmail/DeleteAccount/DeleteAccount.jsx';
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
 import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx';
 import Notification from '../pages/User/Notification/Notification.jsx';
@@ -50,6 +51,7 @@ const MainRoutes = () => {
             <Route path='information/email' element={<UpdateEmail />} />
             <Route path='information/pasword' element={<ChangePassword />} />
             <Route path='information/pin' element={<UpdatePIN />} />
+            <Route path='information/delete-account' element={<DeleteAccount />} />
             <Route path='order' element={<OrderManagement />} />
             <Route path='help-center' element={<HelpCenter />} />
             <Route path='notification' element={<Notification />} />

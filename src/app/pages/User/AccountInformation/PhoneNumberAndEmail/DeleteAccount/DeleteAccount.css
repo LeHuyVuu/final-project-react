@@ -1,45 +1,58 @@
-.updatephonenumber-container {
+.deleteaccount-container {
     width: 100%;
     max-width: 900px;
 
-    .updatephonenumber-content {
+    .deleteaccount-content {
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 10px;
         overflow: hidden;
         background-color: #fff;
-        padding: 20px;
+        padding: 20px 20px 40px;
 
         form {
-            width: 400px;
-            padding: 16px;
-            border: 1px solid #ebebf0;
-            box-sizing: border-box;
-            border-radius: 4px;
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
 
-            .form-phone {
+            .form-reason {
                 margin: 0 0 4px;
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
 
-                i {
-                    width: 28px;
-                    color: #999;
-                }
-
-                input {
+                input,
+                textarea {
                     outline: none;
-                    width: 70%;
+                    width: 100%;
                     padding: 4px 12px;
                     border: 1px solid #ccc;
                     border-radius: 4px;
                 }
 
-                input:focus {
+                input,
+                textarea:focus {
                     border-color: #007bff80;
                     box-shadow: 0 0 0 0.25rem #007bff40;
+                }
+            }
+
+            span {
+                color: #dc3545;
+            }
+
+            .item {
+                padding: 8px;
+                border-radius: 4px;
+                background: rgba(0, 96, 255, 0.05);
+            }
+
+            .form-check {
+                input {
+                    margin: 0 8px 0 0;
                 }
             }
 

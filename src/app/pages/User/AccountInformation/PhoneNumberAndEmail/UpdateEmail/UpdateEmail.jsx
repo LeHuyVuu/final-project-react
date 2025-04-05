@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UpdateEmail.css';
 
@@ -8,7 +8,13 @@ export default function UpdateEmail() {
     const [Email, setEmail] = useState(localStorage.getItem(`email${LoginUser}`));
     const [Error, setError] = useState();
 
-    useEffect(() => {
+    const handleChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const navigate = useNavigate();
+    const handleUpdate = async (e) => {
+        e.preventDefault();
         if (!Email) {
             setError('Email không hợp lệ');
             return;
@@ -17,17 +23,12 @@ export default function UpdateEmail() {
             setError('Email không đúng form');
             return;
         }
-        setError();
-    }, [Email])
-
-    const handleChange = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const navigate = useNavigate();
-    const handleUpdate = (e) => {
-        e.preventDefault();
+        setError('Cập nhật email thành công!');
         localStorage.setItem(`email${LoginUser}`, Email);
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(2000);
+
         navigate('/account/information');
     }
 
@@ -46,13 +47,10 @@ export default function UpdateEmail() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className='error-message'>{Error}</div>
+                        <div className={`${Error === 'Cập nhật email thành công!' ? 'success-message' : 'error-message'}`}>{Error}</div>
                     </div>
-                    {Error ?
-                        <div className='btn btn-div'>Lưu thay đổi</div>
-                        :
-                        <button className='btn'>Lưu thay đổi</button>
-                    }
+
+                    <button className='btn'>Lưu thay đổi</button>
                 </form>
             </div>
         </div>
