@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 // import { Form, Button, Container } from "react-bootstrap";
 import './PhoneNumberAndEmail.css';
 
@@ -10,23 +11,23 @@ export default function PhoneNumberAndEmail() {
         {
             heading: 'Số điện thoại và Email',
             items: [
-                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: localStorage.getItem(`phoneNumber${LoginUser}`), button: 'Cập nhật' },
-                { icon: 'fa-solid fa-envelope', label: 'Địa chỉ email', value: localStorage.getItem(`email${LoginUser}`), button: 'Cập nhật' },
+                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: localStorage.getItem(`phoneNumber${LoginUser}`), button: 'Cập nhật', link: 'phonenumber' },
+                { icon: 'fa-solid fa-envelope', label: 'Địa chỉ email', value: localStorage.getItem(`email${LoginUser}`), button: 'Cập nhật', link: 'email' },
             ]
         },
         {
             heading: 'Bảo mật',
             items: [
-                { icon: 'fa-solid fa-lock', label: 'Đổi mật khẩu', value: null, button: 'Cập nhật' },
-                { icon: 'fa-solid fa-shield', label: 'Thiết lập mã PIN', value: null, button: 'Thiết lập' },
-                { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu' },
+                { icon: 'fa-solid fa-lock', label: 'Đổi mật khẩu', value: null, button: 'Cập nhật', link: 'pasword' },
+                { icon: 'fa-solid fa-shield', label: 'Thiết lập mã PIN', value: null, button: 'Thiết lập', link: 'pin' },
+                { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu', link: '' },
             ]
         },
         {
             heading: 'Liên kết mạng xã hội',
             items: [
-                { icon: 'fa-brands fa-facebook', label: 'Facebook', value: null, button: 'Liên kết' },
-                { icon: 'fa-brands fa-google', label: 'Google', value: null, button: 'Liên kết' },
+                { icon: 'fa-brands fa-facebook', label: 'Facebook', value: null, button: 'Liên kết', link: '' },
+                { icon: 'fa-brands fa-google', label: 'Google', value: null, button: 'Liên kết', link: '' },
             ]
         },
     ];
@@ -48,7 +49,7 @@ export default function PhoneNumberAndEmail() {
                                     <div className='value-text'>{item.value}</div>
                                 </div>
                             </div>
-                            <button>{item.button}</button>
+                            <Link to={`${item.link}`}><button>{item.button}</button></Link>
                         </div>
                     ))}
                 </div>

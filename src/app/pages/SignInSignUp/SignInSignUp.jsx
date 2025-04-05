@@ -170,6 +170,7 @@ export default function SignInSignUp() {
             gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
+            PIN: '',
             // address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
         };
         console.log('Sign Up Data:', signupData);
@@ -196,6 +197,7 @@ export default function SignInSignUp() {
         localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
+        localStorage.setItem(`PIN${SignUpPhoneNumber}`, signupData.PIN);
 
         localStorage.setItem(`address${SignUpPhoneNumber}-name-0`, signupData.name);
         localStorage.setItem(`address${SignUpPhoneNumber}-phone-0`, signupData.phoneNumber);

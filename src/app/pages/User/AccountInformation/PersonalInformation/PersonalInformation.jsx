@@ -63,6 +63,7 @@ export default function PersonalInformation() {
                         <div className='form-name form-group'>
                             <label htmlFor='name'>Họ và tên</label>
                             <input type='text' id='name' name='name'
+                                placeholder='Nhập họ tên'
                                 value={formData.name}
                                 onChange={handleChange}
                             />
@@ -70,6 +71,7 @@ export default function PersonalInformation() {
                         <div className='form-nickname form-group'>
                             <label htmlFor='nickname'>Nickname</label>
                             <input type='text' id='nickname' name='nickname'
+                                placeholder='Nhập nickname'
                                 value={formData.nickname}
                                 onChange={handleChange}
                             />

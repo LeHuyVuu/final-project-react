@@ -13,6 +13,10 @@ import SignInSignUp from '../pages/SignInSignUp/SignInSignUp.jsx';
 
 import Account from '../pages/User/Account.jsx';
 import AccountInformation from '../pages/User/AccountInformation/AccountInformation.jsx';
+import UpdatePhoneNumber from '../pages/User/AccountInformation/PhoneNumberAndEmail/UpdatePhoneNumber/UpdatePhoneNumber.jsx';
+import UpdateEmail from '../pages/User/AccountInformation/PhoneNumberAndEmail/UpdateEmail/UpdateEmail.jsx';
+import ChangePassword from '../pages/User/AccountInformation/PhoneNumberAndEmail/ChangePassword/ChangePassword.jsx';
+import UpdatePIN from '../pages/User/AccountInformation/PhoneNumberAndEmail/UpdatePIN/UpdatePIN.jsx';
 import OrderManagement from '../pages/User/OrderManagement/OrderManagement.jsx';
 import HelpCenter from '../pages/User/HelpCenter/HelpCenter.jsx';
 import Notification from '../pages/User/Notification/Notification.jsx';
@@ -35,13 +39,17 @@ const MainRoutes = () => {
           <Route path='/cart' element={<Cart />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path="category" element={<Category />} />
-          <Route path='/checkout' element={<Payment/>}/>
+          <Route path='/checkout' element={<Payment />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="category/:categoryId" element={<Category />} />
 
           <Route path='login' element={<SignInSignUp />} />
           <Route path='account' element={<Account />} >
             <Route path='information' element={<AccountInformation />} />
+            <Route path='information/phonenumber' element={<UpdatePhoneNumber />} />
+            <Route path='information/email' element={<UpdateEmail />} />
+            <Route path='information/pasword' element={<ChangePassword />} />
+            <Route path='information/pin' element={<UpdatePIN />} />
             <Route path='order' element={<OrderManagement />} />
             <Route path='help-center' element={<HelpCenter />} />
             <Route path='notification' element={<Notification />} />

@@ -15,7 +15,6 @@ export default function AccountSideBar() {
         { name: 'Thông báo của tôi', icon: 'fa-solid fa-bell', link: 'notification' },
         { name: 'Sổ địa chỉ', icon: 'fa-solid fa-map', link: 'address' },
         { name: 'Quản lý xu', icon: 'fa-solid fa-coins', link: 'coins' },
-        { name: 'Mã giảm giá', icon: 'fa-solid fa-ticket', link: 'voucher' },
         { name: 'Xúc xắc may mắn', icon: 'fa-solid fa-dice', link: '/dice' },
     ];
 
