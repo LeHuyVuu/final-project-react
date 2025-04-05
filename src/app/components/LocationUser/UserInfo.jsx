@@ -10,8 +10,7 @@ const UserInfo = () => {
     const keyUser = localStorage.getItem('LoginUser');
     const name = localStorage.getItem('name' + keyUser);
     const phone = localStorage.getItem('phoneNumber' + keyUser);
-    const address = localStorage.getItem('address' + keyUser) || 'Nhà, tân hiệp II, Xã Bù Nho, Huyện Phú Riềng, Bình Phước';
-
+    const address = localStorage.getItem('address' + keyUser + '-address-0') || 'Nhà, tân hiệp II, Xã Bù Nho, Huyện Phú Riềng, Bình Phước';
     const [displayDialog, setDisplayDialog] = useState(false); // Mở/Đóng Dialog
     const [newName, setNewName] = useState(name);
     const [newPhone, setNewPhone] = useState(phone);
