@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './AccountSideBar.css';
 
-import TikiCharacter from './TikiCharacter.png';
+import TikiText from './TikiText.png';
 
 export default function AccountSideBar() {
 
@@ -27,7 +27,7 @@ export default function AccountSideBar() {
     return (
         <div className='accountsidebar-container'>
             <div className='thisuser'>
-                <img src={TikiCharacter} alt='TikiCharacter' />
+                <img src={TikiText} alt='TikiText' />
                 <div>
                     <div>Tài khoản của</div>
                     <div className='user-name'>{User.name}</div>
