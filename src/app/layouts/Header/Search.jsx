@@ -97,7 +97,8 @@ const Search = () => {
         // Gọi API tìm kiếm sản phẩm
         try {
             const response = await getData(
-                `https://tiki.vn/api/v2/products?limit=40&q=${keyword}`
+                `https://tiki.vn/api/v2/products?limit=40&include=advertisement&aggregations=2&trackity_id=182be9b9-76ed-6222-e51b-b73a2c7de71f&q=${keyword}`
+                
             );
             const dataSearch = response.data.data; // Bạn có thể xử lý kết quả ở đây nếu cần
             navigate(`/search?q=${keyword}`, { state: { dataSearch } }); // Điều hướng đến trang tìm kiếm với từ khóa
