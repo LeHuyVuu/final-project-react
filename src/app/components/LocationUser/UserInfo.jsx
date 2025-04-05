@@ -31,7 +31,6 @@ const UserInfo = () => {
             <Card className="shadow-xl rounded-2xl bg-white mb-5">
                 <div className="flex justify-between items-center  text-base">
                     <h3 className="text-2xl  font-bold text-[#1a1a2e]">Giao tới</h3>
-                    
                     <button
                         className="text-blue-500"
                         onClick={() => setDisplayDialog(true)} // Mở dialog khi bấm nút "Thay đổi"
@@ -40,7 +39,6 @@ const UserInfo = () => {
                     </button>
                 </div>
                 <div className="w-full mb-6 mt-2 border-t border-gray-400  "></div>
-
                 <div className="flex items-center space-x-4 ">
                     <div>
                         <span className="font-semibold text-gray-800">{name}</span>
@@ -48,8 +46,6 @@ const UserInfo = () => {
                     </div>
                     <div className="text-sm text-gray-600">{address}</div>
                 </div>
-
-
                 <Divider className="my-4" />
             </Card>
 

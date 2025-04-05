@@ -205,10 +205,8 @@ const Cart = () => {
                 <div className="container mx-auto px-4">
                     <div className="flex justify-between items-center mb-6">
                         <div className="font-semibold text-3xl text-gray-800">
-                        <i className="pi pi-shopping-bag mr-2 text-3xl "></i>Giỏ Hàng
-
+                            <i className="pi pi-shopping-bag mr-2 text-3xl"></i>Giỏ Hàng
                         </div>
-                        
                         <div className="flex items-center space-x-2">
                             <Link to='/'>
                                 <button className="flex items-center bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
@@ -223,7 +221,7 @@ const Cart = () => {
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items */}
 
-                        <div className="w-full   lg:w-2/3">
+                        <div className="w-full lg:w-2/3">
                             <div>
                                 {/* Select All Header */}
                                 <div className=" bg-blue-200 grid grid-cols-12 items-center px-4 rounded-t-md">
@@ -233,7 +231,7 @@ const Cart = () => {
                                             checked={selectAll}
                                             onChange={handleSelectAll}
                                         /> {/* Chọn tất cả trong giỏ */}
-                                        <label htmlFor="selectAll" className="text-gray-800   font-semibold text-md ml-2">
+                                        <label htmlFor="selectAll" className="text-gray-800 font-semibold text-md ml-2">
                                             Tất cả sản phẩm ({cartItems.length})
                                         </label>
                                     </div>
@@ -261,27 +259,24 @@ const Cart = () => {
 
                                 {/* Shop-wise Selection */}
                                 {Object.keys(groupedBySeller).map((seller) => (
-                                    <div key={seller} className="bg-white  ">
-                                        <div className="flex  items-center px-4 gap-2 py-2 my-4">
-                                            <div className=" mr-2">
+                                    <div key={seller} className="bg-white">
+                                        <div className="flex items-center px-4 gap-2 py-2 my-4">
+                                            <div className="mr-2">
                                                 <Checkbox
                                                     checked={selectAllBySeller[seller] || false}
                                                     onChange={() => handleSelectAllBySeller(seller)}
                                                     inputId={`selectAll-${seller}`}
                                                 /> {/* Chọn tất cả trong cửa hàng */}
-
                                             </div>
                                             <div className="text-2xl">
                                                 {/* <i class="pi pi-shopping-cart"></i> */}
                                                 <i class="pi pi-shop text-gray-500  mr-1"></i>
-                                                <span className='text-base'>  {seller}</span>
+                                                <span className='text-base'>{seller}</span>
                                             </div>
                                         </div>
-                                        <div className="w-full  border-t border-gray-400  "></div>
-
-
+                                        <div className="w-full border-t border-gray-400"></div>
                                         {groupedBySeller[seller].map((item) => (
-                                            <div key={item.id} className="grid  grid-cols-12 items-center border-b p-4">
+                                            <div key={item.id} className="grid grid-cols-12 items-center border-b p-4">
                                                 <div className="col-span-5 flex">
                                                     <Checkbox
                                                         checked={selectedItems.some(selectedItem => selectedItem.id === item.id)}
@@ -291,7 +286,6 @@ const Cart = () => {
                                                     <div>
                                                         <h5 className="text-md text-[#1a1a2e] mb-1 min-h-12  line-clamp-3 overflow-hidden text-ellipsis">{item.name}</h5>
                                                     </div>
-                                                    
                                                 </div>
                                                 <div className="col-span-2 text-center text-red-400 font-medium">
                                                     <p className=" m-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
@@ -339,7 +333,6 @@ const Cart = () => {
                             <Card className="shadow-xl rounded-2xl bg-white  mb-6">
                                 <h3 className="text-2xl font-bold  text-[#1a1a2e]">Tạm tính</h3>
                                 <div className="w-full mb-6 mt-2 border-t border-gray-400"></div>
-
                                 <div className="flex justify-between mb-3 text-base">
                                     <span>Tổng tiền hàng:</span>
                                     <span className="font-semibold text-gray-800">
