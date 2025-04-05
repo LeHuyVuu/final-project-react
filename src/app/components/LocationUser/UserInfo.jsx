@@ -30,28 +30,35 @@ const UserInfo = () => {
     return (
         <>
             <Card className="shadow-xl rounded-2xl bg-white mb-5">
-                <h3 className="text-2xl font-bold mb-6 text-[#1a1a2e]">Giao tới</h3>
-                <div className="flex justify-between mb-3 text-base">
-                    <div>
-                        <span className="font-semibold text-gray-800">{name}</span>
-                        <div className="text-sm text-gray-600">{phone}</div>
-                        <div className="text-sm text-gray-600">{address}</div>
-                    </div>
-                    <button 
+                <div className="flex justify-between items-center  text-base">
+                    <h3 className="text-2xl  font-bold text-[#1a1a2e]">Giao tới</h3>
+                    
+                    <button
                         className="text-blue-500"
                         onClick={() => setDisplayDialog(true)} // Mở dialog khi bấm nút "Thay đổi"
                     >
                         Thay đổi
                     </button>
                 </div>
+                <div className="w-full mb-6 mt-2 border-t border-gray-400  "></div>
+
+                <div className="flex items-center space-x-4 ">
+                    <div>
+                        <span className="font-semibold text-gray-800">{name}</span>
+                        <div className="font-semibold text-sm text-gray-800">{phone}</div>
+                    </div>
+                    <div className="text-sm text-gray-600">{address}</div>
+                </div>
+
+
                 <Divider className="my-4" />
             </Card>
 
             {/* Dialog để thay đổi thông tin */}
-            <Dialog 
-                header="Cập nhật thông tin" 
-                visible={displayDialog} 
-                style={{ width: '50vw' }} 
+            <Dialog
+                header="Cập nhật thông tin"
+                visible={displayDialog}
+                style={{ width: '50vw' }}
                 onHide={() => setDisplayDialog(false)}
             >
                 <div className="p-fluid">
