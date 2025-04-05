@@ -95,11 +95,10 @@ const Payment = () => {
   }, [products]);
 
   const checkOut = () => {
-    // Kiểm tra nếu 'product' tồn tại và có dữ liệu hợp lệ
     if (products && Array.isArray(products) && products.length > 0) {
       products.forEach((prod) => {
         const item = {
-          id: prod?.id, // Dữ liệu product là mảng, lấy phần tử đầu tiên
+          id: prod?.id,
           name: prod?.name,
           current_seller: prod?.current_seller, // Dữ liệu là chuỗi, không cần thuộc tính '.name'
           price: prod?.price,
@@ -113,20 +112,29 @@ const Payment = () => {
         // Log item để kiểm tra
         console.log({ item });
 
-        // Lưu vào localStorage
-        localStorage.setItem(item.id, JSON.stringify(item));
+        // Lưu vào localStorage cho sản phẩm cụ thể
+        // localStorage.setItem(item.id, JSON.stringify(item));
+
+        // Lưu vào danh sách đơn hàng đã đặt (orderHistory) trong localStorage
+        let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];  // Nếu chưa có, tạo mảng rỗng
+        orderHistory.push(item);  // Thêm sản phẩm vào danh sách đơn hàng
+        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));  // Cập nhật lại orderHistory
 
         // Xóa sản phẩm khỏi cartItems trong localStorage
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         cartItems = cartItems.filter((cartItem) => cartItem.id !== item.id);  // Loại bỏ sản phẩm đã thanh toán
         localStorage.setItem('cartItems', JSON.stringify(cartItems));  // Cập nhật lại cartItems trong localStorage
+
+        // Cập nhật số lượng sản phẩm trong giỏ hàng
         sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length);
+
         // Chuyển hướng đến trang thanh toán thành công
         navigate('/checkout/success', { state: { item } });
       });
     } else {
       console.error("Invalid product data");
     }
+
   };
 
 
@@ -401,7 +409,7 @@ const Payment = () => {
           <div className="mt-10">
             <Like />
           </div>
-        </div>  
+        </div>
       </main>
     </div>
   );
