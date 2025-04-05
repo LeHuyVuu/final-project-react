@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UpdatePIN.css';
 
@@ -7,9 +7,6 @@ export default function UpdatePIN() {
     const LoginUser = localStorage.getItem('LoginUser');
     const [PIN, setPIN] = useState(localStorage.getItem(`PIN${LoginUser}`));
     const [Error, setError] = useState();
-
-    useEffect(() => {
-    }, [PIN])
 
     const handleChange = (e) => {
         setPIN(e.target.value);

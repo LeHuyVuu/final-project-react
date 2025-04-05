@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UpdatePhoneNumber.css';
 
@@ -8,7 +8,13 @@ export default function UpdatePhoneNumber() {
     const [Phone, setPhone] = useState(localStorage.getItem(`phoneNumber${LoginUser}`));
     const [Error, setError] = useState();
 
-    useEffect(() => {
+    const handleChange = (e) => {
+        setPhone(e.target.value);
+    };
+
+    const navigate = useNavigate();
+    const handleUpdate = async (e) => {
+        e.preventDefault();
         if (!Phone) {
             setError('Số điện thoại không hợp lệ');
             return;
@@ -21,17 +27,12 @@ export default function UpdatePhoneNumber() {
             setError('Số điện thoại phải có 10 chữ số');
             return;
         }
-        setError();
-    }, [Phone])
-
-    const handleChange = (e) => {
-        setPhone(e.target.value);
-    };
-
-    const navigate = useNavigate();
-    const handleUpdate = (e) => {
-        e.preventDefault();
+        setError('Cập nhật số điện thoại thành công!');
         localStorage.setItem(`phoneNumber${LoginUser}`, Phone);
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(2000);
+
         navigate('/account/information');
     }
 
@@ -50,13 +51,10 @@ export default function UpdatePhoneNumber() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className='error-message'>{Error}</div>
+                        <div className={`${Error === 'Cập nhật số điện thoại thành công!' ? 'success-message' : 'error-message'}`}>{Error}</div>
                     </div>
-                    {Error ?
-                        <div className='btn btn-div'>Lưu thay đổi</div>
-                        :
-                        <button className='btn'>Lưu thay đổi</button>
-                    }
+
+                    <button className='btn'>Lưu thay đổi</button>
                 </form>
             </div>
         </div>
