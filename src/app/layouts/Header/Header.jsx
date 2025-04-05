@@ -386,7 +386,7 @@ export default function Header() {
       onClick={handleOutsideClick}
     >
       {/* Top header section */}
-      <div className="grid grid-cols-3 gap-4 items-center w-full pt-2">
+      <div className="grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
           <div className="flex justify-center flex-col items-center group">
             <img
