@@ -170,7 +170,7 @@ export default function SignInSignUp() {
             gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
-            address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
+            // address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
         };
         console.log('Sign Up Data:', signupData);
 
@@ -196,9 +196,17 @@ export default function SignInSignUp() {
         localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
-        localStorage.setItem(`address${SignUpPhoneNumber}`, signupData.address);
+
+        localStorage.setItem(`address${SignUpPhoneNumber}-name-0`, signupData.name);
+        localStorage.setItem(`address${SignUpPhoneNumber}-phone-0`, signupData.phoneNumber);
+        localStorage.setItem(`address${SignUpPhoneNumber}-address-0`, '');
+        localStorage.setItem(`address${SignUpPhoneNumber}-typeaddress-0`, '');
+        localStorage.setItem(`address${SignUpPhoneNumber}-default-0`, '');
 
         setSuccessSignUp('Đăng kí thành công!');
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(1500);
+        moveImageBack();
     };
 
     const handleSubmitSignIn = (e) => {
