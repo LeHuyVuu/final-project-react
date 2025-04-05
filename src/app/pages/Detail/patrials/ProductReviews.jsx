@@ -5,7 +5,7 @@ import { Avatar } from "primereact/avatar";
 import { Paginator } from "primereact/paginator";
 import { getData } from "../../../context/api";
 
-const ProductReviews = ({ rating = 0, reviewCount = 0, id = "" , review = {}}) => {
+const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) => {
   const [activeFilter, setActiveFilter] = useState("All Reviews");
   const [filters, setFilters] = useState({
     rating: {
@@ -167,14 +167,18 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "" , review = {}}) =
 
   // Format date from timestamp
   function formatDate(timestamp) {
-    const date = new Date(timestamp * 1000);
+    // Chuyển đổi chuỗi timestamp thành đối tượng Date
+    const date = new Date(timestamp);
+
     const options = {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
+      second: "numeric", // Nếu bạn cần hiển thị cả giây
     };
+
     return date.toLocaleDateString("en-US", options);
   }
 
@@ -200,69 +204,65 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "" , review = {}}) =
     <div className="bg-white text-black">
       <div className="py-6">
         <div className="flex gap-8 flex-wrap">
-          {/* Rating Summary Section */}
-          <div className="flex-none w-[280px]">
-            <div className="flex flex-col items-center mb-6 bg-white p-5 rounded-lg shadow-sm">
-              <div className="text-5xl font-bold text-black">
-                {rating.toFixed(1)}
+          <div className="flex justify-between items-center gap-10 w-full">
+            {/* Rating Summary Section */}
+            <div className="flex-none w-[280px]">
+              <div className="flex flex-col items-center mb-6 bg-white p-5 rounded-lg shadow-sm">
+                <div className="text-5xl font-bold text-black">
+                  {rating.toFixed(1)}
+                </div>
+                <div className="mb-4">
+                  <Rating
+                    value={rating}
+                    readOnly
+                    cancel={false}
+                    stars={5}
+                  />
+                </div>
+                <div className="text-sm text-black">
+                  {reviewCount} đánh giá
+                </div>
               </div>
-              <div className="mb-4">
-                <Rating
-                  value={rating}
-                  readOnly
-                  cancel={false}
-                  stars={5}
-                />
-              </div>
-              <div className="text-sm text-black">
-                {reviewCount} đánh giá
-              </div>
+              {/* Rating Distribution */}
+              {review?.stars && (
+                <div className="mb-6">
+                  {Object.entries(review.stars).reverse().map(([star, data]) => (
+                    <div
+                      key={star}
+                      className="flex items-center gap-2 mb-2"
+                    >
+                      <div className="flex items-center gap-1 w-16">
+                        {star} <i className="pi pi-star-fill text-yellow-400"></i>
+                      </div>
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-yellow-400"
+                          style={{ width: `${data.percent}%` }}
+                        />
+                      </div>
+                      <div className="w-8 text-sm text-gray-600">
+                        {data.count}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            {/* Rating Distribution */}
-            {review?.stars && (
-              <div className="mb-6">
-                {Object.entries(review.stars).reverse().map(([star, data]) => (
-                  <div
-                    key={star}
-                    className="flex items-center gap-2 mb-2"
-                  >
-                    <div className="flex items-center gap-1 w-16">
-                      {star} <i className="pi pi-star-fill text-yellow-400"></i>
-                    </div>
-                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-yellow-400"
-                        style={{ width: `${data.percent}%` }}
-                      />
-                    </div>
-                    <div className="w-8 text-sm text-gray-600">
-                      {data.count}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-
-            {/* Filter Container */}
-            <div className="border border-dashed border-gray-300 rounded-lg p-4">
+            <div className="rounded-lg w-full">
               <h2 className="text-xl font-semibold mb-4">Reviews Filter</h2>
-
               {/* Rating Filter Section */}
               <div className="mb-4">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-gray-800">Rating</h3>
-                  <i className="pi pi-chevron-up text-gray-400"></i>
                 </div>
-                <div className="space-y-3">
+                <div className="flex gap-6 flex-wrap">
                   {[5, 4, 3, 2, 1].map((star) => (
-                    <div key={star} className="flex items-center gap-3">
+                    <div key={star} className="flex items-center gap-2">
                       <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center bg-gray-50">
                         <Checkbox
                           inputId={`rating-${star}`}
                           checked={filters.rating[star]}
                           onChange={() => handleFilterChange("rating", star)}
-                          className=""
                         />
                       </div>
                       <label
@@ -277,10 +277,13 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "" , review = {}}) =
                 </div>
               </div>
             </div>
+
           </div>
 
+
+
           {/* Reviews List Section */}
-          <div className="flex-1">
+          <div className="">
             <div className="space-y-6">
 
               {review?.data?.slice(first, first + rows).map((review) => (
