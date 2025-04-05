@@ -23,11 +23,11 @@ const itemTemplate = (item) => {
                         </h4>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
-                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-red-400 px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
+                            <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
                                 {item.discount}
                             </span>
                         </div>
-                        <div className="text-xl font-bold text-black mb-2">{item.price}</div>
+                        <div className="text-xl font-bold text-[#ff424e] mb-2">{item.price}</div>
 
                         <div>
                             <ProgressBar qty={item.qty} qty_ordered={item.qty_ordered} progress_text={item.progress_text} />

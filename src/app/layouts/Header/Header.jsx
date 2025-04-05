@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { sCountItem } from "../../context/store.js";
 import axios from "axios";
+import Search from "./Search.jsx";
 
 export default function Header() {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -399,7 +400,7 @@ export default function Header() {
           </div>
         </Link>
 
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <div className="search relative group w-full">
             <div className="header-search">
               <input
@@ -427,7 +428,8 @@ export default function Header() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <Search/>
 
         <div className="flex justify-end items-center space-x-5 pr-10">
           <div className="user cursor-pointer group">
