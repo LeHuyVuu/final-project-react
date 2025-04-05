@@ -7,9 +7,9 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        10: '10px'
-      }
+        10: "10px",
+      },
     },
   },
   plugins: [],
-}
+};
