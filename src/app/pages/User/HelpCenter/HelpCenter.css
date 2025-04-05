@@ -3,9 +3,8 @@
     max-width: 900px;
 
     .helpcenter-content {
-        display: block;
-        justify-content: space-between;
         border-radius: 10px;
+        overflow: hidden;
         background-color: #fff;
         padding: 20px;
 
