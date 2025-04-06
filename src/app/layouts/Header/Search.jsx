@@ -8,7 +8,6 @@ const Search = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Kiểm tra dropdown có mở hay không
     const [isLoading, setIsLoading] = useState(false); // Kiểm tra trạng thái đang tải
     const [error, setError] = useState(null); // Lỗi khi gọi API
-    const [isOverlayActive, setIsOverlayActive] = useState(false); // Kiểm soát lớp phủ
     const dropdownRef = useRef(null); // Ref cho dropdown để kiểm tra click ngoài
     const navigate = useNavigate();
 
@@ -98,13 +97,11 @@ const Search = () => {
         try {
             const response = await getData(
                 `https://tiki.vn/api/v2/products?limit=40&include=advertisement&aggregations=2&trackity_id=182be9b9-76ed-6222-e51b-b73a2c7de71f&q=${keyword}`
-                
             );
             const dataSearch = response.data.data; // Bạn có thể xử lý kết quả ở đây nếu cần
             navigate(`/search?q=${keyword}`, { state: { dataSearch } }); // Điều hướng đến trang tìm kiếm với từ khóa
 
             // Điều hướng đến trang tìm kiếm với từ khóa
-            setIsOverlayActive(false); // Tắt lớp phủ khi tìm kiếm
         } catch (error) {
             console.error("Lỗi khi gọi API tìm kiếm sản phẩm:", error);
             setError("Không thể tìm thấy sản phẩm!");
@@ -120,29 +117,21 @@ const Search = () => {
             );
             const dataSearch = response.data.data; // Bạn có thể xử lý kết quả ở đây nếu cần
             navigate(`/search?q=${keyword}`, { state: { dataSearch } }); // Điều hướng đến trang tìm kiếm với từ khóa
-            setIsOverlayActive(false); // Tắt lớp phủ khi click vào item
-
         } catch (error) {
             console.error("Lỗi khi gọi API tìm kiếm sản phẩm:", error);
             setError("Không thể tìm thấy sản phẩm!");
         }
     };
 
-    // Hiển thị lớp phủ khi tìm kiếm bắt đầu
-    const handleFocusSearch = () => {
-        setIsOverlayActive(true); // Bật lớp phủ khi người dùng bắt đầu tìm kiếm
+    // Xử lý sự kiện xóa từ khóa
+    const clearInput = () => {
+        setKeyword(""); // Xóa giá trị trong input
+        setSuggestions([]); // Xóa danh sách gợi ý khi xóa từ khóa
+        setIsDropdownOpen(false); // Đóng dropdown khi xóa từ khóa
     };
 
     return (
         <div className="relative flex justify-end items-center pr-4 md:pr-8">
-            {/* Lớp phủ (overlay) */}
-            {isOverlayActive && (
-                <div
-                    className="fixed inset-0 bg-black opacity-50 z-10"
-                    onClick={() => setIsOverlayActive(false)} // Click ra ngoài để tắt lớp phủ
-                ></div>
-            )}
-
             <div className="relative group w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
                 <div className="relative">
                     <input
@@ -154,7 +143,6 @@ const Search = () => {
                         onKeyDown={(e) => {
                             if (e.key === "Enter") handleSearch(); // Xử lý khi nhấn Enter
                         }}
-                        onFocus={handleFocusSearch} // Bật lớp phủ khi tìm kiếm
                         className="w-full border border-gray-200 rounded-full py-2 px-6 pl-14 text-lg text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 shadow-sm hover:shadow-md"
                         placeholder="Search products..."
                     />
@@ -215,26 +203,28 @@ const Search = () => {
                                     // Bạn có thể xử lý tìm kiếm hoặc điều hướng ở đây
                                 }}
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                    />
-                                </svg>
+                                <button onClick={clearInput} className="cursor-pointer">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                </button>
+
                             </button>
                         </div>
                     ))}
                 </div>
             )}
-
         </div>
     );
 };
