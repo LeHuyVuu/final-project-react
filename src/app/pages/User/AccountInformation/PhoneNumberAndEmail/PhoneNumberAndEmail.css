@@ -20,6 +20,13 @@
         border: 1px solid #0068d6;
     }
 
+    .unavailable, .unavailable:hover {
+        color: #999;
+        background-color: transparent;
+        border: 1px solid #999;
+        cursor: default;
+    }
+
     .phonenumberandemail-item {
         margin: 0 0 12px;
 

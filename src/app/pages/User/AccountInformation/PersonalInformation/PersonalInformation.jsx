@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PersonalInformation.css';
 import TikiDefaultAvatar from './TikiDefaultAvatar.png';
@@ -6,6 +6,8 @@ import TikiDefaultAvatar from './TikiDefaultAvatar.png';
 export default function PersonalInformation() {
 
     const LoginUser = localStorage.getItem('LoginUser');
+    const avatarUrl = localStorage.getItem(`image${LoginUser}`);
+    const finalUrl = (avatarUrl !== null && avatarUrl !== '') ? avatarUrl : TikiDefaultAvatar;
 
     const [formData, setFormData] = useState({
         name: localStorage.getItem(`name${LoginUser}`),
@@ -57,7 +59,7 @@ export default function PersonalInformation() {
 
                 <div className='head-form'>
                     <div className='form-avatar'>
-                        <img src={TikiDefaultAvatar} alt='avatar'></img>
+                        <img src={finalUrl} alt='avatar' />
                     </div>
                     <div>
                         <div className='form-name form-group'>
