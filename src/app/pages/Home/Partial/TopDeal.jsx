@@ -91,7 +91,7 @@ export default function TopDeal() {
                         Top Deals - Siêu Rẻ
                     </h2>
                 </div>
-                <a href="#" className="text-blue-500">Xem tất cả</a>
+                {/* <a href="#" className="text-blue-500">Xem tất cả</a> */}
             </div>
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">

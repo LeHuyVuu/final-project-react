@@ -66,12 +66,38 @@ const ProductDetail = () => {
     }).format(price);
   };
 
-  const breadcrumbItems = productRes?.breadcrumbs?.map((item) => ({
-    label: item.name,
-    url: item.url,
-  }));
+  const breadcrumbItems = productRes?.breadcrumbs?.map((item, index, arr) => {
+    const isLast = index === arr.length - 1;
 
-  const breadcrumbHome = { icon: "pi pi-home", url: "#" };
+    // Nếu là phần tử cuối cùng, chỉ trả về label
+    if (isLast) {
+      return {
+        label: item.name,
+      };
+    }
+
+    // Trích xuất key và id từ URL dạng "/slug/c1234"
+    const match = item.url.match(/\/([^/]+)\/c(\d+)/);
+
+    if (match) {
+      const key = match[1];
+      const id = match[2];
+
+      return {
+        label: item.name,
+        url: `http://localhost:3000/category/${id}?urlKey=${key}`,
+      };
+    }
+
+    // Nếu không khớp, giữ nguyên URL (phòng trường hợp là đường dẫn đầy đủ)
+    return {
+      label: item.name,
+      url: item.url,
+    };
+  });
+
+
+  const breadcrumbHome = { icon: "pi pi-home", url: "/" };
   const lastItem = { label: productRes?.name };
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -170,22 +196,29 @@ const ProductDetail = () => {
           {/* Skeleton cho phần hình ảnh */}
           <div className="flex-1 max-w-lg lg:max-w-xl">
             <SkeletonLoader type="image" width="100%" height={400} /> {/* Main image */}
-            <div className="flex gap-2.5 mt-4">
-              {Array(5).fill(0).map((_, index) => (
-                <SkeletonLoader key={index} type="image" width="60px" height="60px" />
-              ))}
+            <div className="flex gap-2 mt-4">
+              {Array(5)
+                .fill(0)
+                .map((_, index) => (
+                  <SkeletonLoader
+                    key={index}
+                    type="image"
+                    width="60px"
+                    height="60px"
+                  />
+                ))}
             </div>
           </div>
           {/* Skeleton cho phần chi tiết */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col gap-4">
             <SkeletonLoader type="text" width="60%" height={20} /> {/* Thương hiệu */}
-            <SkeletonLoader type="text" width="80%" height={30} className="mb-4" /> {/* Tiêu đề */}
-            <SkeletonLoader type="text" width="40%" height={20} className="mt-4" /> {/* Rating */}
-            <SkeletonLoader type="text" width="100%" height={80} className="mt-6" /> {/* Giá */}
-            <SkeletonLoader type="text" width="70%" height={20} className="mt-6" /> {/* Số lượng */}
-            <div className="flex gap-4 mt-6 mb-5">
-              <SkeletonLoader type="text" width="50%" height={40} /> {/* Nút Thêm vào giỏ */}
-              <SkeletonLoader type="text" width="50%" height={40} /> {/* Nút Mua ngay */}
+            <SkeletonLoader type="text" width="80%" height={30} /> {/* Tiêu đề */}
+            <SkeletonLoader type="text" width="40%" height={20} /> {/* Rating */}
+            <SkeletonLoader type="text" width="70%" height={60} /> {/* Giá */}
+            <SkeletonLoader type="text" width="50%" height={20} /> {/* Số lượng */}
+            <div className="flex gap-4 mt-2">
+              <SkeletonLoader type="text" width="100%" height={40} /> {/* Nút Thêm vào giỏ */}
+              <SkeletonLoader type="text" width="100%" height={40} /> {/* Nút Mua ngay */}
             </div>
           </div>
         </div>

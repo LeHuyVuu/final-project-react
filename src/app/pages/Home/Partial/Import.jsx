@@ -98,7 +98,7 @@ export default function Import() {
                     <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
                         Hàng Ngoại Giá Hot</h2>
                 </div>
-                <Link to='/' className="text-blue-500">{title.more_link_text}</Link>
+                {/* <Link to='/' className="text-blue-500">{title.more_link_text}</Link> */}
 
             </div>
             <div>
