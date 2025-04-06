@@ -236,7 +236,7 @@ const Cart = () => {
     const currentItems = cartItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
-        <div className="  min-h-screen">
+        <div className="min-h-screen">
             <Toast ref={toast} />
             <ConfirmDialog />
 

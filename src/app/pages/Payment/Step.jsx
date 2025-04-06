@@ -9,8 +9,8 @@ export default function Step() {
     const isActiveStep = (path) => location.pathname.includes(path);
 
     return (
-        <div className="w-full flex flex-col items-center space-x-10 bg-gray-100">
-            <div className="w-full flex mt-10 items-center justify-center space-x-10 bg-gray-100">
+        <div className="w-full flex flex-col items-center space-x-10 ">
+            <div className="w-full flex mt-10 items-center justify-center space-x-10">
                 {/* Cart Step */}
                 <div className={`font-semibold text-xl ${isActiveStep('cart') ? 'text-blue-500' : 'text-gray-500'}`}>
                     <i className="pi pi-shopping-bag mr-2 text-xl"></i>Giỏ Hàng
