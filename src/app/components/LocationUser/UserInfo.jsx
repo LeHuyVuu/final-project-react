@@ -11,6 +11,7 @@ const UserInfo = () => {
     const name = localStorage.getItem('name' + keyUser);
     const phone = localStorage.getItem('phoneNumber' + keyUser);
     const address = localStorage.getItem('address' + keyUser + '-address-0') || 'Nhà, tân hiệp II, Xã Bù Nho, Huyện Phú Riềng, Bình Phước';
+    
     const [displayDialog, setDisplayDialog] = useState(false); // Mở/Đóng Dialog
     const [newName, setNewName] = useState(name);
     const [newPhone, setNewPhone] = useState(phone);
@@ -28,9 +29,9 @@ const UserInfo = () => {
 
     return (
         <>
-            <Card className=" bg-white mb-5">
-                <div className="flex justify-between items-center  text-base">
-                    <h3 className="text-2xl  font-bold text-[#1a1a2e]">Giao tới</h3>
+            <Card className=" bg-white mb-10">
+                <div className="flex justify-between items-center text-base">
+                    <h3 className="text-2xl font-bold text-[#1a1a2e]">Giao tới</h3>
                     <button
                         className="text-blue-500"
                         onClick={() => setDisplayDialog(true)} // Mở dialog khi bấm nút "Thay đổi"
@@ -38,7 +39,7 @@ const UserInfo = () => {
                         Thay đổi
                     </button>
                 </div>
-                <div className="w-full mb-6 mt-2 border-t border-gray-400  "></div>
+                <div className="w-full mb-6 mt-2 border-t border-gray-400 "></div>
                 <div className="flex items-center justify-between space-x-4">
                     <div>
                         <span className="font-semibold text-gray-800">{name}</span>
