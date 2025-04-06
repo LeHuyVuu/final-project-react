@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; // Added useRef for Toast
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
 import { Divider } from "primereact/divider";
@@ -6,6 +6,7 @@ import { Tag } from "primereact/tag";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Dialog } from "primereact/dialog";
 import { BreadCrumb } from "primereact/breadcrumb";
+import { Toast } from "primereact/toast"; // Added Toast import
 import "./styleDetail.css";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
@@ -31,21 +32,26 @@ const COLORS = {
 
 // Main Component
 const ProductDetail = () => {
-  const { id } = useParams();  // Lấy productID từ URL
+  const { id } = useParams(); // Lấy productID từ URL
   const [productRes, setProductRes] = useState({});
-  console.log({ id })
+  console.log({ id });
+
+  // Add Toast reference
+  const toast = useRef(null);
+
   // Gọi API khi component được render
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getData(`https://tiki.vn/api/v2/products/${id}`);
-        setProductRes(res.data);  // Lưu dữ liệu vào state
+        setProductRes(res.data); // Lưu dữ liệu vào state
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
       }
     };
     fetchData();
   }, [id]);
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
@@ -66,7 +72,6 @@ const ProductDetail = () => {
 
   const breadcrumbHome = { icon: "pi pi-home", url: "#" };
   const lastItem = { label: productRes.name };
-  // console.log("productRes", productRes)
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -99,15 +104,15 @@ const ProductDetail = () => {
       const res = await getData(`https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`);
       setReview(res.data);
       console.log(res.data);
-    }
+    };
 
     fetchData();
-  }, [id])
+  }, [id]);
 
   const navigate = useNavigate();
   const handleBuyNow = () => {
     const authen = localStorage.getItem("LoginUser");
-    console.log(authen)
+    console.log(authen);
     if (authen != null) {
       const productToBuy = {
         id: productRes.id,
@@ -116,7 +121,7 @@ const ProductDetail = () => {
         price: productRes?.price,
         quantity: quantity,
         original_price: productRes?.original_price,
-        thumbnail_url: productRes?.thumbnail_url
+        thumbnail_url: productRes?.thumbnail_url,
       };
       navigate("/checkout", { state: { productToBuy } });
     } else {
@@ -124,10 +129,8 @@ const ProductDetail = () => {
     }
   };
 
-
   const handleAddToCart = () => {
     const authen = localStorage.getItem("LoginUser");
-    console.log(authen)
     if (authen != null) {
       const productToAddCart = {
         id: productRes.id,
@@ -137,7 +140,7 @@ const ProductDetail = () => {
         quantity: quantity,
         original_price: productRes?.original_price,
         thumbnail_url: productRes?.thumbnail_url,
-        totalPrice: productRes.price * quantity,  // Tính totalPrice khi thêm sản phẩm vào giỏ hàng
+        totalPrice: productRes.price * quantity, // Tính totalPrice khi thêm sản phẩm vào giỏ hàng
       };
 
       const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -147,16 +150,24 @@ const ProductDetail = () => {
       );
 
       if (existingProductIndex !== -1) {
+        // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng và tính lại totalPrice
         cartItems[existingProductIndex].quantity += quantity;
+        cartItems[existingProductIndex].totalPrice =
+          cartItems[existingProductIndex].quantity * productRes.price; // Tính lại totalPrice khi số lượng thay đổi
       } else {
         cartItems.push(productToAddCart);
       }
 
-
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
-      sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length)
-      // console.log(JSON.parse(localStorage.getItem("cartItems"))?.length)
-      // console.log("Product added to cart:", productToAddCart);
+      sCountItem.set(cartItems.length); // Cập nhật lại số lượng sản phẩm trong giỏ hàng
+
+      // Show toast notification
+      toast.current.show({
+        severity: "success",
+        summary: "Thành công",
+        detail: "Đã thêm sản phẩm vào giỏ hàng!",
+        life: 3000,
+      });
     } else {
       navigate("/login");
     }
@@ -164,7 +175,8 @@ const ProductDetail = () => {
 
   return (
     <>
-      <sCountItem.DevTool name="count" />
+      {/* <sCountItem.DevTool name="count" /> */}
+      <Toast ref={toast} /> {/* Added Toast component */}
       <div className="bg-white text-black">
         <div className="p-2 mt-5 max-w-7xl mx-auto">
           <BreadCrumb
@@ -175,10 +187,7 @@ const ProductDetail = () => {
           />
         </div>
 
-
-
         <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
-
           {/* Image Section */}
           <div className="flex-1 max-w-lg lg:max-w-xl">
             <div className="flex flex-col w-full bg-white sticky top-3 gap-4 p-4 border border-gray-200 rounded-xl shadow-sm">
@@ -187,11 +196,10 @@ const ProductDetail = () => {
                 onClick={() => setImageModalVisible(true)}
               >
                 <img
-                  src={productRes?.images?.[selectedImage]?.large_url || 'fallback_image_url'}
+                  src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
                   alt={productRes?.name}
                   className="w-full h-auto object-contain transition-transform duration-300 rounded-lg"
                 />
-
 
                 {productRes?.badges_new && productRes?.badges_new.length > 0 && (
                   <div className="absolute top-3 left-3 flex gap-2 z-10">
@@ -258,10 +266,11 @@ const ProductDetail = () => {
                     <img
                       src={image.base_url}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-16 h-16 object-cover rounded-lg transition-all duration-200 ${selectedImage === index
-                        ? "border-2 border-blue-500 opacity-100"
-                        : "border border-gray-300 opacity-80"
-                        }`}
+                      className={`w-16 h-16 object-cover rounded-lg transition-all duration-200 ${
+                        selectedImage === index
+                          ? "border-2 border-blue-500 opacity-100"
+                          : "border border-gray-300 opacity-80"
+                      }`}
                     />
                     {selectedImage === index && (
                       <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full" />
@@ -289,9 +298,7 @@ const ProductDetail = () => {
             <div className="flex items-center gap-3 mb-2">
               <div className="text-sm text-gray-700">
                 Thương hiệu:{" "}
-                <b className="text-blue-500 font-semibold">
-                  {productRes?.brand?.name}
-                </b>
+                <b className="text-blue-500 font-semibold">{productRes?.brand?.name}</b>
               </div>
               <div className="h-4 w-px bg-gray-300"></div>
               <span className="text-sm text-gray-600">
@@ -346,14 +353,10 @@ const ProductDetail = () => {
 
                 <Tag
                   value={
-                    productRes?.inventory_status === "available"
-                      ? "Còn hàng"
-                      : "Hết hàng"
+                    productRes?.inventory_status === "available" ? "Còn hàng" : "Hết hàng"
                   }
                   severity={
-                    productRes?.inventory_status === "available"
-                      ? "success"
-                      : "danger"
+                    productRes?.inventory_status === "available" ? "success" : "danger"
                   }
                   className="text-sm px-3 py-1.5 rounded-lg font-semibold"
                 />
@@ -399,20 +402,16 @@ const ProductDetail = () => {
               </div>
             )}
 
-
             {/* Quantity Selector */}
             <div className="flex items-center gap-4 mb-7 p-4 bg-gray-50 rounded-xl">
-              <h3 className="text-gray-900 text-base font-semibold m-0">
-                Số lượng:
-              </h3>
+              <h3 className="text-gray-900 text-base font-semibold m-0">Số lượng:</h3>
               <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${quantity <= 1
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900 cursor-pointer"
-                    }`}
+                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${
+                    quantity <= 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-900 cursor-pointer"
+                  }`}
                 >
                   -
                 </button>
@@ -470,7 +469,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Delivery Information */}
-            <div className=" flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
+            <div className="flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
               <h3 className="text-lg font-semibold m-0 mb-2 text-gray-900 flex items-center gap-2">
                 <i className="pi pi-truck text-blue-500"></i>
                 Thông tin vận chuyển
@@ -492,11 +491,13 @@ const ProductDetail = () => {
                   <span className="font-semibold">Chính sách đổi trả</span>
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: productRes?.return_and_exchange_policy?.replace(/<br\s*\/?>/gi, ' '),
+                      __html: productRes?.return_and_exchange_policy?.replace(
+                        /<br\s*\/?>/gi,
+                        " "
+                      ),
                     }}
                     className="text-sm text-gray-600 mt-1"
                   />
-
                 </div>
               </div>
             </div>
@@ -551,10 +552,11 @@ const ProductDetail = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="2" className="text-center text-gray-500">No specifications available</td>
+                          <td colSpan="2" className="text-center text-gray-500">
+                            No specifications available
+                          </td>
                         </tr>
                       )}
-
                     </tbody>
                   </table>
                 </div>
@@ -580,9 +582,9 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products Section */}
-        <div className=" max-w-7xl mx-auto mt-11">
+        <div className="max-w-7xl mx-auto mt-11">
           {/* <RelatedProducts /> */}
-          <Like/>
+          <Like />
         </div>
       </div>
 
@@ -614,12 +616,11 @@ const ProductDetail = () => {
           {/* Main Image */}
           <div className="flex justify-center items-center flex-1">
             <img
-              src={productRes?.images?.[selectedImage]?.large_url || 'fallback_image_url'}
-              alt={productRes?.name || 'Product Name'}
+              src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
+              alt={productRes?.name || "Product Name"}
               className="max-w-[90%] max-h-[70vh] object-contain mx-auto shadow-lg transition-transform duration-300 rounded-lg"
             />
           </div>
-
 
           {/* Thumbnails Navigation */}
           <div className="mt-8 flex justify-center gap-5 items-center px-5">
@@ -635,10 +636,11 @@ const ProductDetail = () => {
                 <div
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`w-[70px] h-[70px] rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${selectedImage === index
-                    ? "border-3 border-blue-500 opacity-100"
-                    : "border-3 border-transparent opacity-70"
-                    }`}
+                  className={`w-[70px] h-[70px] rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${
+                    selectedImage === index
+                      ? "border-3 border-blue-500 opacity-100"
+                      : "border-3 border-transparent opacity-70"
+                  }`}
                 >
                   <img
                     src={image?.base_url}
@@ -658,7 +660,7 @@ const ProductDetail = () => {
           </div>
 
           {/* Image Counter */}
-          <div className="absolute bottom-3  left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
+          <div className="absolute bottom-3 left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
             {selectedImage + 1} / {productRes?.images?.length}
           </div>
         </div>
