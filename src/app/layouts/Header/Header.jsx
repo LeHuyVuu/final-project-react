@@ -582,13 +582,13 @@ export default function Header() {
             {/* Menu items container with animation */}
             <div
               ref={menuContainerRef}
-              className="flex items-center flex-grow justify-start relative overflow-hidden"
-              style={{ minHeight: "2.5rem" }}
+              className="flex items-center flex-grow justify-start relative overflow-hidden "
+              style={{ minHeight: "3rem" }}
             >
               {currentMenuItems.map((item, index) => (
                 <div
                   key={index}
-                  className="horizontal-nav-item relative mr-4 flex-shrink-0"
+                  className="horizontal-nav-item relative mr-4 flex-shrink-0 pb-1"
                   onMouseEnter={() => handleMenuItemHover(item)}
                 >
                   <Link
@@ -611,7 +611,7 @@ export default function Header() {
               <button
                 onClick={handleNextPage}
                 disabled={currentMenuPage >= totalMenuPages - 1 || isAnimating}
-                className={`px-2 flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
+                className={`px-2  flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
                   currentMenuPage >= totalMenuPages - 1 || isAnimating
                     ? "text-gray-300 cursor-not-allowed opacity-50"
                     : "text-gray-700 hover:text-blue-500 hover:scale-110"
@@ -636,7 +636,7 @@ export default function Header() {
 
             {/* Pagination indicator */}
             {menuItems.length > ITEMS_PER_PAGE && (
-              <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
+              <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
                 {Array.from({ length: totalMenuPages }).map((_, index) => (
                   <div
                     key={index}
@@ -660,7 +660,7 @@ export default function Header() {
         {showCategoryDropdown && (
           <div
             ref={dropdownRef}
-            className="category-panel absolute left-28 right-28 right-0 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
+            className="category-panel absolute left-28 right-28 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
             onMouseEnter={() => setShowCategoryDropdown(true)}
             onMouseLeave={() => setShowCategoryDropdown(false)}
             style={{

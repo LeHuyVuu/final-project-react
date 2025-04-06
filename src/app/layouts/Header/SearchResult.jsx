@@ -1,0 +1,2051 @@
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { Dropdown } from "primereact/dropdown";
+import { Button } from "primereact/button";
+import { Checkbox } from "primereact/checkbox";
+import { Rating } from "primereact/rating";
+import { Badge } from "primereact/badge";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTag,
+  faStar,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { Dialog } from "primereact/dialog";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const SearchResults = () => {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sortOption, setSortOption] = useState("top_seller");
+  const [hoverProduct, setHoverProduct] = useState(null);
+  const [filtersApplied, setFiltersApplied] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
+  const colorPanelRef = useRef(null);
+  const [showAllFiltersDialog, setShowAllFiltersDialog] = useState(false);
+  const [visibleFilters, setVisibleFilters] = useState([]);
+
+  // Pagination related states
+  const PAGES_PER_GROUP = 5;
+  const [loadedPageGroups, setLoadedPageGroups] = useState(0);
+  const [totalPageGroups, setTotalPageGroups] = useState(0);
+  const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
+
+  const query = searchParams.get("q");
+  console.log("location", location);
+
+  // Move formatCurrency function up here, before it's used
+  // Format currency
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    }).format(value);
+  };
+
+  // FilterOptions state for dynamic filters from API
+  const [filterOptions, setFilterOptions] = useState({
+    materials: [],
+    patterns: [],
+    colors: [],
+    sizes: [],
+    priceRanges: [],
+    ratings: [],
+    brands: [],
+    dynamicFilters: {},
+    serviceFilters: {},
+  });
+
+  // Filter states
+  const [filters, setFilters] = useState({
+    materials: [],
+    patterns: [],
+    colors: [],
+    price: null,
+    brands: [],
+    rating: null,
+  });
+
+  const [checkboxFilters, setCheckboxFilters] = useState({
+    fastDelivery: false,
+    freeShip: false,
+    fourPlusStar: false,
+    topDeal: false,
+  });
+
+  const [dynamicFilters, setDynamicFilters] = useState({});
+
+  // Temporary filters for filter dialog
+  const [tempFilters, setTempFilters] = useState({
+    materials: [],
+    patterns: [],
+    colors: [],
+    price: null,
+    brands: [],
+    rating: null,
+  });
+  const [tempDynamicFilters, setTempDynamicFilters] = useState({});
+  const [tempCheckboxFilters, setTempCheckboxFilters] = useState({
+    fastDelivery: false,
+    freeShip: false,
+    fourPlusStar: false,
+    topDeal: false,
+  });
+
+  const sortOptions = [
+    { label: "Phổ biến", value: "top_seller" },
+    { label: "Bán chạy", value: "newest" },
+    { label: "Giá thấp đến cao", value: "price,asc" },
+    { label: "Giá cao đến thấp", value: "price,desc" },
+  ];
+
+  // Màu sắc mặc định cho các màu từ API
+  const colorMap = {
+    Đen: "#000000",
+    Trắng: "#ffffff",
+    Đỏ: "#ef4444",
+    "Xanh dương": "#3b82f6",
+    "Xanh lá": "#22c55e",
+    Vàng: "#facc15",
+    Hồng: "#ec4899",
+    Tím: "#a855f7",
+    Xám: "#6b7280",
+    Nâu: "#92400e",
+    Kem: "#fef9c3",
+    Cam: "#fb923c",
+    Bạc: "#cbd5e1",
+  };
+
+  // Process search data and extract filters
+  useEffect(() => {
+    // Initial fetch of search results from location state
+    if (location.state?.dataSearch) {
+      // Handle product data
+      if (location.state.dataSearch.data) {
+        setProducts(location.state.dataSearch.data);
+      } else {
+        setProducts(location.state.dataSearch);
+      }
+
+      console.log("Full data from API:", location.state.dataSearch);
+
+      // Process filter data
+      const filtersArray =
+        location.state.dataSearch.filters ||
+        location.state.filters?.attributes ||
+        [];
+
+      console.log("Available filters:", filtersArray);
+
+      // Process sort options if available
+      const sortOptionsArray = location.state.dataSearch.sort_options || [];
+      if (sortOptionsArray.length > 0) {
+        const newSortOptions = sortOptionsArray.map((option) => ({
+          label: option.display_value || "",
+          value: option.query_value || "top_seller",
+        }));
+        if (newSortOptions.length > 0 && newSortOptions[0].value) {
+          setSortOption(newSortOptions[0].value);
+        }
+      }
+
+      // Process filters
+      if (filtersArray && Array.isArray(filtersArray)) {
+        const newFilterOptions = {
+          materials: [],
+          patterns: [],
+          colors: [],
+          sizes: [],
+          priceRanges: [],
+          ratings: [],
+          brands: [],
+          categories: [],
+          dynamicFilters: {},
+          serviceFilters: {},
+        };
+
+        // Track available filters for prioritization
+        const availableFilters = [];
+
+        // Process each filter category from the API
+        filtersArray.forEach((filter) => {
+          const filterCode = filter.code || filter.query_name;
+          const queryName = filter.query_name || filterCode;
+          const filterType = filter.type;
+
+          console.log(`Processing filter: ${filterCode}, query_name: ${queryName}`);
+
+          // Skip if it doesn't have values
+          if (!filter.values || !Array.isArray(filter.values)) return;
+
+          // Add to available filters for visibility selection
+          availableFilters.push(filterCode);
+
+          // Handle special service filters (like fast delivery, freeship)
+          if (filterType === "service") {
+            newFilterOptions.serviceFilters[filterCode] = {
+              code: filterCode,
+              query_name: queryName,
+              display_name: filter.display_name,
+              icon: filter.icon,
+              type: filterType,
+              service_name: filter.service_name,
+              values: filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+              })),
+            };
+            return; // Skip further processing for service filters
+          }
+
+          // Process standard filters based on code/query_name
+          switch (filterCode) {
+            case "category":
+              newFilterOptions.categories = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                url_key: item.url_key || "",
+                query_name: queryName,
+              }));
+              break;
+
+            case "rating":
+              newFilterOptions.ratings = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                query_name: queryName,
+              }));
+              break;
+
+            case "price":
+              if (filter.values && filter.values.length > 0) {
+                newFilterOptions.priceRanges = filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value || "",
+                  count: item.count || 0,
+                  query_name: queryName,
+                }));
+              } else if (
+                filter.min !== undefined &&
+                filter.max !== undefined
+              ) {
+                // Create price ranges if not provided by API
+                const min = filter.min;
+                const max = filter.max;
+                const step = Math.floor((max - min) / 4); // Create 4 price ranges
+
+                newFilterOptions.priceRanges = [
+                  {
+                    name: `Dưới ${formatCurrency(step)}`,
+                    key: `${min},${step}`,
+                    count: 0,
+                    query_name: queryName,
+                  },
+                  {
+                    name: `${formatCurrency(step)} - ${formatCurrency(
+                      step * 2
+                    )}`,
+                    key: `${step},${step * 2}`,
+                    count: 0,
+                    query_name: queryName,
+                  },
+                  {
+                    name: `${formatCurrency(step * 2)} - ${formatCurrency(
+                      step * 3
+                    )}`,
+                    key: `${step * 2},${step * 3}`,
+                    count: 0,
+                    query_name: queryName,
+                  },
+                  {
+                    name: `Trên ${formatCurrency(step * 3)}`,
+                    key: `${step * 3},${max}`,
+                    count: 0,
+                    query_name: queryName,
+                  },
+                ];
+              }
+              break;
+
+            case "brand":
+              newFilterOptions.brands = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                url_key: item.url_key || "",
+                query_name: queryName,
+              }));
+              break;
+
+            case "option_color":
+            case "cloth_material":
+            case "fashion_pattern":
+            case "option_size_clothes":
+            case "age_group":
+            case "book_cover":
+            case "publisher_vn":
+            case "author":
+            case "seller":
+            case "is_cross_border":
+              // These are all specific filter types we need to handle directly
+              newFilterOptions.dynamicFilters[filterCode] = {
+                code: filterCode,
+                query_name: queryName,
+                display_name: filter.display_name || filterCode,
+                multi_select: filter.multi_select !== false,
+                values: filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  url_key: item.url_key || "",
+                })),
+              };
+
+              // Populate specialized collections for common filters
+              if (filterCode === "option_color") {
+                newFilterOptions.colors = filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  hex: colorMap[item.display_value] || "#cccccc",
+                  query_name: queryName,
+                }));
+              } else if (filterCode === "cloth_material") {
+                newFilterOptions.materials = filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  query_name: queryName,
+                }));
+              } else if (filterCode === "fashion_pattern") {
+                newFilterOptions.patterns = filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  query_name: queryName,
+                }));
+              } else if (filterCode === "option_size_clothes") {
+                newFilterOptions.sizes = filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  query_name: queryName,
+                }));
+              }
+              break;
+
+            // Handle all other filters dynamically
+            default:
+              newFilterOptions.dynamicFilters[filterCode] = {
+                code: filterCode,
+                query_name: queryName,
+                display_name: filter.display_name || filterCode,
+                multi_select: filter.multi_select !== false,
+                values: filter.values.map((item) => ({
+                  name: item.display_value || "",
+                  key: item.query_value?.toString() || "",
+                  count: item.count || 0,
+                  url_key: item.url_key || "",
+                })),
+              };
+              break;
+          }
+        });
+
+        // Select which filters to show
+        const priorityFilters = [
+          "price",
+          "category",
+          "rating",
+          "seller",
+          "brand",
+        ];
+        const selectedFilters = [];
+
+        // First add priority filters that exist
+        priorityFilters.forEach((filter) => {
+          if (
+            availableFilters.includes(filter) &&
+            selectedFilters.length < 5
+          ) {
+            selectedFilters.push(filter);
+          }
+        });
+
+        // Then add service filters
+        Object.keys(newFilterOptions.serviceFilters).forEach((filter) => {
+          if (
+            !selectedFilters.includes(filter) &&
+            selectedFilters.length < 8
+          ) {
+            selectedFilters.push(filter);
+          }
+        });
+
+        // Then add other filters until we have enough
+        availableFilters.forEach((filter) => {
+          if (
+            !priorityFilters.includes(filter) &&
+            !selectedFilters.includes(filter) &&
+            !filter.startsWith("support_") &&
+            selectedFilters.length < 8
+          ) {
+            selectedFilters.push(filter);
+          }
+        });
+
+        console.log("Selected visible filters:", selectedFilters);
+        setVisibleFilters(selectedFilters);
+        setFilterOptions(newFilterOptions);
+      }
+
+      setLoading(false);
+    } else {
+      setLoading(false);
+      // If no data in location state, fetch data directly
+      fetchSearchResults();
+    }
+  }, [location.state, query]);
+
+  // Fetch search results with filters
+  const fetchSearchResults = useCallback(async () => {
+    if (!query) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Build API parameters based on selected filters
+      const params = new URLSearchParams();
+
+      // Basic parameters
+      params.append("limit", "40");
+      params.append("include", "advertisement");
+      params.append("aggregations", "2");
+      params.append("trackity_id", "182be9b9-76ed-6222-e51b-b73a2c7de71f");
+      params.append("q", query);
+
+      // Page parameter
+      params.append("page", currentPage.toString());
+
+      // Sort option
+      if (sortOption) {
+        if (sortOption === "top_seller") {
+          params.append("sort", "default");
+        } else if (sortOption === "newest") {
+          params.append("sort", "newest");
+        } else if (sortOption.includes(",")) {
+          const [sortField, sortDirection] = sortOption.split(",");
+          params.append("sort", sortField);
+          if (sortDirection) {
+            params.append("sort_direction", sortDirection);
+          }
+        } else {
+          params.append("sort", sortOption);
+        }
+      }
+
+      // Handle price filter - Use the correct format: price=min,max
+      if (filters.price) {
+        params.append("price", filters.price);
+        console.log("Applied price filter:", filters.price);
+      }
+
+      // Handle rating filter
+      if (filters.rating) {
+        params.append("rating", filters.rating);
+      } else if (checkboxFilters.fourPlusStar) {
+        params.append("rating", "4");
+      }
+
+      // Handle service filters
+      if (checkboxFilters.fastDelivery) {
+        params.append("support_p2h_delivery", "1");
+      }
+
+      if (checkboxFilters.topDeal) {
+        params.append("tiki_hero", "1");
+      }
+
+      if (checkboxFilters.freeShip) {
+        params.append("freeship_campaign", "freeship_xtra");
+      }
+
+      // Find the correct query_name for each filter from filterOptions
+      // For colors
+      if (
+        filters.colors &&
+        filters.colors.length > 0 &&
+        filterOptions.colors.length > 0
+      ) {
+        const queryName = filterOptions.colors[0].query_name || "option_color";
+        params.append(queryName, filters.colors.join(","));
+      }
+
+      // For materials
+      if (
+        filters.materials &&
+        filters.materials.length > 0 &&
+        filterOptions.materials.length > 0
+      ) {
+        const queryName =
+          filterOptions.materials[0].query_name || "cloth_material";
+        params.append(queryName, filters.materials.join(","));
+      }
+
+      // For patterns
+      if (
+        filters.patterns &&
+        filters.patterns.length > 0 &&
+        filterOptions.patterns.length > 0
+      ) {
+        const queryName =
+          filterOptions.patterns[0].query_name || "fashion_pattern";
+        params.append(queryName, filters.patterns.join(","));
+      }
+
+      // For brands
+      if (
+        filters.brands &&
+        filters.brands.length > 0 &&
+        filterOptions.brands.length > 0
+      ) {
+        const queryName = filterOptions.brands[0].query_name || "brand";
+        params.append(queryName, filters.brands.join(","));
+      }
+
+      // Handle dynamic filters
+      Object.entries(dynamicFilters).forEach(([filterCode, values]) => {
+        if (values && values.length > 0) {
+          // Find the correct query_name from filterOptions
+          const filterOption = filterOptions.dynamicFilters[filterCode];
+          const queryName = filterOption?.query_name || filterCode;
+          params.append(queryName, values.join(","));
+        }
+      });
+
+      console.log("API Filter Params:", params.toString());
+
+      // Call API directly using fetch
+      const response = await fetch(
+        `https://tiki.vn/api/v2/products?${params.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+
+      if (result?.data) {
+        // Process unique products
+        const newProducts = result.data;
+
+        // For infinite scroll, append to existing products instead of replacing them
+        // But if we're on page 1, replace the products instead
+        if (currentPage === 1) {
+          setProducts(newProducts);
+        } else {
+          setProducts((prevProducts) => {
+            // Combine previous and new products, ensuring no duplicates
+            const allProducts = [...prevProducts, ...newProducts];
+            return Array.from(
+              new Map(allProducts.map((item) => [item.id, item])).values()
+            );
+          });
+        }
+
+        // Process the new filter options from the response
+        if (currentPage === 1) {
+          processFiltersFromResponse(result);
+        }
+
+        if (result?.paging) {
+          setTotalProducts(result.paging.total || 0);
+          // Check if we've reached the last page
+          const totalPages = Math.ceil((result.paging.total || 0) / 40);
+          setHasMore(currentPage < totalPages);
+
+          // Calculate total page groups
+          const totalGroups = Math.ceil(totalPages / PAGES_PER_GROUP);
+          setTotalPageGroups(totalGroups);
+
+          // Update showLoadMoreButton based on page groups
+          if (
+            currentPage % PAGES_PER_GROUP === 0 &&
+            currentPage < totalPages
+          ) {
+            setShowLoadMoreButton(true);
+            setLoadedPageGroups(Math.floor(currentPage / PAGES_PER_GROUP));
+            setHasMore(false); // Pause infinite scroll until user clicks "Load More"
+          } else {
+            setShowLoadMoreButton(false);
+          }
+        } else {
+          setHasMore(false);
+          setShowLoadMoreButton(false);
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải kết quả tìm kiếm:", error);
+      setError("Không thể tải kết quả tìm kiếm");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    query,
+    currentPage,
+    sortOption,
+    filters,
+    checkboxFilters,
+    dynamicFilters,
+    filterOptions,
+  ]);
+
+  // Function to process filters from API response
+  const processFiltersFromResponse = useCallback(
+    (response) => {
+      if (!response?.aggregations || !Array.isArray(response.aggregations)) {
+        return;
+      }
+
+      console.log("Processing filters from response:", response.aggregations);
+
+      const filtersArray = response.aggregations;
+
+      // Track available filters for prioritization
+      const availableFilters = [];
+
+      // Process each filter category from the API
+      const newFilterOptions = {
+        materials: [],
+        patterns: [],
+        colors: [],
+        sizes: [],
+        priceRanges: [],
+        ratings: [],
+        brands: [],
+        categories: [],
+        dynamicFilters: {},
+        serviceFilters: {},
+      };
+
+      filtersArray.forEach((filter) => {
+        const filterCode = filter.code || filter.query_name;
+        const queryName = filter.query_name || filterCode;
+        const filterType = filter.type;
+
+        console.log(`Processing filter: ${filterCode}, query_name: ${queryName}`);
+
+        // Skip if it doesn't have values
+        if (!filter.values || !Array.isArray(filter.values)) return;
+
+        // Add to available filters for visibility selection
+        availableFilters.push(filterCode);
+
+        // Handle special service filters (like fast delivery, freeship)
+        if (filterType === "service") {
+          newFilterOptions.serviceFilters[filterCode] = {
+            code: filterCode,
+            query_name: queryName,
+            display_name: filter.display_name,
+            icon: filter.icon,
+            type: filterType,
+            service_name: filter.service_name,
+            values: filter.values.map((item) => ({
+              name: item.display_value || "",
+              key: item.query_value?.toString() || "",
+              count: item.count || 0,
+            })),
+          };
+          return; // Skip further processing for service filters
+        }
+
+        // Process standard filters based on code/query_name
+        switch (filterCode) {
+          case "category":
+            newFilterOptions.categories = filter.values.map((item) => ({
+              name: item.display_value || "",
+              key: item.query_value?.toString() || "",
+              count: item.count || 0,
+              url_key: item.url_key || "",
+              query_name: queryName,
+            }));
+            break;
+
+          case "rating":
+            newFilterOptions.ratings = filter.values.map((item) => ({
+              name: item.display_value || "",
+              key: item.query_value?.toString() || "",
+              count: item.count || 0,
+              query_name: queryName,
+            }));
+            break;
+
+          case "price":
+            if (filter.values && filter.values.length > 0) {
+              newFilterOptions.priceRanges = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value || "",
+                count: item.count || 0,
+                query_name: queryName,
+              }));
+            } else if (
+              filter.min !== undefined &&
+              filter.max !== undefined
+            ) {
+              // Create price ranges if not provided by API
+              const min = filter.min;
+              const max = filter.max;
+              const step = Math.floor((max - min) / 4); // Create 4 price ranges
+
+              newFilterOptions.priceRanges = [
+                {
+                  name: `Dưới ${formatCurrency(step)}`,
+                  key: `${min},${step}`,
+                  count: 0,
+                },
+                {
+                  name: `${formatCurrency(step)} - ${formatCurrency(
+                    step * 2
+                  )}`,
+                  key: `${step},${step * 2}`,
+                  count: 0,
+                },
+                {
+                  name: `${formatCurrency(step * 2)} - ${formatCurrency(
+                    step * 3
+                  )}`,
+                  key: `${step * 2},${step * 3}`,
+                  count: 0,
+                },
+                {
+                  name: `Trên ${formatCurrency(step * 3)}`,
+                  key: `${step * 3},${max}`,
+                  count: 0,
+                },
+              ];
+            }
+            break;
+
+          case "brand":
+            newFilterOptions.brands = filter.values.map((item) => ({
+              name: item.display_value || "",
+              key: item.query_value?.toString() || "",
+              count: item.count || 0,
+              url_key: item.url_key || "",
+              query_name: queryName,
+            }));
+            break;
+
+          case "option_color":
+          case "cloth_material":
+          case "fashion_pattern":
+          case "option_size_clothes":
+          case "age_group":
+          case "book_cover":
+          case "publisher_vn":
+          case "author":
+          case "seller":
+          case "is_cross_border":
+            // These are all specific filter types we need to handle directly
+            newFilterOptions.dynamicFilters[filterCode] = {
+              code: filterCode,
+              query_name: queryName,
+              display_name: filter.display_name || filterCode,
+              multi_select: filter.multi_select !== false,
+              values: filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                url_key: item.url_key || "",
+              })),
+            };
+
+            // Populate specialized collections for common filters
+            if (filterCode === "option_color") {
+              newFilterOptions.colors = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                hex: colorMap[item.display_value] || "#cccccc",
+                query_name: queryName,
+              }));
+            } else if (filterCode === "cloth_material") {
+              newFilterOptions.materials = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                query_name: queryName,
+              }));
+            } else if (filterCode === "fashion_pattern") {
+              newFilterOptions.patterns = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                query_name: queryName,
+              }));
+            } else if (filterCode === "option_size_clothes") {
+              newFilterOptions.sizes = filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                query_name: queryName,
+              }));
+            }
+            break;
+
+          // Handle all other filters dynamically
+          default:
+            newFilterOptions.dynamicFilters[filterCode] = {
+              code: filterCode,
+              query_name: queryName,
+              display_name: filter.display_name || filterCode,
+              multi_select: filter.multi_select !== false,
+              values: filter.values.map((item) => ({
+                name: item.display_value || "",
+                key: item.query_value?.toString() || "",
+                count: item.count || 0,
+                url_key: item.url_key || "",
+              })),
+            };
+            break;
+        }
+      });
+
+      // Select which filters to show
+      const priorityFilters = [
+        "price",
+        "category",
+        "rating",
+        "seller",
+        "brand",
+      ];
+      const selectedFilters = [];
+
+      // First add priority filters that exist
+      priorityFilters.forEach((filter) => {
+        if (
+          availableFilters.includes(filter) &&
+          selectedFilters.length < 5
+        ) {
+          selectedFilters.push(filter);
+        }
+      });
+
+      // Then add service filters
+      Object.keys(newFilterOptions.serviceFilters).forEach((filter) => {
+        if (
+          !selectedFilters.includes(filter) &&
+          selectedFilters.length < 8
+        ) {
+          selectedFilters.push(filter);
+        }
+      });
+
+      // Then add other filters until we have enough
+      availableFilters.forEach((filter) => {
+        if (
+          !priorityFilters.includes(filter) &&
+          !selectedFilters.includes(filter) &&
+          !filter.startsWith("support_") &&
+          selectedFilters.length < 8
+        ) {
+          selectedFilters.push(filter);
+        }
+      });
+
+      console.log("Selected visible filters:", selectedFilters);
+      setVisibleFilters(selectedFilters);
+      setFilterOptions(newFilterOptions);
+    },
+    [colorMap, formatCurrency]
+  );
+
+  // Call fetchSearchResults when filters or dependencies change
+  useEffect(() => {
+    if (
+      products.length === 0 ||
+      currentPage > 1 ||
+      filtersApplied > 0 ||
+      sortOption !== "top_seller"
+    ) {
+      fetchSearchResults();
+    }
+  }, [fetchSearchResults]);
+
+  // Reset page and hasMore when filter changes
+  useEffect(() => {
+    // Reset page to 1 and products array when filters change
+    setProducts([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    setShowLoadMoreButton(false);
+    setLoadedPageGroups(0);
+    setTotalPageGroups(0);
+  }, [filters, checkboxFilters, dynamicFilters, sortOption]);
+
+  // Handle price change
+  const handlePriceChange = (priceKey) => {
+    // Nếu click vào giá đã chọn, bỏ chọn
+    if (filters.price === priceKey) {
+      setFilters({
+        ...filters,
+        price: null,
+      });
+      console.log("Removed price filter");
+    } else {
+      // Nếu chọn giá mới
+      setFilters({
+        ...filters,
+        price: priceKey,
+      });
+      console.log("Applied price filter:", priceKey);
+    }
+    setCurrentPage(1);
+    setFiltersApplied((prevCount) =>
+      filters.price === priceKey ? prevCount - 1 : prevCount + 1
+    );
+  };
+
+  // Fix for handlePageChange linter warning - keep function but mark it as used
+  // eslint-disable-next-line no-unused-vars
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Handle sort change
+  const handleSortChange = (e) => {
+    setSortOption(e.value);
+    setCurrentPage(1);
+  };
+
+  // Handle filter change
+  const onFilterChange = (e, category, item) => {
+    const checked = e.checked;
+    let newFilters = { ...filters };
+
+    // Đảm bảo mảng tồn tại
+    if (!newFilters[category]) {
+      newFilters[category] = [];
+    }
+
+    if (checked) {
+      newFilters[category] = [...newFilters[category], item.key];
+    } else {
+      newFilters[category] = newFilters[category].filter(
+        (key) => key !== item.key
+      );
+    }
+
+    console.log(
+      `Filter changed - Category: ${category}, Values:`,
+      newFilters[category]
+    );
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  // Handle checkbox filter change
+  const handleCheckboxChange = (e, key) => {
+    setCheckboxFilters({
+      ...checkboxFilters,
+      [key]: e.checked,
+    });
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  // Toggle color filter
+  const toggleColorFilter = (color) => {
+    // Đảm bảo mảng tồn tại
+    let newColors = filters.colors ? [...filters.colors] : [];
+
+    if (newColors.includes(color)) {
+      newColors = newColors.filter((c) => c !== color);
+    } else {
+      newColors.push(color);
+    }
+
+    setFilters({
+      ...filters,
+      colors: newColors,
+    });
+    setCurrentPage(1);
+  };
+
+  // Handle dynamic filter change
+  const handleDynamicFilterChange = (filterCode, checked, value) => {
+    setDynamicFilters((prev) => {
+      const newFilters = { ...prev };
+
+      // Initialize array if doesn't exist
+      if (!newFilters[filterCode]) {
+        newFilters[filterCode] = [];
+      }
+
+      if (checked) {
+        // Add the value if not already included
+        if (!newFilters[filterCode].includes(value)) {
+          newFilters[filterCode] = [...newFilters[filterCode], value];
+        }
+      } else {
+        // Remove the value
+        newFilters[filterCode] = newFilters[filterCode].filter(
+          (v) => v !== value
+        );
+
+        // Clean up empty arrays
+        if (newFilters[filterCode].length === 0) {
+          delete newFilters[filterCode];
+        }
+      }
+
+      return newFilters;
+    });
+
+    setCurrentPage(1);
+  };
+
+  // Reset all filters
+  const resetFilters = () => {
+    setFilters({
+      materials: [],
+      patterns: [],
+      colors: [],
+      price: null,
+      brands: [],
+      rating: null,
+    });
+    setDynamicFilters({});
+    setCheckboxFilters({
+      fastDelivery: false,
+      freeShip: false,
+      fourPlusStar: false,
+      topDeal: false,
+    });
+    setSortOption("top_seller");
+    setCurrentPage(1);
+  };
+
+  // Add a function to load more products when the user clicks the "Load More" button
+  const loadMoreProducts = () => {
+    setShowLoadMoreButton(false);
+    setHasMore(true);
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  // Dialog filter functions
+  const openFilterDialog = () => {
+    setTempFilters({ ...filters });
+    setTempDynamicFilters({ ...dynamicFilters });
+    setTempCheckboxFilters({ ...checkboxFilters });
+    setShowAllFiltersDialog(true);
+  };
+
+  const applyFilters = () => {
+    setFilters(tempFilters);
+    setDynamicFilters(tempDynamicFilters);
+    setCheckboxFilters(tempCheckboxFilters);
+    setShowAllFiltersDialog(false);
+  };
+
+  const resetTempFilters = () => {
+    setTempFilters({
+      materials: [],
+      patterns: [],
+      colors: [],
+      price: null,
+      brands: [],
+      rating: null,
+    });
+    setTempDynamicFilters({});
+    setTempCheckboxFilters({
+      fastDelivery: false,
+      freeShip: false,
+      fourPlusStar: false,
+      topDeal: false,
+    });
+  };
+
+  // Temp filter functions for dialog
+  const onTempFilterChange = (e, category, item) => {
+    const checked = e.checked;
+    let newFilters = { ...tempFilters };
+
+    // Đảm bảo mảng tồn tại
+    if (!newFilters[category]) {
+      newFilters[category] = [];
+    }
+
+    if (checked) {
+      newFilters[category] = [...newFilters[category], item.key];
+    } else {
+      newFilters[category] = newFilters[category].filter(
+        (key) => key !== item.key
+      );
+    }
+
+    setTempFilters(newFilters);
+  };
+
+  const toggleTempColorFilter = (color) => {
+    // Đảm bảo mảng tồn tại
+    let newColors = tempFilters.colors ? [...tempFilters.colors] : [];
+
+    if (newColors.includes(color)) {
+      newColors = newColors.filter((c) => c !== color);
+    } else {
+      newColors.push(color);
+    }
+
+    setTempFilters({
+      ...tempFilters,
+      colors: newColors,
+    });
+  };
+
+  const handleTempPriceChange = (priceKey) => {
+    // Nếu click vào giá đã chọn, bỏ chọn
+    if (tempFilters.price === priceKey) {
+      setTempFilters({
+        ...tempFilters,
+        price: null,
+      });
+    } else {
+      // Nếu chọn giá mới
+      setTempFilters({
+        ...tempFilters,
+        price: priceKey,
+      });
+    }
+  };
+
+  const handleTempDynamicFilterChange = (filterCode, checked, value) => {
+    let newDynamicFilters = { ...tempDynamicFilters };
+
+    // Đảm bảo mảng tồn tại
+    if (!newDynamicFilters[filterCode]) {
+      newDynamicFilters[filterCode] = [];
+    }
+
+    if (checked) {
+      newDynamicFilters[filterCode] = [...newDynamicFilters[filterCode], value];
+    } else {
+      newDynamicFilters[filterCode] = newDynamicFilters[filterCode].filter(
+        (val) => val !== value
+      );
+    }
+
+    setTempDynamicFilters(newDynamicFilters);
+  };
+
+  const handleTempCheckboxChange = (e, key) => {
+    setTempCheckboxFilters({
+      ...tempCheckboxFilters,
+      [key]: e.checked,
+    });
+  };
+
+  // Count active filters
+  useEffect(() => {
+    let count = 0;
+    count += filters.materials?.length || 0;
+    count += filters.patterns?.length || 0;
+    count += filters.colors?.length || 0;
+    count += filters.brands?.length || 0;
+    if (filters.price) count++;
+    if (filters.rating) count++;
+
+    Object.values(dynamicFilters).forEach((filterValues) => {
+      if (Array.isArray(filterValues)) {
+        count += filterValues.length;
+      }
+    });
+
+    if (checkboxFilters.fastDelivery) count++;
+    if (checkboxFilters.freeShip) count++;
+    if (checkboxFilters.topDeal) count++;
+    if (checkboxFilters.fourPlusStar) count++;
+
+    setFiltersApplied(count);
+  }, [filters, checkboxFilters, dynamicFilters]);
+
+  const getSortTitle = () => {
+    const sortMap = {
+      top_seller: "phổ biến",
+      newest: "mới nhất",
+      "price,asc": "giá thấp đến cao",
+      "price,desc": "giá cao đến thấp",
+    };
+    return sortMap[sortOption] || "phổ biến";
+  };
+
+  if (loading && products.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-6">
+        {/* Breadcrumb skeleton */}
+        <div className="h-8 bg-gray-200 w-1/2 rounded animate-pulse mb-6"></div>
+
+        {/* Products skeleton */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          {Array(12)
+            .fill(0)
+            .map((_, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg overflow-hidden shadow-sm animate-pulse"
+              >
+                <div className="w-full h-48 bg-gray-300"></div>
+                <div className="p-3">
+                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Item template for the products (similar to ProductListing)
+  const itemTemplate = (product) => {
+    const isHovered = hoverProduct === product.id;
+
+    return (
+      <div
+        className="col-span-1 group relative"
+        onMouseEnter={() => setHoverProduct(product.id)}
+        onMouseLeave={() => setHoverProduct(null)}
+      >
+        <Link to={`/detail/${product.id}`}>
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+            <div className="relative overflow-hidden">
+              <img
+                src={product.thumbnail_url}
+                alt={product.name}
+                className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+
+              <div
+                className={`absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center gap-3 transition-opacity duration-300 ${
+                  isHovered ? "opacity-100" : "opacity-0"
+                }`}
+              ></div>
+
+              {/* Labels */}
+              <div className="absolute top-2 left-2 flex flex-col gap-1">
+                {product.discount_rate > 0 && (
+                  <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded shadow-sm">
+                    -{product.discount_rate}%
+                  </span>
+                )}
+              </div>
+
+              <div className="absolute bottom-0 left-0">
+                {product.badges_v3 && product.badges_v3[0]?.image && (
+                  <img src={product.badges_v3[0].image} alt="" />
+                )}
+              </div>
+            </div>
+
+            <div className="p-3 flex flex-col flex-grow min-h-52">
+              <div className="mb-1">
+                <div className="flex items-center mb-1">
+                  <span className="text-red-500 font-bold text-base">
+                    {formatCurrency(product.price)}
+                  </span>
+                  {product.original_price > product.price && (
+                    <span className="ml-2 text-gray-400 text-xs line-through">
+                      {formatCurrency(product.original_price)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+                    {product.brand_name}
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-yellow-400 mr-1">
+                      <FontAwesomeIcon icon={faStar} size="xs" />
+                    </span>
+                    <span className="text-xs text-gray-600">
+                      {product.rating_average} ({product.review_count})
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <h3 className="text-gray-800 text-sm font-medium mb-2 line-clamp-2 h-10 hover:text-blue-600 transition-colors">
+                {product.name}
+              </h3>
+
+              <div className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]">
+                {product.badges_new &&
+                  product.badges_new
+                    .find((badge) => badge.code === "variant_count")
+                    ?.arr_text?.map((text, i) => (
+                      <span
+                        key={i}
+                        className="bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-sm"
+                      >
+                        {text.value}
+                      </span>
+                    ))}
+              </div>
+
+              {product.discount_rate > 0 && (
+                <div className="flex items-center text-xs text-blue-600 mb-1">
+                  <FontAwesomeIcon
+                    icon={faTag}
+                    className="mr-1.5 text-blue-600"
+                    size="xs"
+                  />
+                  Giảm {formatCurrency(product.discount)}
+                </div>
+              )}
+
+              <div className="flex justify-between items-center mt-auto">
+                <div className="text-xs text-gray-500">
+                  {product.badges_new &&
+                    (product.badges_new.find(
+                      (badge) => badge.code === "delivery_info_badge"
+                    )?.text ||
+                      "Giao hàng tiêu chuẩn")}
+                </div>
+
+                {product.badges_new &&
+                  product.badges_new.some(
+                    (badge) => badge.code === "tikinow"
+                  ) && (
+                    <span className="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded-full border border-red-200">
+                      2H
+                    </span>
+                  )}
+              </div>
+            </div>
+          </div>
+        </Link>
+      </div>
+    );
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-6">
+      {/* Breadcrumb */}
+      {/* <div className="mb-6">
+        <BreadCrumb model={breadcrumbItems} home={breadcrumbHome} />
+      </div> */}
+
+      {/* Header with search title and applied filters counter */}
+      <div className="flex justify-between items-center my-4">
+        <h2 className="text-xl font-medium text-gray-800">
+          Kết quả tìm kiếm cho &ldquo;{query}&rdquo; - Sắp xếp theo {getSortTitle()}
+          {filtersApplied > 0 && (
+            <Badge
+              value={filtersApplied}
+              severity="info"
+              className="ml-2"
+            ></Badge>
+          )}
+        </h2>
+
+        {filtersApplied > 0 && (
+          <Button
+            label="Xóa bộ lọc"
+            icon="pi pi-filter-slash"
+            className="p-button-outlined p-button-sm"
+            onClick={resetFilters}
+          />
+        )}
+      </div>
+
+      {/* Filter Toolbar */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-4">
+        <div className="flex flex-wrap justify-between items-center">
+          <div className="flex items-center flex-wrap gap-4">
+            {/* Map through service filters */}
+            {Object.entries(filterOptions.serviceFilters || {}).map(
+              ([key, filter]) => (
+                <div key={key} className="flex items-center">
+                  <Checkbox
+                    id={key}
+                    className="border border-gray-300 rounded mr-2"
+                    checked={
+                      key === "support_p2h_delivery"
+                        ? checkboxFilters.fastDelivery
+                        : key === "tiki_hero"
+                        ? checkboxFilters.topDeal
+                        : key === "freeship_campaign"
+                        ? checkboxFilters.freeShip
+                        : false
+                    }
+                    onChange={(e) => {
+                      if (key === "support_p2h_delivery")
+                        handleCheckboxChange(e, "fastDelivery");
+                      else if (key === "tiki_hero")
+                        handleCheckboxChange(e, "topDeal");
+                      else if (key === "freeship_campaign")
+                        handleCheckboxChange(e, "freeShip");
+                    }}
+                  />
+                  <label
+                    htmlFor={key}
+                    className="text-xs flex items-center cursor-pointer"
+                  >
+                    {filter.icon && (
+                      <img
+                        src={filter.icon}
+                        alt={filter.display_name || filter.service_name || ""}
+                        className="h-[25px]"
+                      />
+                    )}
+                    {filter.display_name && (
+                      <span className="text-red-500 font-bold mx-1">
+                        {filter.display_name}
+                      </span>
+                    )}
+                  </label>
+                </div>
+              )
+            )}
+
+            {/* Rating filter checkbox */}
+            {filterOptions.ratings && filterOptions.ratings.length > 0 && (
+              <div className="flex items-center">
+                <Checkbox
+                  id="fourStar"
+                  className="border border-gray-300 rounded mr-2"
+                  checked={checkboxFilters.fourPlusStar}
+                  onChange={(e) => handleCheckboxChange(e, "fourPlusStar")}
+                />
+                <label
+                  htmlFor="fourStar"
+                  className="text-xs text-gray-700 flex items-center cursor-pointer"
+                >
+                  <Rating
+                    value={4}
+                    readOnly
+                    disabled
+                    stars={5}
+                    className="mr-1"
+                    cancel={false}
+                    pt={{
+                      onIcon: { className: "text-yellow-400 text-xs" },
+                      offIcon: { className: "text-gray-300 text-xs" },
+                    }}
+                  />
+                  từ 4 sao
+                </label>
+              </div>
+            )}
+
+            {/* Mobile filter button */}
+            <Button
+              label={`Bộ lọc ${
+                filtersApplied > 0 ? `(${filtersApplied})` : ""
+              }`}
+              className="p-button-outlined p-button-sm lg:hidden"
+              onClick={openFilterDialog}
+            />
+          </div>
+
+          {/* Sort options */}
+          <div className="flex items-center gap-2 mt-3 sm:mt-0">
+            <span className="text-xs text-gray-500">Sắp xếp theo:</span>
+            <Dropdown
+              value={sortOption}
+              options={sortOptions}
+              onChange={handleSortChange}
+              placeholder="Phổ biến"
+              className="w-40 text-xs"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Categories */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col space-y-4">
+            {/* Price Ranges */}
+            {filterOptions.priceRanges && filterOptions.priceRanges.length > 0 && (
+              <div>
+                <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                  Khoảng giá
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {filterOptions.priceRanges.map((priceRange) => (
+                    <div
+                      key={priceRange.key}
+                      className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer border-gray-300 text-gray-700 hover:border-gray-400 ${
+                        filters.price === priceRange.key
+                          ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                          : ""
+                      }`}
+                      onClick={() => handlePriceChange(priceRange.key)}
+                    >
+                      {priceRange.name}{" "}
+                      {priceRange.count > 0 && (
+                        <span className="text-gray-500">
+                          ({priceRange.count})
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Render dynamic filters based on visible filters */}
+            {visibleFilters
+              .filter(
+                (code) =>
+                  code !== "price" &&
+                  !Object.keys(filterOptions.serviceFilters || {}).includes(
+                    code
+                  )
+              )
+              .map((filterCode) => {
+                // Handle categories filter
+                if (
+                  filterCode === "category" &&
+                  filterOptions.categories?.length > 0
+                ) {
+                  return (
+                    <div key={filterCode}>
+                      <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                        Danh Mục Sản Phẩm
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {filterOptions.categories
+                          .slice(0, 5)
+                          .map((category) => (
+                            <div
+                              key={category.key}
+                              className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                                dynamicFilters.category?.includes(category.key)
+                                  ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                                  : "border-gray-300 text-gray-700 hover:border-gray-400"
+                              }`}
+                              onClick={() =>
+                                handleDynamicFilterChange(
+                                  "category",
+                                  !dynamicFilters.category?.includes(
+                                    category.key
+                                  ),
+                                  category.key
+                                )
+                              }
+                            >
+                              {category.name}{" "}
+                              {category.count > 0 && (
+                                <span className="text-gray-500">
+                                  ({category.count})
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        {filterOptions.categories.length > 5 && (
+                          <button
+                            className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                            onClick={() => setShowAllFiltersDialog(true)}
+                          >
+                            + {filterOptions.categories.length - 5} danh mục
+                            khác
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Handle rating filter
+                if (
+                  filterCode === "rating" &&
+                  filterOptions.ratings?.length > 0
+                ) {
+                  return (
+                    <div key={filterCode}>
+                      <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                        Đánh giá
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {filterOptions.ratings.map((rating) => (
+                          <div
+                            key={rating.key}
+                            className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                              filters.rating === rating.key
+                                ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                                : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
+                            onClick={() => {
+                              setFilters((prev) => ({
+                                ...prev,
+                                rating:
+                                  prev.rating === rating.key
+                                    ? null
+                                    : rating.key,
+                              }));
+                              setCurrentPage(1);
+                            }}
+                          >
+                            {rating.name}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Handle brand filter correctly
+                if (
+                  filterCode === "brand" &&
+                  filterOptions.brands?.length > 0
+                ) {
+                  const brandOptions = filterOptions.brands;
+                  return (
+                    <div key={filterCode}>
+                      <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                        Thương hiệu
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {brandOptions.slice(0, 5).map((item) => (
+                          <div
+                            key={item.key}
+                            className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                              filters.brands?.includes(item.key)
+                                ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                                : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
+                            onClick={() =>
+                              onFilterChange(
+                                { checked: !filters.brands?.includes(item.key) },
+                                "brands",
+                                item
+                              )
+                            }
+                          >
+                            {item.name}{" "}
+                            {item.count > 0 && (
+                              <span className="text-gray-500">
+                                ({item.count})
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                        {brandOptions.length > 5 && (
+                          <button
+                            className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                            onClick={() => setShowAllFiltersDialog(true)}
+                          >
+                            + {brandOptions.length - 5} thương hiệu khác
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Handle any dynamic filter from API
+                if (filterOptions.dynamicFilters?.[filterCode]) {
+                  const filter = filterOptions.dynamicFilters[filterCode];
+                  return (
+                    <div key={filterCode}>
+                      <p className="text-gray-500 text-sm mb-2.5 font-medium">
+                        {filter.display_name}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {filter.values.slice(0, 5).map((item) => (
+                          <div
+                            key={item.key}
+                            className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
+                              dynamicFilters[filterCode]?.includes(item.key)
+                                ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                                : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
+                            onClick={() =>
+                              handleDynamicFilterChange(
+                                filterCode,
+                                !dynamicFilters[filterCode]?.includes(item.key),
+                                item.key
+                              )
+                            }
+                          >
+                            {item.name}{" "}
+                            {item.count > 0 && (
+                              <span className="text-gray-500">
+                                ({item.count})
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                        {filter.values.length > 5 && (
+                          <button
+                            className="px-3 py-1.5 rounded-full border border-gray-300 text-xs text-gray-700 hover:border-gray-400"
+                            onClick={() => setShowAllFiltersDialog(true)}
+                          >
+                            + {filter.values.length - 5} lựa chọn khác
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return null;
+              })}
+          </div>
+
+          {/* "Show all filters" button */}
+          <div className="mt-2">
+            <Button
+              label="Hiển thị tất cả bộ lọc"
+              className="p-button-outlined p-button-sm"
+              onClick={openFilterDialog}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Main content with filters and products */}
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Products Grid with InfiniteScroll */}
+        <div className="flex-1">
+          {products.length > 0 ? (
+            <InfiniteScroll
+              dataLength={products.length}
+              next={() => setCurrentPage(currentPage + 1)}
+              hasMore={hasMore}
+              loader={
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
+              }
+              className="flex-1"
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+                {products.map((product) => (
+                  <div key={product.id}>{itemTemplate(product)}</div>
+                ))}
+              </div>
+
+              {showLoadMoreButton && (
+                <div className="flex justify-center mt-6">
+                  <Button
+                    label="Xem thêm sản phẩm"
+                    icon="pi pi-arrow-down"
+                    className="p-button-outlined"
+                    onClick={loadMoreProducts}
+                  />
+                </div>
+              )}
+            </InfiniteScroll>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-xl mb-4">
+                Không tìm thấy sản phẩm nào cho &ldquo;{query}&rdquo;
+              </p>
+              <p className="text-gray-500">Hãy thử tìm kiếm với từ khóa khác</p>
+            </div>
+          )}
+        </div>
+
+        {/* Filter dialog for mobile */}
+        <Dialog
+          header="Bộ lọc"
+          visible={showAllFiltersDialog}
+          onHide={() => setShowAllFiltersDialog(false)}
+          className="w-full max-w-md"
+          footer={
+            <div className="flex justify-between">
+              <Button
+                label="Đặt lại"
+                icon="pi pi-refresh"
+                className="p-button-outlined"
+                onClick={resetTempFilters}
+              />
+              <Button
+                label="Áp dụng"
+                icon="pi pi-check"
+                onClick={applyFilters}
+              />
+            </div>
+          }
+        >
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+            {/* Price ranges in dialog */}
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-gray-700 mb-2">Khoảng giá</h3>
+              {filterOptions.priceRanges &&
+              filterOptions.priceRanges.length > 0 ? (
+                <div className="space-y-2">
+                  {filterOptions.priceRanges.map((priceRange) => (
+                    <div key={priceRange.key} className="flex items-center">
+                      <Checkbox
+                        inputId={`temp_price_${priceRange.key}`}
+                        checked={tempFilters.price === priceRange.key}
+                        onChange={() => handleTempPriceChange(priceRange.key)}
+                        className="mr-2 border border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`temp_price_${priceRange.key}`}
+                        className="text-sm text-gray-600 cursor-pointer"
+                      >
+                        {priceRange.name}
+                        <span className="text-gray-400 ml-1 text-xs">
+                          ({priceRange.count})
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">Không có dữ liệu</div>
+              )}
+            </div>
+
+            {/* Category filter in dialog */}
+            {filterOptions.categories && filterOptions.categories.length > 0 && (
+              <div className="border-b pb-3">
+                <h3 className="font-medium text-gray-700 mb-2">
+                  Danh Mục Sản Phẩm
+                </h3>
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                  {filterOptions.categories.map((category) => (
+                    <div key={category.key} className="flex items-center">
+                      <Checkbox
+                        inputId={`temp_category_${category.key}`}
+                        checked={
+                          tempDynamicFilters.category?.includes(category.key) ||
+                          false
+                        }
+                        onChange={(e) =>
+                          handleTempDynamicFilterChange(
+                            "category",
+                            e.checked,
+                            category.key
+                          )
+                        }
+                        className="mr-2 border border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`temp_category_${category.key}`}
+                        className="text-sm text-gray-600 cursor-pointer truncate"
+                      >
+                        {category.name}
+                        <span className="text-gray-400 ml-1 text-xs">
+                          ({category.count})
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Rating filter in dialog */}
+            {filterOptions.ratings && filterOptions.ratings.length > 0 && (
+              <div className="border-b pb-3">
+                <h3 className="font-medium text-gray-700 mb-2">Đánh giá</h3>
+                <div className="space-y-2">
+                  {filterOptions.ratings.map((rating) => (
+                    <div key={rating.key} className="flex items-center">
+                      <Checkbox
+                        inputId={`temp_rating_${rating.key}`}
+                        checked={tempFilters.rating === rating.key}
+                        onChange={() => {
+                          setTempFilters((prev) => ({
+                            ...prev,
+                            rating:
+                              prev.rating === rating.key ? null : rating.key,
+                          }));
+                        }}
+                        className="mr-2 border border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`temp_rating_${rating.key}`}
+                        className="text-sm text-gray-600 cursor-pointer"
+                      >
+                        {rating.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All dynamic filters in dialog */}
+            {Object.entries(filterOptions.dynamicFilters || {}).map(
+              ([filterCode, filter]) => (
+                <div key={filterCode} className="border-b pb-3">
+                  <h3 className="font-medium text-gray-700 mb-2">
+                    {filter.display_name}
+                  </h3>
+                  <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                    {filter.values.map((item) => (
+                      <div key={item.key} className="flex items-center">
+                        <Checkbox
+                          inputId={`temp_${filterCode}_${item.key}`}
+                          checked={
+                            tempDynamicFilters[filterCode]?.includes(
+                              item.key
+                            ) || false
+                          }
+                          onChange={(e) =>
+                            handleTempDynamicFilterChange(
+                              filterCode,
+                              e.checked,
+                              item.key
+                            )
+                          }
+                          className="mr-2 border border-gray-300 rounded"
+                        />
+                        <label
+                          htmlFor={`temp_${filterCode}_${item.key}`}
+                          className="text-sm text-gray-600 cursor-pointer truncate"
+                        >
+                          {item.name}
+                          <span className="text-gray-400 ml-1 text-xs">
+                            ({item.count})
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            )}
+
+            {/* Service filter options in dialog */}
+            <div className="border-b pb-3">
+              <h3 className="font-medium text-gray-700 mb-2">Dịch vụ</h3>
+              <div className="space-y-2">
+                {Object.entries(filterOptions.serviceFilters || {}).map(
+                  ([key, filter]) => (
+                    <div key={key} className="flex items-center">
+                      <Checkbox
+                        id={`temp_${key}`}
+                        checked={
+                          key === "support_p2h_delivery"
+                            ? tempCheckboxFilters.fastDelivery
+                            : key === "tiki_hero"
+                            ? tempCheckboxFilters.topDeal
+                            : key === "freeship_campaign"
+                            ? tempCheckboxFilters.freeShip
+                            : false
+                        }
+                        onChange={(e) => {
+                          if (key === "support_p2h_delivery")
+                            handleTempCheckboxChange(e, "fastDelivery");
+                          else if (key === "tiki_hero")
+                            handleTempCheckboxChange(e, "topDeal");
+                          else if (key === "freeship_campaign")
+                            handleTempCheckboxChange(e, "freeShip");
+                        }}
+                        className="mr-2 border border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor={`temp_${key}`}
+                        className="text-sm text-gray-600 cursor-pointer flex items-center"
+                      >
+                        {filter.icon && (
+                          <img
+                            src={filter.icon}
+                            alt={filter.display_name || filter.service_name}
+                            className="h-4 mr-2"
+                          />
+                        )}
+                        {filter.display_name || filter.service_name}
+                      </label>
+                    </div>
+                  )
+                )}
+
+                {/* 4+ Star rating in services section */}
+                <div className="flex items-center">
+                  <Checkbox
+                    id="temp_fourPlusStar"
+                    checked={tempCheckboxFilters.fourPlusStar}
+                    onChange={(e) =>
+                      handleTempCheckboxChange(e, "fourPlusStar")
+                    }
+                    className="mr-2 border border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="temp_fourPlusStar"
+                    className="text-sm text-gray-600 cursor-pointer flex items-center"
+                  >
+                    <Rating
+                      value={4}
+                      readOnly
+                      disabled
+                      stars={5}
+                      className="mr-1"
+                      cancel={false}
+                      pt={{
+                        onIcon: { className: "text-yellow-400 text-xs" },
+                        offIcon: { className: "text-gray-300 text-xs" },
+                      }}
+                    />
+                    từ 4 sao
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+
+        {/* Color Overlay Panel */}
+        <OverlayPanel ref={colorPanelRef} className="w-96">
+          <div className="p-2">
+            <h5 className="text-sm font-medium text-gray-700 mb-3">
+              Chọn màu sắc
+            </h5>
+            <div className="grid grid-cols-5 gap-3">
+              {filterOptions?.colors &&
+                filterOptions.colors.map((color) => (
+                  <div
+                    key={color.key}
+                    className="flex flex-col items-center gap-1.5 cursor-pointer"
+                    onClick={() => toggleColorFilter(color.key)}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full border ${
+                        filters.colors?.includes(color.key)
+                          ? "border-blue-600 ring-2 ring-blue-200"
+                          : "border-gray-300"
+                      } hover:shadow-md transition-shadow duration-200`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.name}
+                    ></div>
+                    <span className="text-xs">{color.name}</span>
+                    {color.count > 0 && (
+                      <span className="text-xs text-gray-500">
+                        ({color.count})
+                      </span>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </OverlayPanel>
+      </div>
+    </div>
+  );
+};
+
+export default SearchResults;
