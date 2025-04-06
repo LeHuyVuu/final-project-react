@@ -20,7 +20,7 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
       "Seller Services": false,
       "Product Price": false,
       Shipment: false,
-      "Match with Description": false,
+
     },
   });
   const [first, setFirst] = useState(0);
@@ -276,16 +276,40 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
                   ))}
                 </div>
               </div>
+              {/* Topics Filter Section */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-800">Topics</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.keys(filters.topics).map((topic) => (
+                    <div
+                      key={topic}
+                      className="flex items-center gap-2 p-2 bg-white rounded-md border border-gray-200 hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+                    >
+                      <div className="w-5 h-5 border border-gray-300 rounded flex items-center justify-center bg-gray-50">
+                        <Checkbox
+                          inputId={`topic-${topic}`}
+                          checked={filters.topics[topic]}
+                          onChange={() => handleFilterChange("topics", topic)}
+                        />
+                      </div>
+                      <label
+                        htmlFor={`topic-${topic}`}
+                        className="flex items-center gap-1 cursor-pointer text-gray-700 text-sm"
+                      >
+                        {topic}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-
           </div>
-
-
 
           {/* Reviews List Section */}
           <div className="">
             <div className="space-y-6">
-
               {review?.data?.slice(first, first + rows).map((review) => (
                 <div
                   key={review.id}
