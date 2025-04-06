@@ -14,13 +14,13 @@ const Search = () => {
   const navigate = useNavigate();
 
 
-    // Hàm lấy giá trị cookie
-    const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(";").shift();
-        return null;
-    };
+    // // Hàm lấy giá trị cookie
+    // const getCookie = (name) => {
+    //     const value = `; ${document.cookie}`;
+    //     const parts = value.split(`; ${name}=`);
+    //     if (parts.length === 2) return parts.pop().split(";").shift();
+    //     return null;
+    // };
 
 
   // Hàm lấy giá trị cookie
