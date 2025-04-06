@@ -33,6 +33,7 @@ import ScrollToTop from "../hooks/ScrollToTop/useScrollToTop.jsx";
 
 import CategorySideBar from "../pages/CategorySideBar/CategorySideBar.jsx";
 import CheckoutSuccess from "../pages/Success/CheckoutSuccess.jsx";
+import Step from "../pages/Payment/Step.jsx";
 
 const MainRoutes = () => {
   return (
@@ -42,12 +43,10 @@ const MainRoutes = () => {
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
           <Route path="detail" element={<ProductDetail />} />
           <Route path="search" element={<SearchResult />} />
           <Route path="category" element={<Category />} />
 
-          <Route path="/checkout" element={<Payment />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="category/:categoryId" element={<Category />} />
 
@@ -69,7 +68,11 @@ const MainRoutes = () => {
           <Route path="dice" element={<Dice />} />
           <Route path="categorysidesar" element={<CategorySideBar />} />
 
-          <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path='/step' element={<Step />} >
+            <Route path='cart' element={<Cart />} />
+            <Route path='checkout' element={<Payment />} />
+            <Route path='checkout/success' element={<CheckoutSuccess />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

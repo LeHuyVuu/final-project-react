@@ -1,6 +1,6 @@
 /* Tùy chỉnh hộp checkbox */
 .p-checkbox-box {
-  border-radius: 8px; /* Bo góc cho hộp checkbox */
+  border-radius: 8px !; /* Bo góc cho hộp checkbox */
   border: 1px solid #b0b0b0; /* Đặt màu viền mặc định */
   transition: all 0.3s ease; /* Hiệu ứng chuyển tiếp khi hover hoặc thay đổi trạng thái */
   position: relative; /* Cần để điều chỉnh vị trí của các pseudo-element */

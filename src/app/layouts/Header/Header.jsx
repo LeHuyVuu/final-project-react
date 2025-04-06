@@ -453,7 +453,7 @@ export default function Header() {
           </div>
 
           <div className="cart cursor-pointer relative group">
-            <Link to="/cart">
+            <Link to="/step/cart">
               <svg
                 className="icon icon--cart transition-transform duration-300 group-hover:scale-110"
                 aria-hidden="true"
