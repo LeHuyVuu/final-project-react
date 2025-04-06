@@ -11,14 +11,14 @@ export default function PhoneNumberAndEmail() {
         {
             heading: 'Số điện thoại và Email',
             items: [
-                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: localStorage.getItem(`phoneNumber${LoginUser}`), button: 'Cập nhật', link: 'phonenumber' },
+                { icon: 'fa-solid fa-phone', label: 'Số điện thoại', value: localStorage.getItem(`phoneNumber${LoginUser}`), button: 'Cập nhật', link: 'phone-number' },
                 { icon: 'fa-solid fa-envelope', label: 'Địa chỉ email', value: localStorage.getItem(`email${LoginUser}`), button: 'Cập nhật', link: 'email' },
             ]
         },
         {
             heading: 'Bảo mật',
             items: [
-                { icon: 'fa-solid fa-lock', label: 'Đổi mật khẩu', value: null, button: 'Cập nhật', link: 'pasword' },
+                { icon: 'fa-solid fa-lock', label: 'Đổi mật khẩu', value: null, button: 'Cập nhật', link: 'password' },
                 { icon: 'fa-solid fa-shield', label: 'Thiết lập mã PIN', value: null, button: 'Thiết lập', link: 'pin' },
                 { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu', link: 'delete-account' },
             ]
