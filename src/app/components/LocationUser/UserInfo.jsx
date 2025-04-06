@@ -28,7 +28,7 @@ const UserInfo = () => {
 
     return (
         <>
-            <Card className="shadow-xl rounded-2xl bg-white mb-5">
+            <Card className=" bg-white mb-5">
                 <div className="flex justify-between items-center  text-base">
                     <h3 className="text-2xl  font-bold text-[#1a1a2e]">Giao tới</h3>
                     <button
@@ -39,7 +39,7 @@ const UserInfo = () => {
                     </button>
                 </div>
                 <div className="w-full mb-6 mt-2 border-t border-gray-400  "></div>
-                <div className="flex items-center space-x-4 ">
+                <div className="flex items-center justify-between space-x-4">
                     <div>
                         <span className="font-semibold text-gray-800">{name}</span>
                         <div className="font-semibold text-sm text-gray-800">{phone}</div>

@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { sCountItem } from "../../context/store";
 import UserInfo from "../../components/LocationUser/UserInfo";
 import Like from "../Home/Partial/Like";
+import './Cart.css';
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -208,7 +209,7 @@ const Cart = () => {
     };
 
     const handleCheckout = () => {
-        navigate("/checkout", { state: { productToBuy: selectedItems } });
+        navigate("/step/checkout", { state: { productToBuy: selectedItems } });
     };
 
     const groupedBySeller = cartItems.reduce((acc, item) => {
@@ -241,7 +242,7 @@ const Cart = () => {
 
             <main className="py-10 px-10">
                 <div className="container mx-auto px-4">
-                    <div className="flex justify-between items-center mb-6">
+                    {/* <div className="flex justify-between items-center mb-6">
                         <div className="font-semibold text-3xl text-gray-800">
                             <i className="pi pi-shopping-bag mr-2 text-3xl"></i>Giỏ Hàng
                         </div>
@@ -255,7 +256,7 @@ const Cart = () => {
                                 </button>
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items */}
                         <div className="w-full lg:w-2/3">
@@ -361,8 +362,8 @@ const Cart = () => {
                                                             onValueChange={(e) => handleQuantityChange(item.id, e.value)}
                                                         />
                                                     </div>
-                                                    <div className="col-span-2 text-center text-red font-medium">
-                                                        <p className="text-red-400 m-0">
+                                                    <div className="col-span-2 text-center text-red-400 font-medium">
+                                                        <p className="flex flex-col m-0">
                                                             {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.totalPrice)}
                                                         </p>
                                                     </div>
@@ -384,7 +385,7 @@ const Cart = () => {
                         </div>
 
                         {/* Order Summary */}
-                        <div className="w-full lg:w-1/3 self-auto">
+                        <div className="w-full lg:w-1/3 sticky h-full left-0 top-40 self-auto">
                             <Card
                                 className="shadow-xl rounded-2xl bg-white mb-6"
                             >

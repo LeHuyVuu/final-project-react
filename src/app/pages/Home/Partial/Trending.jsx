@@ -37,10 +37,10 @@ export default function Trending() {
     }, []);
 
     return (
-        <div className="">
-            <div className="bg-white relative p-4">
+        <div className="flex-flex-col ">
+            <div className="bg-white sticky top-0 z-0 p-4">
                 {/* Tab Header */}
-                <div className="flex sticky top-0 z-30 space-x-4 justify-evenly overflow-x-auto">
+                <div className="flex space-x-4 justify-evenly ">
                     {trending.map((category, index) => (
                         <button
                             key={index}
@@ -64,7 +64,7 @@ export default function Trending() {
             </div>
 
             {/* Tab Content */}
-            <div className="p-4 overflow-y-auto" >
+            <div className="p-4" >
                 {trending[activeTab] && (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                         {trending[activeTab].items.map((product, idx) => {
