@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
 import { Divider } from "primereact/divider";
@@ -6,6 +6,8 @@ import { Tag } from "primereact/tag";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Dialog } from "primereact/dialog";
 import { BreadCrumb } from "primereact/breadcrumb";
+import { Toast } from "primereact/toast";
+import { Skeleton } from "primereact/skeleton";
 import "./styleDetail.css";
 import ProductReviews from "./ProductReviews";
 import RelatedProducts from "./RelatedProducts";
@@ -13,8 +15,8 @@ import { getData } from "../../../context/api";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { sCountItem } from "../../../context/store";
 import Like from "../../Home/Partial/Like";
+import SkeletonLoader from "../../../components/SkeletonLoader/SkeletonLoader.jsx";
 
-// Define custom colors
 const COLORS = {
   background: "#ffffff",
   text: "#000000",
@@ -29,23 +31,28 @@ const COLORS = {
   info: "#339AF0",
 };
 
-// Main Component
 const ProductDetail = () => {
-  const { id } = useParams();  // Lấy productID từ URL
-  const [productRes, setProductRes] = useState({});
-  console.log({ id })
-  // Gọi API khi component được render
+  const { id } = useParams();
+  const [productRes, setProductRes] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const toast = useRef(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const res = await getData(`https://tiki.vn/api/v2/products/${id}`);
-        setProductRes(res.data);  // Lưu dữ liệu vào state
+        setProductRes(res.data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, [id]);
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
@@ -65,20 +72,19 @@ const ProductDetail = () => {
   }));
 
   const breadcrumbHome = { icon: "pi pi-home", url: "#" };
-  const lastItem = { label: productRes.name };
-  // console.log("productRes", productRes)
+  const lastItem = { label: productRes?.name };
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
   const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % productRes?.images.length);
+    setSelectedImage((prev) => (prev + 1) % productRes?.images?.length);
   };
 
   const prevImage = () => {
     setSelectedImage(
-      (prev) => (prev - 1 + productRes?.images.length) % productRes?.images.length
+      (prev) => (prev - 1 + productRes?.images?.length) % productRes?.images?.length
     );
   };
 
@@ -86,28 +92,17 @@ const ProductDetail = () => {
     return { __html: htmlContent };
   };
 
-  const features = [
-    "Hương vị cà phê đen đậm đà và mạnh mẽ với hương thơm lôi cuốn",
-    "100% cà phê Việt Nam chất lượng",
-    "Vị cực mạnh, nay càng thơm",
-    "Tặng kèm Bộ 4 ly thủy tinh Nescafe cao cấp",
-  ];
-
   const [review, setReview] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       const res = await getData(`https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`);
       setReview(res.data);
-      console.log(res.data);
-    }
-
+    };
     fetchData();
-  }, [id])
+  }, [id]);
 
-  const navigate = useNavigate();
   const handleBuyNow = () => {
     const authen = localStorage.getItem("LoginUser");
-    console.log(authen)
     if (authen != null) {
       const productToBuy = {
         id: productRes.id,
@@ -116,7 +111,7 @@ const ProductDetail = () => {
         price: productRes?.price,
         quantity: quantity,
         original_price: productRes?.original_price,
-        thumbnail_url: productRes?.thumbnail_url
+        thumbnail_url: productRes?.thumbnail_url,
       };
       navigate("/checkout", { state: { productToBuy } });
     } else {
@@ -124,10 +119,8 @@ const ProductDetail = () => {
     }
   };
 
-
   const handleAddToCart = () => {
     const authen = localStorage.getItem("LoginUser");
-    console.log(authen)
     if (authen != null) {
       const productToAddCart = {
         id: productRes.id,
@@ -137,34 +130,72 @@ const ProductDetail = () => {
         quantity: quantity,
         original_price: productRes?.original_price,
         thumbnail_url: productRes?.thumbnail_url,
-        totalPrice: productRes.price * quantity,  // Tính totalPrice khi thêm sản phẩm vào giỏ hàng
+        totalPrice: productRes.price * quantity,
       };
 
       const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-
       const existingProductIndex = cartItems.findIndex(
         (item) => item.id === productToAddCart.id
       );
 
       if (existingProductIndex !== -1) {
         cartItems[existingProductIndex].quantity += quantity;
+        cartItems[existingProductIndex].totalPrice =
+          cartItems[existingProductIndex].quantity * productRes.price;
       } else {
         cartItems.push(productToAddCart);
       }
 
-
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
-      sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length)
-      // console.log(JSON.parse(localStorage.getItem("cartItems"))?.length)
-      // console.log("Product added to cart:", productToAddCart);
+      sCountItem.set(cartItems.length);
+
+      toast.current.show({
+        severity: "success",
+        summary: "Thành công",
+        detail: "Đã thêm sản phẩm vào giỏ hàng!",
+        life: 3000,
+      });
     } else {
       navigate("/login");
     }
   };
 
+  if (loading || !productRes) {
+    return (
+      <div className="bg-white text-black">
+        <div className="p-2 mt-5 max-w-7xl mx-auto">
+          <SkeletonLoader type="text" width="50%" height={20} /> {/* Breadcrumb */}
+        </div>
+        <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
+          {/* Skeleton cho phần hình ảnh */}
+          <div className="flex-1 max-w-lg lg:max-w-xl">
+            <SkeletonLoader type="image" width="100%" height={400} /> {/* Main image */}
+            <div className="flex gap-2.5 mt-4">
+              {Array(5).fill(0).map((_, index) => (
+                <SkeletonLoader key={index} type="image" width="60px" height="60px" />
+              ))}
+            </div>
+          </div>
+          {/* Skeleton cho phần chi tiết */}
+          <div className="flex-1 flex flex-col">
+            <SkeletonLoader type="text" width="60%" height={20} /> {/* Thương hiệu */}
+            <SkeletonLoader type="text" width="80%" height={30} className="mb-4" /> {/* Tiêu đề */}
+            <SkeletonLoader type="text" width="40%" height={20} className="mt-4" /> {/* Rating */}
+            <SkeletonLoader type="text" width="100%" height={80} className="mt-6" /> {/* Giá */}
+            <SkeletonLoader type="text" width="70%" height={20} className="mt-6" /> {/* Số lượng */}
+            <div className="flex gap-4 mt-6 mb-5">
+              <SkeletonLoader type="text" width="50%" height={40} /> {/* Nút Thêm vào giỏ */}
+              <SkeletonLoader type="text" width="50%" height={40} /> {/* Nút Mua ngay */}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <sCountItem.DevTool name="count" />
+      <Toast ref={toast} />
       <div className="bg-white text-black">
         <div className="p-2 mt-5 max-w-7xl mx-auto">
           <BreadCrumb
@@ -175,11 +206,7 @@ const ProductDetail = () => {
           />
         </div>
 
-
-
         <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
-
-          {/* Image Section */}
           <div className="flex-1 max-w-lg lg:max-w-xl">
             <div className="flex flex-col w-full bg-white sticky top-3 gap-4 p-4 border border-gray-200 rounded-xl shadow-sm">
               <div
@@ -187,11 +214,10 @@ const ProductDetail = () => {
                 onClick={() => setImageModalVisible(true)}
               >
                 <img
-                  src={productRes?.images?.[selectedImage]?.large_url || 'fallback_image_url'}
+                  src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
                   alt={productRes?.name}
                   className="w-full h-auto object-contain transition-transform duration-300 rounded-lg"
                 />
-
 
                 {productRes?.badges_new && productRes?.badges_new.length > 0 && (
                   <div className="absolute top-3 left-3 flex gap-2 z-10">
@@ -270,7 +296,6 @@ const ProductDetail = () => {
                 ))}
               </div>
 
-              {/* Features */}
               <div className="mb-7">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
                   <i className="pi pi-star text-blue-500"></i>
@@ -283,15 +308,11 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Details Section */}
           <div className="flex-1 flex flex-col bg-white text-gray-900">
-            {/* Brand & SKU */}
             <div className="flex items-center gap-3 mb-2">
               <div className="text-sm text-gray-700">
                 Thương hiệu:{" "}
-                <b className="text-blue-500 font-semibold">
-                  {productRes?.brand?.name}
-                </b>
+                <b className="text-blue-500 font-semibold">{productRes?.brand?.name}</b>
               </div>
               <div className="h-4 w-px bg-gray-300"></div>
               <span className="text-sm text-gray-600">
@@ -299,12 +320,10 @@ const ProductDetail = () => {
               </span>
             </div>
 
-            {/* Product Title */}
             <h1 className="text-2xl font-semibold mb-4 text-gray-900 leading-tight tracking-tight">
               {productRes?.name}
             </h1>
 
-            {/* Ratings & Reviews */}
             <div className="flex items-center gap-3 mb-5 bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center">
                 <Rating
@@ -330,7 +349,6 @@ const ProductDetail = () => {
               </span>
             </div>
 
-            {/* Price Info */}
             <div className="bg-gray-50 rounded-xl p-5 mb-6 shadow-sm border border-gray-200">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col">
@@ -346,14 +364,10 @@ const ProductDetail = () => {
 
                 <Tag
                   value={
-                    productRes?.inventory_status === "available"
-                      ? "Còn hàng"
-                      : "Hết hàng"
+                    productRes?.inventory_status === "available" ? "Còn hàng" : "Hết hàng"
                   }
                   severity={
-                    productRes?.inventory_status === "available"
-                      ? "success"
-                      : "danger"
+                    productRes?.inventory_status === "available" ? "success" : "danger"
                   }
                   className="text-sm px-3 py-1.5 rounded-lg font-semibold"
                 />
@@ -399,19 +413,13 @@ const ProductDetail = () => {
               </div>
             )}
 
-
-            {/* Quantity Selector */}
             <div className="flex items-center gap-4 mb-7 p-4 bg-gray-50 rounded-xl">
-              <h3 className="text-gray-900 text-base font-semibold m-0">
-                Số lượng:
-              </h3>
+              <h3 className="text-gray-900 text-base font-semibold m-0">Số lượng:</h3>
               <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${quantity <= 1
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-900 cursor-pointer"
+                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${quantity <= 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-900 cursor-pointer"
                     }`}
                 >
                   -
@@ -431,7 +439,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-4">
               <Button
                 className="p-button-raised flex-1 bg-white border-2 border-blue-500 text-blue-500 font-semibold rounded-lg px-5 py-3 text-base transition-all duration-200"
@@ -449,7 +456,6 @@ const ProductDetail = () => {
 
             <Divider className="mb-6" />
 
-            {/* Benefits Section */}
             <div className="bg-white rounded-xl p-5 mb-7 flex flex-col gap-4">
               {productRes?.benefits?.map((benefit, index) => (
                 <div
@@ -469,8 +475,7 @@ const ProductDetail = () => {
               ))}
             </div>
 
-            {/* Delivery Information */}
-            <div className=" flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
+            <div className="flex flex-col gap-4 text-gray-900 p-5 border border-gray-200 rounded-xl bg-white">
               <h3 className="text-lg font-semibold m-0 mb-2 text-gray-900 flex items-center gap-2">
                 <i className="pi pi-truck text-blue-500"></i>
                 Thông tin vận chuyển
@@ -492,18 +497,19 @@ const ProductDetail = () => {
                   <span className="font-semibold">Chính sách đổi trả</span>
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: productRes?.return_and_exchange_policy?.replace(/<br\s*\/?>/gi, ' '),
+                      __html: productRes?.return_and_exchange_policy?.replace(
+                        /<br\s*\/?>/gi,
+                        " "
+                      ),
                     }}
                     className="text-sm text-gray-600 mt-1"
                   />
-
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Product Tabs */}
         <div className="max-w-7xl mx-auto px-4 mb-10 bg-white">
           <TabView
             activeIndex={activeTab}
@@ -551,10 +557,11 @@ const ProductDetail = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="2" className="text-center text-gray-500">No specifications available</td>
+                          <td colSpan="2" className="text-center text-gray-500">
+                            No specifications available
+                          </td>
                         </tr>
                       )}
-
                     </tbody>
                   </table>
                 </div>
@@ -579,14 +586,11 @@ const ProductDetail = () => {
           </TabView>
         </div>
 
-        {/* Related Products Section */}
-        <div className=" max-w-7xl mx-auto mt-11">
-          {/* <RelatedProducts /> */}
-          <Like/>
+        <div className="max-w-7xl mx-auto mt-11">
+          <Like />
         </div>
       </div>
 
-      {/* Image Modal/Lightbox */}
       <Dialog
         visible={imageModalVisible}
         onHide={() => setImageModalVisible(false)}
@@ -603,7 +607,6 @@ const ProductDetail = () => {
         showHeader={false}
       >
         <div className="text-center relative bg-white min-h-[85vh] flex flex-col justify-center py-10">
-          {/* Close Button */}
           <button
             onClick={() => setImageModalVisible(false)}
             className="absolute top-5 right-5 bg-blue-500 border-none rounded-full w-11 h-11 flex items-center justify-center cursor-pointer z-10 shadow-lg transition-all duration-200"
@@ -611,17 +614,14 @@ const ProductDetail = () => {
             <i className="pi pi-times text-white text-xl"></i>
           </button>
 
-          {/* Main Image */}
           <div className="flex justify-center items-center flex-1">
             <img
-              src={productRes?.images?.[selectedImage]?.large_url || 'fallback_image_url'}
-              alt={productRes?.name || 'Product Name'}
+              src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
+              alt={productRes?.name || "Product Name"}
               className="max-w-[90%] max-h-[70vh] object-contain mx-auto shadow-lg transition-transform duration-300 rounded-lg"
             />
           </div>
 
-
-          {/* Thumbnails Navigation */}
           <div className="mt-8 flex justify-center gap-5 items-center px-5">
             <Button
               icon="pi pi-chevron-left"
@@ -657,8 +657,7 @@ const ProductDetail = () => {
             />
           </div>
 
-          {/* Image Counter */}
-          <div className="absolute bottom-3  left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
+          <div className="absolute bottom-3 left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
             {selectedImage + 1} / {productRes?.images?.length}
           </div>
         </div>

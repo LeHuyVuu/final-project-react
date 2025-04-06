@@ -11,6 +11,7 @@ import SearchResult from "../layouts/Header/SearchResult.jsx";
 
 import SignInSignUp from "../pages/SignInSignUp/SignInSignUp.jsx";
 
+
 import Account from "../pages/User/Account.jsx";
 import AccountInformation from "../pages/User/AccountInformation/AccountInformation.jsx";
 import OrderManagement from "../pages/User/OrderManagement/OrderManagement.jsx";
@@ -18,6 +19,7 @@ import HelpCenter from "../pages/User/HelpCenter/HelpCenter.jsx";
 import Notification from "../pages/User/Notification/Notification.jsx";
 import Address from "../pages/User/Address/Address.jsx";
 import CreateAddress from "../pages/User/Address/CreateAddress/CreateAddress.jsx";
+
 
 import Dice from "../pages/User/Game/Dice/Dice.jsx";
 
@@ -35,6 +37,7 @@ const MainRoutes = () => {
           <Route path="detail" element={<ProductDetail />} />
           <Route path="search" element={<SearchResult />} />
           <Route path="category" element={<Category />} />
+
           <Route path="/checkout" element={<Payment />} />
           <Route path="*" element={<PageNotFound />} />
           <Route path="category/:categoryId" element={<Category />} />
@@ -47,6 +50,7 @@ const MainRoutes = () => {
             <Route path="notification" element={<Notification />} />
             <Route path="address" element={<Address />} />
             <Route path="address/create/:Id" element={<CreateAddress />} />
+
           </Route>
           <Route path="dice" element={<Dice />} />
           <Route path="categorysidesar" element={<CategorySideBar />} />

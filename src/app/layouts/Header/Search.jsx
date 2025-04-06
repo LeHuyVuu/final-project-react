@@ -3,6 +3,7 @@ import { getData } from "../../context/api"; // Giả sử đây là utility API
 import { useNavigate } from "react-router-dom";
 
 const Search = () => {
+
   const [keyword, setKeyword] = useState(""); // Lưu từ khóa tìm kiếm
   const [suggestions, setSuggestions] = useState([]); // Lưu danh sách gợi ý
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Kiểm tra dropdown có mở hay không
@@ -11,6 +12,16 @@ const Search = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false); // Kiểm soát lớp phủ
   const dropdownRef = useRef(null); // Ref cho dropdown để kiểm tra click ngoài
   const navigate = useNavigate();
+
+
+    // Hàm lấy giá trị cookie
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return null;
+    };
+
 
   // Hàm lấy giá trị cookie
   const getCookie = (name) => {
@@ -88,8 +99,10 @@ const Search = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+
     };
   }, []);
+
 
   // Xử lý khi nhấn Enter để tìm kiếm
   const handleSearch = async () => {
@@ -267,6 +280,7 @@ const Search = () => {
               </button>
             </div>
           ))}
+
         </div>
       )}
     </div>

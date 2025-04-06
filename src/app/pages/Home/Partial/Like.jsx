@@ -98,9 +98,6 @@ export default function Like() {
                     <h2 className="text-2xl bg-red-300 p-3 font-bold border-b-4 border-red-400  text-gray-800 text-center mb-4 rounded-tr-full rounded-br-full">
                         Bạn có thể thích</h2>
                 </div>
-                <a href="#" className=" text-blue-500">
-                    Xem tất cả
-                </a>
             </div>
             {loading ? (
                 <div className="grid grid-cols-5 gap-4">
