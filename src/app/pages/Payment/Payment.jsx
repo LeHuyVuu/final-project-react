@@ -252,14 +252,14 @@ const Payment = () => {
               </Link>
             </div>
           </div> */}
-          <UserInfo />
+
           <div className="flex justify-between flex-col lg:flex-row gap-8">
             {/* Cart Items */}
             <div className="w-full  rounded-md">
               <div>
                 {/* Select All Header */}
                 <div className=" bg-blue-200 py-3 grid grid-cols-12 items-center rounded-t-md">
-                  <div className="col-span-7 flex items-center gap-2">
+                  <div className="col-span-6 flex items-center gap-2">
                     {/* <Checkbox
                       inputId="selectAll"
                       checked={selectAll}
@@ -275,7 +275,7 @@ const Payment = () => {
                   <div className="col-span-2 text-center text-gray-800  font-semibold text-md">
                     Đơn giá
                   </div>
-                  <div className="col-span-1 text-center text-gray-800  font-semibold text-md">
+                  <div className="col-span-2 text-center text-gray-800  font-semibold text-md">
                     Số lượng
                   </div>
                   <div className="col-span-2 text-center text-gray-800  font-semibold text-md">
@@ -297,7 +297,7 @@ const Payment = () => {
                 {/* Loop through products and display each as a card */}
                 {products.map((product) => (
                   <div key={product?.id} className="rounded-md grid grid-cols-12 bg-white items-center border-b py-4">
-                    <div className="col-span-7 flex items-center">
+                    <div className="col-span-6 flex items-center">
                       {/* <Checkbox
                         inputId={`item-${product.id}`}
                         checked={selectedItems.some((item) => item.id === product.id)}
@@ -326,8 +326,8 @@ const Payment = () => {
                         )}
                       </p>
                     </div>
-                    <div className="col-span-1 flex justify-center">
-                      {/* <InputNumber
+                    <div className="col-span-2 flex justify-center">
+                      <InputNumber
                         value={product?.quantity}
                         min={1}
                         showButtons
@@ -337,7 +337,7 @@ const Payment = () => {
                         inputClassName="w-14 text-center text-sm px-2 py-1 rounded-md border border-gray-300"
                         className="w-[120px]"
                         onValueChange={(e) => handleQuantityChange(product.id, e.value)}
-                      /> */}{product?.quantity}
+                      />
                     </div>
                     <div className="col-span-2 text-center text-red font-medium">
                       <p className="text-red-400 m-0">
@@ -358,7 +358,7 @@ const Payment = () => {
             </div>
             {/* Order Summary */}
             <div className="w-full lg:w-1/3 sticky h-full left-0 top-40 self-auto">
-
+              <UserInfo />
               <Card className="shadow-xl rounded-2xl bg-white p-6">
                 <h3 className="text-2xl font-bold mb-6 text-[#1a1a2e]">Phương thức thanh toán</h3>
 
