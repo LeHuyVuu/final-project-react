@@ -44,7 +44,7 @@ export default function UpdatePIN() {
                     <div className='form-pin form-group'>
                         <label htmlFor='pin'>Mã PIN</label>
                         <div>
-                            <i className='fa-solid fa-lock'></i>
+                            <i className='fa-solid fa-shield'></i>
                             <input type='text' id='pin' name='pin'
                                 placeholder='Nhập mã PIN'
                                 value={PIN}

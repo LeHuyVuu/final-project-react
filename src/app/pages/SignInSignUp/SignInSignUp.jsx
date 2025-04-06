@@ -170,7 +170,7 @@ export default function SignInSignUp() {
             gameplay: 0,
             voucher: '',
             description: 'Khách hàng mới',
-            PIN: '',
+            pin: '',
             // address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
         };
         console.log('Sign Up Data:', signupData);
@@ -197,7 +197,7 @@ export default function SignInSignUp() {
         localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
-        localStorage.setItem(`PIN${SignUpPhoneNumber}`, signupData.PIN);
+        localStorage.setItem(`pin${SignUpPhoneNumber}`, signupData.pin);
 
         localStorage.setItem(`address${SignUpPhoneNumber}-name-0`, signupData.name);
         localStorage.setItem(`address${SignUpPhoneNumber}-phone-0`, signupData.phoneNumber);
@@ -330,6 +330,36 @@ export default function SignInSignUp() {
                                 console.log('Not Before Time (nbf):', nbf);
                                 console.log('Profile Picture URL:', picture);
                                 console.log('User ID (sub):', sub);
+
+                                localStorage.setItem('LoginUser', sub);
+
+                                if (localStorage.getItem(`id${sub}`) == null || localStorage.getItem(`id${sub}`) == '') {
+                                    localStorage.setItem(`id${sub}`, sub);
+                                    localStorage.setItem(`phoneNumber${sub}`, '');
+                                    localStorage.setItem(`password${sub}`, '');
+                                    localStorage.setItem(`name${sub}`, name);
+                                    localStorage.setItem(`email${sub}`, email);
+                                    localStorage.setItem(`nickname${sub}`, '');
+                                    localStorage.setItem(`birthday${sub}`, '');
+                                    localStorage.setItem(`sex${sub}`, '');
+                                    localStorage.setItem(`nationality${sub}`, '');
+                                    localStorage.setItem(`image${sub}`, picture);
+                                    localStorage.setItem(`role${sub}`, 'User');
+                                    localStorage.setItem(`type${sub}`, 'Regular');
+                                    localStorage.setItem(`point${sub}`, 0);
+                                    localStorage.setItem(`gameplay${sub}`, 0);
+                                    localStorage.setItem(`voucher${sub}`, '');
+                                    localStorage.setItem(`description${sub}`, 'Khách hàng mới');
+                                    localStorage.setItem(`pin${sub}`, '');
+
+                                    localStorage.setItem(`address${sub}-name-0`, name);
+                                    localStorage.setItem(`address${sub}-phone-0`, '');
+                                    localStorage.setItem(`address${sub}-address-0`, '');
+                                    localStorage.setItem(`address${sub}-typeaddress-0`, '');
+                                    localStorage.setItem(`address${sub}-default-0`, '');
+                                }
+
+                                navigate('/');
                             }}
                             onError={(error) => {
                                 console.error('Google Login Error:', error);
