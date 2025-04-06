@@ -4,6 +4,8 @@ import { sCountItem } from "../../context/store.js";
 import axios from "axios";
 import Search from "./Search.jsx";
 
+import GameShortCut from "../../pages/GameShortCut/GameShortCut.jsx";
+
 export default function Header() {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -385,6 +387,7 @@ export default function Header() {
       className="bg-white shadow-sm sticky top-0 z-50"
       onClick={handleOutsideClick}
     >
+      <GameShortCut />
       {/* Top header section */}
       <div className="grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
