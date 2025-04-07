@@ -167,7 +167,7 @@ export default function SignInSignUp() {
             role: 'User',
             type: 'Regular',
             point: 0,
-            gameplay: 0,
+            gameplay: 10,
             voucher: '',
             description: 'Khách hàng mới',
             pin: '',

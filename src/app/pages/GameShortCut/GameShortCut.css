@@ -17,13 +17,28 @@
     top: 180px;
     left: 20px;
     z-index: 40;
-    filter: drop-shadow(0 0 8px #800080);
-    animation: updown 1.5s ease-in-out infinite;
 
-    img {
-        position: sticky;
-        width: 100px;
-        height: 100px;
+    .link-logo {
+        animation: updown 1.5s ease-in-out infinite;
+
+        img {
+            position: sticky;
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 0 8px #800080);
+        }
+    }
+
+    i {
+        position: absolute;
+        top: 0;
+        right: 0;
+        cursor: pointer;
+        transition: color 0.1s;
+    }
+
+    i:hover {
+        color: #dc3545;
     }
 }
 
@@ -40,10 +55,12 @@
     z-index: 50;
 
     .popup {
-        margin: 0 auto;
+        margin: 50px auto;
         background-color: #fff;
-        border-radius: 5px;
+        border-radius: 12px;
         width: 1000px;
+        height: 90vh;
+        overflow: hidden;
         position: relative;
         transition: all 1s ease-in-out;
 

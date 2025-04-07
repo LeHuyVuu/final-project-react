@@ -27,6 +27,7 @@ import CreateAddress from "../pages/User/Address/CreateAddress/CreateAddress.jsx
 import CoinManagement from "../pages/User/CoinManagement/CoinManagement.jsx";
 
 import Dice from "../pages/User/Game/Dice/Dice.jsx";
+import Minesweeper from "../pages/User/Game/Minesweeper/Minesweeper.jsx";
 
 import ScrollToTop from "../hooks/ScrollToTop/useScrollToTop.jsx";
 
@@ -66,6 +67,7 @@ const MainRoutes = () => {
             <Route path="coin" element={<CoinManagement />} />
           </Route>
           <Route path="dice" element={<Dice />} />
+          <Route path="minesweeper" element={<Minesweeper />} />
           <Route path="categorysidesar" element={<CategorySideBar />} />
 
           <Route path='/step' element={<Step />} >
