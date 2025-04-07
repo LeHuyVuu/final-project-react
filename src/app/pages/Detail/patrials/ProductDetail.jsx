@@ -138,6 +138,7 @@ const ProductDetail = () => {
         quantity: quantity,
         original_price: productRes?.original_price,
         thumbnail_url: productRes?.thumbnail_url,
+        totalPrice: productRes?.price * quantity,  // Make sure to calculate totalPrice
       };
       navigate("/step/checkout", { state: { productToBuy } });
     } else {
