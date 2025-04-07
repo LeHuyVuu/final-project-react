@@ -111,13 +111,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 0 0 100px;
 
         .btn {
             display: block;
             align-self: center;
-            width: 40%;
-            min-width: 120px;
+            width: 160px;
 
             height: fit-content;
             color: #fff;
@@ -137,7 +135,6 @@
         }
 
         .btn-logout {
-            width: 120px;
             color: #007bff;
             font-weight: normal;
             background-color: transparent;

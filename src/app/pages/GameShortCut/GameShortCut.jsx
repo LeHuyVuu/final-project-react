@@ -14,7 +14,7 @@ export default function GameShortCut() {
         setLinkAccount(location.pathname.includes('dice') || location.pathname.includes('minesweeper') || location.pathname.includes('account'));
     }, [location])
 
-    const RandomNumber = useMemo(() => Math.floor(Math.random() * 2), []);
+    const RandomNumber = useMemo(() => Math.floor(Math.random() * 1), []);
 
     const [OpenPopup, setOpenPopup] = useState(false);
     const [OpenShortCut, setOpenShortCut] = useState(true);
@@ -39,7 +39,7 @@ export default function GameShortCut() {
                 <div className='dice-logo'>
                     <div className='link-logo'>
                         <a href='#popup' onClick={() => { handleOpenPopup() }}>
-                            {RandomNumber === 1 ?
+                            {RandomNumber === 0 ?
                                 <img className='img-dice' src={DiceLogo} alt='DiceLogo' />
                                 :
                                 <img className='img-minesweeper' src={MinesweeperLogo} alt='MinesweeperLogo' />
