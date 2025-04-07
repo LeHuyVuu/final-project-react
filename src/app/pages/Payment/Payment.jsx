@@ -8,6 +8,7 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox } from "primereact/checkbox";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import emailjs from 'emailjs-com';
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -17,15 +18,15 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Like from "../Home/Partial/Like";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { sCountItem } from "../../context/store";
+import { sCountItem, sProductsToBuy } from "../../context/store";
 import UserInfo from "../../components/LocationUser/UserInfo";
 const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const product = location.state?.productToBuy;
   console.log({ product })
+  sProductsToBuy.set(product); // Lưu sản phẩm vào store
   const [products, setProducts] = useState(Array.isArray(product) ? product : [product]);
-
   const toast = useRef(null);
 
   // Hàm cập nhật số lượng và tính lại giá cho từng sản phẩm
@@ -82,7 +83,8 @@ const Payment = () => {
         sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length);
 
         // Chuyển hướng đến trang thanh toán thành công
-        navigate('/step/checkout/success', { state: { item } });
+        navigate('/step/checkout/success');
+
       });
     } else {
       console.error("Invalid product data");
@@ -93,7 +95,7 @@ const Payment = () => {
     <div className="min-h-screen">
       <Toast ref={toast} />
       <ConfirmDialog />
-
+      <sProductsToBuy.DevTool name="Products to Buy" />
       <main className="pt-10 px-12">
         <div className="container mx-auto px-4">
           <div className="flex justify-between flex-col lg:flex-row gap-8">
