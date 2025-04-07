@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './AccountSideBar.css';
 
 import TikiText from './TikiText.png';
 
 export default function AccountSideBar() {
 
-    const [Option, setOption] = useState(window.location.pathname.split('/').pop());
+    console.log('AccountSideBar Render');
+    
+
+    const [Option, setOption] = useState();
+    const location = useLocation();
+    useEffect(() => {
+        setOption(location.pathname);
+    }, [location])
 
     const ListOption = [
         { name: 'Thông tin tài khoản', icon: 'fa-solid fa-user', link: 'information' },
@@ -34,7 +41,7 @@ export default function AccountSideBar() {
             </div>
             {ListOption.map((option, index) => (
                 <Link to={`${option.link}`} key={index} onClick={() => setOption(option.link)}>
-                    <div className='option' style={{ backgroundColor: Option == option.link && '#cfcfcf' }}>
+                    <div className='option' style={{ backgroundColor: Option?.includes(option?.link) && '#cfcfcf' }}>
                         <i className={option.icon}></i>
                         <div className='option-name'>{option.name}</div>
                     </div>

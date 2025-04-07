@@ -163,7 +163,7 @@ export default function SignInSignUp() {
             birthday: '',
             sex: '',
             nationality: '',
-            image: 'https://i.pinimg.com/474x/46/7f/be/467fbe9b03913de9dcd39eb0ee1e06ab.jpg',
+            image: '',
             role: 'User',
             type: 'Regular',
             point: 0,

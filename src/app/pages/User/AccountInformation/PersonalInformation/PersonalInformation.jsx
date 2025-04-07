@@ -7,7 +7,7 @@ export default function PersonalInformation() {
 
     const LoginUser = localStorage.getItem('LoginUser');
     const avatarUrl = localStorage.getItem(`image${LoginUser}`);
-    const finalUrl = (avatarUrl !== null && avatarUrl !== '') ? avatarUrl : TikiDefaultAvatar;
+    const finalUrl = (avatarUrl != null && avatarUrl != '') ? avatarUrl : TikiDefaultAvatar;
 
     const [formData, setFormData] = useState({
         name: localStorage.getItem(`name${LoginUser}`),
