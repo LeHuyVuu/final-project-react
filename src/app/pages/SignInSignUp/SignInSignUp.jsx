@@ -347,7 +347,7 @@ export default function SignInSignUp() {
                                     localStorage.setItem(`role${sub}`, 'User');
                                     localStorage.setItem(`type${sub}`, 'Regular');
                                     localStorage.setItem(`point${sub}`, 0);
-                                    localStorage.setItem(`gameplay${sub}`, 0);
+                                    localStorage.setItem(`gameplay${sub}`, 10);
                                     localStorage.setItem(`voucher${sub}`, '');
                                     localStorage.setItem(`description${sub}`, 'Khách hàng mới');
                                     localStorage.setItem(`pin${sub}`, '');
