@@ -139,7 +139,7 @@ const ProductDetail = () => {
         original_price: productRes?.original_price,
         thumbnail_url: productRes?.thumbnail_url,
       };
-      navigate("/checkout", { state: { productToBuy } });
+      navigate("/step/checkout", { state: { productToBuy } });
     } else {
       navigate("/login");
     }
