@@ -25,7 +25,14 @@
             position: sticky;
             width: 100px;
             height: 100px;
+        }
+
+        .img-dice {
             filter: drop-shadow(0 0 8px #800080);
+        }
+
+        .img-minesweeper {
+            filter: drop-shadow(0 0 8px #fb8b24);
         }
     }
 
@@ -60,7 +67,9 @@
         border-radius: 12px;
         width: 1000px;
         height: 90vh;
-        overflow: hidden;
+        overflow: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         position: relative;
         transition: all 1s ease-in-out;
 

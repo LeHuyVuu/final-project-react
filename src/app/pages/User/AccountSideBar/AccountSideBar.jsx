@@ -23,6 +23,7 @@ export default function AccountSideBar() {
         { name: 'Sổ địa chỉ', icon: 'fa-solid fa-map', link: 'address' },
         { name: 'Quản lý xu', icon: 'fa-solid fa-coins', link: 'coin' },
         { name: 'Xúc xắc may mắn', icon: 'fa-solid fa-dice', link: '/dice' },
+        { name: 'Dò mìn', icon: 'fa-solid fa-bomb', link: '/minesweeper' },
     ];
 
     const User = {
