@@ -14,22 +14,36 @@ const CheckoutSuccess = () => {
 
   // Hàm tính tổng giá trị đơn hàng
   const calculateTotal = () => {
-    return products.reduce((total, product) => total + product.totalPrice, 0);
+    if (!Array.isArray(products)) {
+      // Nếu products không phải là mảng, trả về 0
+      return 0;
+    }
+
+    return products.reduce((total, product) => {
+      // Kiểm tra xem product có thuộc tính totalPrice không và có giá trị hợp lệ
+      if (product && product.totalPrice && !isNaN(product.totalPrice)) {
+        return total + product.totalPrice;
+      }
+      return total; // Nếu không có totalPrice hợp lệ, không cộng vào tổng
+    }, 0);
   };
+
 
   // Hàm gửi email
   const sendEmail = () => {
-    // Lấy thông tin cần thiết từ đơn hàng
-    const orderItems = products.map(product => ({
+    // Kiểm tra nếu products là một mảng hoặc một đối tượng duy nhất
+    const productsArray = Array.isArray(products) ? products : [products];
+
+    const orderItems = productsArray.map(product => ({
       name: product.name,
       units: product.quantity,
       price: new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(product.price), // Hiển thị giá đơn vị
       thumbnail_url: product.thumbnail_url // Đảm bảo rằng thumbnail_url có dữ liệu đúng
     }));
-  
+
     const orderTotal = calculateTotal();  // Tính tổng đơn hàng
     const keyUser = localStorage.getItem("LoginUser"); // Lấy email từ localStorage
-  
+
     // Tạo templateParams chứa thông tin gửi email
     const templateParams = {
       email_to: localStorage.getItem("email" + keyUser), // Đây là email người dùng nhập
@@ -50,14 +64,14 @@ const CheckoutSuccess = () => {
       },
       email: localStorage.getItem("email" + keyUser), // Thông tin email người nhận
     };
-  
+
     // Đính kèm ảnh vào email (sử dụng cid)
     const attachments = orderItems.map(item => ({
       filename: `${item.name}_image`,
       path: item.thumbnail_url,
       cid: `${item.name}_image`, // Tên CID phải trùng với tên sử dụng trong template
     }));
-  
+
     // Gửi email qua EmailJS
     emailjs.send(
       'service_8dd36os', // Service ID của bạn
@@ -82,8 +96,10 @@ const CheckoutSuccess = () => {
       });
     });
   };
-  
-  
+
+
+
+
   useEffect(() => {
     // Gọi hàm sendEmail ngay khi trang CheckoutSuccess được render
     sendEmail();
