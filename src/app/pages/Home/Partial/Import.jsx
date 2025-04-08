@@ -15,7 +15,7 @@ import FormattedSold from '../FormattedSold.jsx';
 const itemTemplate = (item) => {
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1 ">
+            <div className="flex flex-col justify-center bg-white border border-gray-200 items-center rounded-lg p-3 m-1 ">
                 <div className="  justify-center items-center ">
                     <div className="relative">
                         <img src={item.icon} alt="icon" className="absolute bottom-0 left-0 " /> {/* Icon */}

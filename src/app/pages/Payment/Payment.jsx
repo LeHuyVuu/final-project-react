@@ -93,7 +93,7 @@ const Payment = () => {
         sCountItem.set(JSON.parse(localStorage.getItem("cartItems"))?.length);
 
         // Chuyển hướng đến trang thanh toán thành công
-        navigate('/step/checkout/success');
+        navigate('/step/success');
 
       });
     } else {

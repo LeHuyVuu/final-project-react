@@ -16,6 +16,7 @@ import {
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Dialog } from "primereact/dialog";
 import InfiniteScroll from "react-infinite-scroll-component";
+import FormattedSold from "../../pages/Home/FormattedSold";
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
@@ -442,7 +443,7 @@ const SearchResults = () => {
       }
     `;
     document.head.appendChild(styleEl);
-    
+
     return () => {
       document.head.removeChild(styleEl);
     };
@@ -1277,19 +1278,18 @@ const SearchResults = () => {
               />
 
               <div
-                className={`absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center gap-3 transition-opacity duration-300 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center gap-3 transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
+                  }`}
               ></div>
 
               {/* Labels */}
-              <div className="absolute top-2 left-2 flex flex-col gap-1">
+              {/* <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.discount_rate > 0 && (
                   <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded shadow-sm">
                     -{product.discount_rate}%
                   </span>
                 )}
-              </div>
+              </div> */}
 
               <div className="absolute bottom-0 left-0">
                 {product.badges_v3 && product.badges_v3[0]?.image && (
@@ -1298,39 +1298,50 @@ const SearchResults = () => {
               </div>
             </div>
 
-            <div className="p-3 flex flex-col flex-grow min-h-52">
+            <div className="p-3 m-1 flex flex-col flex-grow ">
+              <h3 className="text-gray-800 max-w-60 text-sm font-medium mb-2 line-clamp-2 h-10 hover:text-blue-600 transition-colors">
+                {product.name}
+              </h3>
               <div className="mb-1">
-                <div className="flex items-center mb-1">
-                  <span className="text-red-500 font-bold text-base">
-                    {formatCurrency(product.price)}
-                  </span>
+                <div className="  min-h-[25px] items-center ">
                   {product.original_price > product.price && (
-                    <span className="ml-2 text-gray-400 text-xs line-through">
+                    <span className="text-sm text-gray-500 line-through italic mb-2">
                       {formatCurrency(product.original_price)}
                     </span>
                   )}
+                  {product.discount_rate > 0 && (
+                    <span className={`ml-2 mb-2 rounded-sm ${product.discount_rate ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
+                      -{product.discount_rate}%
+                    </span>
+                  )}
                 </div>
+                <span className="text-xl font-bold text-[#ff424e] my-2 mb-2">
+                  {formatCurrency(product.price)}
+                </span>
 
-                <div className="flex justify-between items-center">
-                  <div className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+
+                {/* <div className="flex justify-between items-center"> */}
+                {/* <div className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                     {product.brand_name}
-                  </div>
-                  <div className="flex items-center">
+                  </div> */}
+                {/* <div className="flex items-center">
                     <span className="text-yellow-400 mr-1">
                       <FontAwesomeIcon icon={faStar} size="xs" />
                     </span>
                     <span className="text-xs text-gray-600">
                       {product.rating_average} ({product.review_count})
                     </span>
-                  </div>
+                  </div> */}
+                <div className="card flex justify-between">
+                  <Rating value={product.rating_average} disabled cancel={false} />
+                  <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={product.quantity_sold?.value} /></div>
                 </div>
+                {/* </div> */}
               </div>
 
-              <h3 className="text-gray-800 text-sm font-medium mb-2 line-clamp-2 h-10 hover:text-blue-600 transition-colors">
-                {product.name}
-              </h3>
 
-              <div className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]">
+
+              {/* <div className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]">
                 {product.badges_new &&
                   product.badges_new
                     .find((badge) => badge.code === "variant_count")
@@ -1372,7 +1383,7 @@ const SearchResults = () => {
                       2H
                     </span>
                   )}
-              </div>
+              </div> */}
             </div>
           </div>
         </Link>
@@ -1420,10 +1431,10 @@ const SearchResults = () => {
                       key === "support_p2h_delivery"
                         ? checkboxFilters.fastDelivery
                         : key === "tiki_hero"
-                        ? checkboxFilters.topDeal
-                        : key === "freeship_campaign"
-                        ? checkboxFilters.freeShip
-                        : false
+                          ? checkboxFilters.topDeal
+                          : key === "freeship_campaign"
+                            ? checkboxFilters.freeShip
+                            : false
                     }
                     onChange={(e) => {
                       if (key === "support_p2h_delivery")
@@ -1487,9 +1498,8 @@ const SearchResults = () => {
 
             {/* Mobile filter button */}
             <Button
-              label={`Bộ lọc ${
-                filtersApplied > 0 ? `(${filtersApplied})` : ""
-              }`}
+              label={`Bộ lọc ${filtersApplied > 0 ? `(${filtersApplied})` : ""
+                }`}
               className="p-button-outlined p-button-sm lg:hidden"
               onClick={openFilterDialog}
             />
@@ -1513,6 +1523,7 @@ const SearchResults = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {/* Sidebar Filters - Only visible on desktop */}
         <div className="hidden lg:block lg:col-span-1 ">
+
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-40">
     <div className="p-4 border-b border-gray-100">
       <div className="flex items-center justify-between">
@@ -1554,507 +1565,533 @@ const SearchResults = () => {
                     onClick={() => toggleFilterSection('service')}
                   >
 
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-700">Dịch vụ</h4>
-                      <FontAwesomeIcon 
-                        icon={faChevronDown} 
-                        className={`text-gray-400 text-xs transition-transform duration-200 ${
-                          expandedFilters.service ? 'rotate-180' : ''
+              {filtersApplied > 0 && (
+                <div className="mt-2 text-xs text-gray-500">
+                  <span className="font-medium">{filtersApplied}</span> bộ lọc đã áp dụng
+                </div>
+              )}
+            </div>
+            <div className="max-h-[calc(100vh-180px)] overflow-y-auto custom-scrollbar ">
+              <div className="divide-y divide-gray-100">
+                {/* Sort options in sidebar */}
+                <div
+                  className="p-4 cursor-pointer"
+                  onClick={() => toggleFilterSection('sort')}
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-gray-700">Sắp xếp theo</h4>
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.sort ? 'rotate-180' : ''
                         }`}
+                    />
+                  </div>
+
+
+                  {expandedFilters.sort && (
+                    <div className="mt-3">
+                      <Dropdown
+                        value={sortOption}
+                        options={sortOptions}
+                        onChange={handleSortChange}
+                        placeholder="Phổ biến"
+                        className="w-full text-sm"
                       />
                     </div>
+                  )}
+                </div>
 
-                  </div>
-                  
-                  {expandedFilters.service && (
-                    <div className="px-4 pb-4 space-y-2.5">
-                      {Object.entries(filterOptions.serviceFilters || {}).map(
-                        ([key, filter]) => (
-                          <div key={key} className="flex items-center">
+                {/* Service filters - Collapsible */}
+                {Object.keys(filterOptions.serviceFilters || {}).length > 0 && (
+                  <div className="border-t border-gray-100">
+                    <div
+                      className="p-4 cursor-pointer"
+                      onClick={() => toggleFilterSection('service')}
+                    >
+
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-medium text-gray-700">Dịch vụ</h4>
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.service ? 'rotate-180' : ''
+                            }`}
+                        />
+                      </div>
+
+                    </div>
+
+                    {expandedFilters.service && (
+                      <div className="px-4 pb-4 space-y-2.5">
+                        {Object.entries(filterOptions.serviceFilters || {}).map(
+                          ([key, filter]) => (
+                            <div key={key} className="flex items-center">
+                              <Checkbox
+                                id={`sidebar_${key}`}
+                                className="border border-gray-300 rounded mr-2"
+                                checked={
+                                  key === "support_p2h_delivery"
+                                    ? checkboxFilters.fastDelivery
+                                    : key === "tiki_hero"
+                                      ? checkboxFilters.topDeal
+                                      : key === "freeship_campaign"
+                                        ? checkboxFilters.freeShip
+                                        : false
+                                }
+                                onChange={(e) => {
+                                  if (key === "support_p2h_delivery")
+                                    handleCheckboxChange(e, "fastDelivery");
+                                  else if (key === "tiki_hero")
+                                    handleCheckboxChange(e, "topDeal");
+                                  else if (key === "freeship_campaign")
+                                    handleCheckboxChange(e, "freeShip");
+                                }}
+                              />
+                              <label
+                                htmlFor={`sidebar_${key}`}
+                                className="text-sm flex items-center cursor-pointer"
+                              >
+                                {filter.icon && (
+                                  <img
+                                    src={filter.icon}
+                                    alt={filter.display_name || filter.service_name || ""}
+                                    className="h-5 mr-2"
+                                  />
+                                )}
+                                {filter.display_name && (
+                                  <span className="text-gray-700">
+                                    {filter.display_name}
+                                  </span>
+                                )}
+                              </label>
+                            </div>
+                          )
+                        )}
+
+                        {/* Rating filter checkbox */}
+                        {filterOptions.ratings && filterOptions.ratings.length > 0 && (
+                          <div className="flex items-center">
                             <Checkbox
-                              id={`sidebar_${key}`}
+                              id="sidebar_fourStar"
                               className="border border-gray-300 rounded mr-2"
-                              checked={
-                                key === "support_p2h_delivery"
-                                  ? checkboxFilters.fastDelivery
-                                  : key === "tiki_hero"
-                                  ? checkboxFilters.topDeal
-                                  : key === "freeship_campaign"
-                                  ? checkboxFilters.freeShip
-                                  : false
-                              }
-                              onChange={(e) => {
-                                if (key === "support_p2h_delivery")
-                                  handleCheckboxChange(e, "fastDelivery");
-                                else if (key === "tiki_hero")
-                                  handleCheckboxChange(e, "topDeal");
-                                else if (key === "freeship_campaign")
-                                  handleCheckboxChange(e, "freeShip");
-                              }}
+                              checked={checkboxFilters.fourPlusStar}
+                              onChange={(e) => handleCheckboxChange(e, "fourPlusStar")}
                             />
                             <label
-                              htmlFor={`sidebar_${key}`}
-                              className="text-sm flex items-center cursor-pointer"
+                              htmlFor="sidebar_fourStar"
+                              className="text-sm text-gray-700 flex items-center cursor-pointer"
                             >
-                              {filter.icon && (
-                                <img
-                                  src={filter.icon}
-                                  alt={filter.display_name || filter.service_name || ""}
-                                  className="h-5 mr-2"
-                                />
-                              )}
-                              {filter.display_name && (
-                                <span className="text-gray-700">
-                                  {filter.display_name}
-                                </span>
-                              )}
+                              <Rating
+                                value={4}
+                                readOnly
+                                disabled
+                                stars={5}
+                                className="mr-1"
+                                cancel={false}
+                                pt={{
+                                  onIcon: { className: "text-yellow-400 text-xs" },
+                                  offIcon: { className: "text-gray-300 text-xs" },
+                                }}
+                              />
+                              từ 4 sao
                             </label>
                           </div>
-                        )
-                      )}
-                      
-                      {/* Rating filter checkbox */}
-                      {filterOptions.ratings && filterOptions.ratings.length > 0 && (
-                        <div className="flex items-center">
-                          <Checkbox
-                            id="sidebar_fourStar"
-                            className="border border-gray-300 rounded mr-2"
-                            checked={checkboxFilters.fourPlusStar}
-                            onChange={(e) => handleCheckboxChange(e, "fourPlusStar")}
-                          />
-                          <label
-                            htmlFor="sidebar_fourStar"
-                            className="text-sm text-gray-700 flex items-center cursor-pointer"
-                          >
-                            <Rating
-                              value={4}
-                              readOnly
-                              disabled
-                              stars={5}
-                              className="mr-1"
-                              cancel={false}
-                              pt={{
-                                onIcon: { className: "text-yellow-400 text-xs" },
-                                offIcon: { className: "text-gray-300 text-xs" },
-                              }}
-                            />
-                            từ 4 sao
-                          </label>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-              
-              {/* Price Ranges - Collapsible */}
-              {filterOptions.priceRanges && filterOptions.priceRanges.length > 0 && (
-                <div className="border-t border-gray-100">
-                  <div 
-                    className="p-4 cursor-pointer" 
-                    onClick={() => toggleFilterSection('price')}
-                  >
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-700">
-                        Khoảng giá
-                        {filters.price && <span className="ml-2 text-xs text-blue-600">(1)</span>}
-                      </h4>
-                      <FontAwesomeIcon 
-                        icon={faChevronDown} 
-                        className={`text-gray-400 text-xs transition-transform duration-200 ${
-                          expandedFilters.price ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  
-                  {expandedFilters.price && (
-                    <div className="px-4 pb-4 space-y-2">
-                      {filterOptions.priceRanges.map((priceRange) => (
-                        <div
-                          key={priceRange.key}
-                          className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
-                            filters.price === priceRange.key
+                )}
+
+                {/* Price Ranges - Collapsible */}
+                {filterOptions.priceRanges && filterOptions.priceRanges.length > 0 && (
+                  <div className="border-t border-gray-100">
+                    <div
+                      className="p-4 cursor-pointer"
+                      onClick={() => toggleFilterSection('price')}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-medium text-gray-700">
+                          Khoảng giá
+                          {filters.price && <span className="ml-2 text-xs text-blue-600">(1)</span>}
+                        </h4>
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.price ? 'rotate-180' : ''
+                            }`}
+                        />
+                      </div>
+                    </div>
+
+                    {expandedFilters.price && (
+                      <div className="px-4 pb-4 space-y-2">
+                        {filterOptions.priceRanges.map((priceRange) => (
+                          <div
+                            key={priceRange.key}
+                            className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${filters.price === priceRange.key
                               ? "bg-blue-50 text-blue-600"
                               : "hover:bg-gray-50"
-                          }`}
-                          onClick={() => handlePriceChange(priceRange.key)}
-                        >
-                          <div className={`w-3 h-3 rounded-full mr-2.5 ${
-                            filters.price === priceRange.key
+                              }`}
+                            onClick={() => handlePriceChange(priceRange.key)}
+                          >
+                            <div className={`w-3 h-3 rounded-full mr-2.5 ${filters.price === priceRange.key
                               ? "bg-blue-600"
                               : "bg-gray-300"
-                          }`}></div>
-                          <span className="text-sm">
-                            {priceRange.name}
-                            {priceRange.count > 0 && (
-                              <span className="text-gray-500 ml-1 text-xs">
-                                ({priceRange.count})
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Render dynamic filters based on visible filters */}
-              {visibleFilters
-                .filter(
-                  (code) =>
-                    code !== "price" &&
-                    !Object.keys(filterOptions.serviceFilters || {}).includes(code)
-                )
-                .map((filterCode) => {
-                  // Handle categories filter
-                  if (
-                    filterCode === "category" &&
-                    filterOptions.categories?.length > 0
-                  ) {
-                    const selectedCount = dynamicFilters.category?.length || 0;
-                    
-                    return (
-                      <div key={filterCode} className="border-t border-gray-100">
-                        <div 
-                          className="p-4 cursor-pointer" 
-                          onClick={() => toggleFilterSection('category')}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              Danh Mục Sản Phẩm
-                              {selectedCount > 0 && (
-                                <span className="ml-2 text-xs text-blue-600">
-                                  ({selectedCount})
+                              }`}></div>
+                            <span className="text-sm">
+                              {priceRange.name}
+                              {priceRange.count > 0 && (
+                                <span className="text-gray-500 ml-1 text-xs">
+                                  ({priceRange.count})
                                 </span>
                               )}
-                            </h4>
-                            <FontAwesomeIcon 
-                              icon={faChevronDown} 
-                              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                expandedFilters.category ? 'rotate-180' : ''
-                              }`}
-                            />
+                            </span>
                           </div>
-                        </div>
-                        
-                        {expandedFilters.category && (
-                          <div className="px-4 pb-4 space-y-2 ">
-                            {filterOptions.categories.map((category) => (
-                              <div
-                                key={category.key}
-                                className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
-                                  dynamicFilters.category?.includes(category.key)
-                                    ? "bg-blue-50 text-blue-600"
-                                    : "hover:bg-gray-50"
-                                }`}
-                                onClick={() =>
-                                  handleDynamicFilterChange(
-                                    "category",
-                                    !dynamicFilters.category?.includes(
-                                      category.key
-                                    ),
-                                    category.key
-                                  )
-                                }
-                              >
-                                <div className={`w-3 h-3 rounded-full mr-2.5 ${
-                                  dynamicFilters.category?.includes(category.key)
-                                    ? "bg-blue-600"
-                                    : "bg-gray-300"
-                                }`}></div>
-                                <span className="text-sm truncate">
-                                  {category.name}
-                                  {category.count > 0 && (
-                                    <span className="text-gray-500 ml-1 text-xs">
-                                      ({category.count})
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                        ))}
                       </div>
-                    );
-                  }
+                    )}
+                  </div>
+                )}
 
-                  // Handle rating filter
-                  if (
-                    filterCode === "rating" &&
-                    filterOptions.ratings?.length > 0
-                  ) {
-                    return (
-                      <div key={filterCode} className="border-t border-gray-100">
-                        <div 
-                          className="p-4 cursor-pointer" 
-                          onClick={() => toggleFilterSection('rating')}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              Đánh giá
-                              {filters.rating && (
-                                <span className="ml-2 text-xs text-blue-600">(1)</span>
-                              )}
-                            </h4>
-                            <FontAwesomeIcon 
-                              icon={faChevronDown} 
-                              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                expandedFilters.rating ? 'rotate-180' : ''
-                              }`}
-                            />
-                          </div>
-                        </div>
-                        
-                        {expandedFilters.rating && (
-                          <div className="px-4 pb-4 space-y-2">
-                            {filterOptions.ratings.map((rating) => (
-                              <div
-                                key={rating.key}
-                                className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
-                                  filters.rating === rating.key
-                                    ? "bg-blue-50 text-blue-600"
-                                    : "hover:bg-gray-50"
-                                }`}
-                                onClick={() => {
-                                  setFilters((prev) => ({
-                                    ...prev,
-                                    rating:
-                                      prev.rating === rating.key
-                                        ? null
-                                        : rating.key,
-                                  }));
-                                  setCurrentPage(1);
-                                }}
-                              >
-                                <div className={`w-3 h-3 rounded-full mr-2.5 ${
-                                  filters.rating === rating.key
-                                    ? "bg-blue-600"
-                                    : "bg-gray-300"
-                                }`}></div>
-                                <span className="text-sm">{rating.name}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
+                {/* Render dynamic filters based on visible filters */}
+                {visibleFilters
+                  .filter(
+                    (code) =>
+                      code !== "price" &&
+                      !Object.keys(filterOptions.serviceFilters || {}).includes(code)
+                  )
+                  .map((filterCode) => {
+                    // Handle categories filter
+                    if (
+                      filterCode === "category" &&
+                      filterOptions.categories?.length > 0
+                    ) {
+                      const selectedCount = dynamicFilters.category?.length || 0;
 
-                  // Handle brand filter correctly
-                  if (
-                    filterCode === "brand" &&
-                    filterOptions.brands?.length > 0
-                  ) {
-                    const brandOptions = filterOptions.brands;
-                    const showAll = brandOptions.length > 6;
-                    const selectedCount = filters.brands?.length || 0;
-                    
-                    return (
-                      <div key={filterCode} className="border-t border-gray-100">
-                        <div 
-                          className="p-4 cursor-pointer" 
-                          onClick={() => toggleFilterSection('brand')}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              Thương hiệu
-                              {selectedCount > 0 && (
-                                <span className="ml-2 text-xs text-blue-600">
-                                  ({selectedCount})
-                                </span>
-                              )}
-                            </h4>
-                            <FontAwesomeIcon 
-                              icon={faChevronDown} 
-                              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                expandedFilters.brand ? 'rotate-180' : ''
-                              }`}
-                            />
+                      return (
+                        <div key={filterCode} className="border-t border-gray-100">
+                          <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleFilterSection('category')}
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-medium text-gray-700">
+                                Danh Mục Sản Phẩm
+                                {selectedCount > 0 && (
+                                  <span className="ml-2 text-xs text-blue-600">
+                                    ({selectedCount})
+                                  </span>
+                                )}
+                              </h4>
+                              <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.category ? 'rotate-180' : ''
+                                  }`}
+                              />
+                            </div>
                           </div>
-                        </div>
-                        
-                        {expandedFilters.brand && (
-                          <div className="px-4 pb-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
-                            {brandOptions.slice(0, showAll ? expandedFilters.brand.length : undefined).map((item) => (
-                              <div
-                                key={item.key}
-                                className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
-                                  filters.brands?.includes(item.key)
-                                    ? "bg-blue-50 text-blue-600"
-                                    : "hover:bg-gray-50"
-                                }`}
-                                onClick={() =>
-                                  onFilterChange(
-                                    { checked: !filters.brands?.includes(item.key) },
-                                    "brands",
-                                    item
-                                  )
-                                }
-                              >
-                                <div className={`w-3 h-3 rounded-full mr-2.5 ${
-                                  filters.brands?.includes(item.key)
-                                    ? "bg-blue-600"
-                                    : "bg-gray-300"
-                                }`}></div>
-                                <span className="text-sm truncate">
-                                  {item.name}
-                                  {item.count > 0 && (
-                                    <span className="text-gray-500 ml-1 text-xs">
-                                      ({item.count})
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                            ))}
-                            
-                            {showAll && (
-                              <div className="mt-2 pt-2 border-t border-gray-100">
-                                <button
-                                  onClick={() => setShowAllFiltersDialog(true)}
-                                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                                >
-                                  Xem thêm {brandOptions.length - 6} thương hiệu
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
 
-                  // Handle color filter specially
-                  if (filterCode === "option_color" && filterOptions.colors?.length > 0) {
-                    const selectedCount = filters.colors?.length || 0;
-                    
-                    return (
-                      <div key={filterCode} className="border-t border-gray-100">
-                        <div 
-                          className="p-4 cursor-pointer" 
-                          onClick={() => toggleFilterSection('color')}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              Màu sắc
-                              {selectedCount > 0 && (
-                                <span className="ml-2 text-xs text-blue-600">
-                                  ({selectedCount})
-                                </span>
-                              )}
-                            </h4>
-                            <FontAwesomeIcon 
-                              icon={faChevronDown} 
-                              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                expandedFilters.color ? 'rotate-180' : ''
-                              }`}
-                            />
-                          </div>
-                        </div>
-                        
-                        {expandedFilters.color && (
-                          <div className="px-4 pb-4 flex flex-wrap gap-2.5 max-h-60 overflow-y-auto custom-scrollbar">
-                            {filterOptions.colors.slice(0, 10).map((color) => (
-                              <div
-                                key={color.key}
-                                className="flex flex-col items-center cursor-pointer"
-                                onClick={() => toggleColorFilter(color.key)}
-                              >
+                          {expandedFilters.category && (
+                            <div className="px-4 pb-4 space-y-2 ">
+                              {filterOptions.categories.map((category) => (
                                 <div
-                                  className={`w-7 h-7 rounded-full transition-all ${
-                                    filters.colors?.includes(color.key)
+                                  key={category.key}
+                                  className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${dynamicFilters.category?.includes(category.key)
+                                    ? "bg-blue-50 text-blue-600"
+                                    : "hover:bg-gray-50"
+                                    }`}
+                                  onClick={() =>
+                                    handleDynamicFilterChange(
+                                      "category",
+                                      !dynamicFilters.category?.includes(
+                                        category.key
+                                      ),
+                                      category.key
+                                    )
+                                  }
+                                >
+                                  <div className={`w-3 h-3 rounded-full mr-2.5 ${dynamicFilters.category?.includes(category.key)
+                                    ? "bg-blue-600"
+                                    : "bg-gray-300"
+                                    }`}></div>
+                                  <span className="text-sm truncate">
+                                    {category.name}
+                                    {category.count > 0 && (
+                                      <span className="text-gray-500 ml-1 text-xs">
+                                        ({category.count})
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    // Handle rating filter
+                    if (
+                      filterCode === "rating" &&
+                      filterOptions.ratings?.length > 0
+                    ) {
+                      return (
+                        <div key={filterCode} className="border-t border-gray-100">
+                          <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleFilterSection('rating')}
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-medium text-gray-700">
+                                Đánh giá
+                                {filters.rating && (
+                                  <span className="ml-2 text-xs text-blue-600">(1)</span>
+                                )}
+                              </h4>
+                              <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.rating ? 'rotate-180' : ''
+                                  }`}
+                              />
+                            </div>
+                          </div>
+
+                          {expandedFilters.rating && (
+                            <div className="px-4 pb-4 space-y-2">
+                              {filterOptions.ratings.map((rating) => (
+                                <div
+                                  key={rating.key}
+                                  className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${filters.rating === rating.key
+                                    ? "bg-blue-50 text-blue-600"
+                                    : "hover:bg-gray-50"
+                                    }`}
+                                  onClick={() => {
+                                    setFilters((prev) => ({
+                                      ...prev,
+                                      rating:
+                                        prev.rating === rating.key
+                                          ? null
+                                          : rating.key,
+                                    }));
+                                    setCurrentPage(1);
+                                  }}
+                                >
+                                  <div className={`w-3 h-3 rounded-full mr-2.5 ${filters.rating === rating.key
+                                    ? "bg-blue-600"
+                                    : "bg-gray-300"
+                                    }`}></div>
+                                  <span className="text-sm">{rating.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    // Handle brand filter correctly
+                    if (
+                      filterCode === "brand" &&
+                      filterOptions.brands?.length > 0
+                    ) {
+                      const brandOptions = filterOptions.brands;
+                      const showAll = brandOptions.length > 6;
+                      const selectedCount = filters.brands?.length || 0;
+
+                      return (
+                        <div key={filterCode} className="border-t border-gray-100">
+                          <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleFilterSection('brand')}
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-medium text-gray-700">
+                                Thương hiệu
+                                {selectedCount > 0 && (
+                                  <span className="ml-2 text-xs text-blue-600">
+                                    ({selectedCount})
+                                  </span>
+                                )}
+                              </h4>
+                              <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.brand ? 'rotate-180' : ''
+                                  }`}
+                              />
+                            </div>
+                          </div>
+
+                          {expandedFilters.brand && (
+                            <div className="px-4 pb-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+                              {brandOptions.slice(0, showAll ? expandedFilters.brand.length : undefined).map((item) => (
+                                <div
+                                  key={item.key}
+                                  className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${filters.brands?.includes(item.key)
+                                    ? "bg-blue-50 text-blue-600"
+                                    : "hover:bg-gray-50"
+                                    }`}
+                                  onClick={() =>
+                                    onFilterChange(
+                                      { checked: !filters.brands?.includes(item.key) },
+                                      "brands",
+                                      item
+                                    )
+                                  }
+                                >
+                                  <div className={`w-3 h-3 rounded-full mr-2.5 ${filters.brands?.includes(item.key)
+                                    ? "bg-blue-600"
+                                    : "bg-gray-300"
+                                    }`}></div>
+                                  <span className="text-sm truncate">
+                                    {item.name}
+                                    {item.count > 0 && (
+                                      <span className="text-gray-500 ml-1 text-xs">
+                                        ({item.count})
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ))}
+
+                              {showAll && (
+                                <div className="mt-2 pt-2 border-t border-gray-100">
+                                  <button
+                                    onClick={() => setShowAllFiltersDialog(true)}
+                                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                  >
+                                    Xem thêm {brandOptions.length - 6} thương hiệu
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    // Handle color filter specially
+                    if (filterCode === "option_color" && filterOptions.colors?.length > 0) {
+                      const selectedCount = filters.colors?.length || 0;
+
+                      return (
+                        <div key={filterCode} className="border-t border-gray-100">
+                          <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleFilterSection('color')}
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-medium text-gray-700">
+                                Màu sắc
+                                {selectedCount > 0 && (
+                                  <span className="ml-2 text-xs text-blue-600">
+                                    ({selectedCount})
+                                  </span>
+                                )}
+                              </h4>
+                              <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters.color ? 'rotate-180' : ''
+                                  }`}
+                              />
+                            </div>
+                          </div>
+
+                          {expandedFilters.color && (
+                            <div className="px-4 pb-4 flex flex-wrap gap-2.5 max-h-60 overflow-y-auto custom-scrollbar">
+                              {filterOptions.colors.slice(0, 10).map((color) => (
+                                <div
+                                  key={color.key}
+                                  className="flex flex-col items-center cursor-pointer"
+                                  onClick={() => toggleColorFilter(color.key)}
+                                >
+                                  <div
+                                    className={`w-7 h-7 rounded-full transition-all ${filters.colors?.includes(color.key)
                                       ? "ring-2 ring-blue-500"
                                       : "ring-1 ring-gray-300 hover:ring-gray-400"
-                                  }`}
-                                  style={{ backgroundColor: color.hex }}
-                                  title={color.name}
-                                ></div>
-                                <span className="text-xs mt-1 text-gray-600">
-                                  {color.name}
-                                </span>
-                              </div>
-                            ))}
-                            
-                            {filterOptions.colors.length > 10 && (
-                              <button 
-                                className="text-blue-600 hover:underline text-xs mt-2"
-                                onClick={(e) => colorPanelRef.current.toggle(e)}
-                              >
-                                +{filterOptions.colors.length - 10} màu
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
+                                      }`}
+                                    style={{ backgroundColor: color.hex }}
+                                    title={color.name}
+                                  ></div>
+                                  <span className="text-xs mt-1 text-gray-600">
+                                    {color.name}
+                                  </span>
+                                </div>
+                              ))}
 
-                  // Handle any dynamic filter from API
-                  if (filterOptions.dynamicFilters?.[filterCode]) {
-                    const filter = filterOptions.dynamicFilters[filterCode];
-                    const showAll = filter.values.length > 6;
-                    const selectedCount = dynamicFilters[filterCode]?.length || 0;
-                    
-                    return (
-                      <div key={filterCode} className="border-t border-gray-100">
-                        <div 
-                          className="p-4 cursor-pointer" 
-                          onClick={() => toggleFilterSection(filterCode)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-medium text-gray-700">
-                              {filter.display_name}
-                              {selectedCount > 0 && (
-                                <span className="ml-2 text-xs text-blue-600">
-                                  ({selectedCount})
-                                </span>
+                              {filterOptions.colors.length > 10 && (
+                                <button
+                                  className="text-blue-600 hover:underline text-xs mt-2"
+                                  onClick={(e) => colorPanelRef.current.toggle(e)}
+                                >
+                                  +{filterOptions.colors.length - 10} màu
+                                </button>
                               )}
-                            </h4>
-                            <FontAwesomeIcon 
-                              icon={faChevronDown} 
-                              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                expandedFilters[filterCode] ? 'rotate-180' : ''
-                              }`}
-                            />
-                          </div>
+                            </div>
+                          )}
                         </div>
-                        
-                        {expandedFilters[filterCode] && (
-                          <div className="px-4 pb-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
-                            {filter.values.slice(0, showAll ? expandedFilters[filterCode].length : undefined).map((item) => (
-                              <div
-                                key={item.key}
-                                className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
-                                  dynamicFilters[filterCode]?.includes(item.key)
+                      );
+                    }
+
+                    // Handle any dynamic filter from API
+                    if (filterOptions.dynamicFilters?.[filterCode]) {
+                      const filter = filterOptions.dynamicFilters[filterCode];
+                      const showAll = filter.values.length > 6;
+                      const selectedCount = dynamicFilters[filterCode]?.length || 0;
+
+                      return (
+                        <div key={filterCode} className="border-t border-gray-100">
+                          <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleFilterSection(filterCode)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <h4 className="text-sm font-medium text-gray-700">
+                                {filter.display_name}
+                                {selectedCount > 0 && (
+                                  <span className="ml-2 text-xs text-blue-600">
+                                    ({selectedCount})
+                                  </span>
+                                )}
+                              </h4>
+                              <FontAwesomeIcon
+                                icon={faChevronDown}
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${expandedFilters[filterCode] ? 'rotate-180' : ''
+                                  }`}
+                              />
+                            </div>
+                          </div>
+
+                          {expandedFilters[filterCode] && (
+                            <div className="px-4 pb-4 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+                              {filter.values.slice(0, showAll ? expandedFilters[filterCode].length : undefined).map((item) => (
+                                <div
+                                  key={item.key}
+                                  className={`flex items-center px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${dynamicFilters[filterCode]?.includes(item.key)
                                     ? "bg-blue-50 text-blue-600"
                                     : "hover:bg-gray-50"
-                                }`}
-                                onClick={() =>
-                                  handleDynamicFilterChange(
-                                    filterCode,
-                                    !dynamicFilters[filterCode]?.includes(item.key),
-                                    item.key
-                                  )
-                                }
-                              >
-                                <div className={`w-3 h-3 rounded-full mr-2.5 ${
-                                  dynamicFilters[filterCode]?.includes(item.key)
+                                    }`}
+                                  onClick={() =>
+                                    handleDynamicFilterChange(
+                                      filterCode,
+                                      !dynamicFilters[filterCode]?.includes(item.key),
+                                      item.key
+                                    )
+                                  }
+                                >
+                                  <div className={`w-3 h-3 rounded-full mr-2.5 ${dynamicFilters[filterCode]?.includes(item.key)
                                     ? "bg-blue-600"
                                     : "bg-gray-300"
-                                }`}></div>
-                                <span className="text-sm truncate">
-                                  {item.name}
-                                  {item.count > 0 && (
-                                    <span className="text-gray-500 ml-1 text-xs">
-                                      ({item.count})
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                            ))}
-                            
-                            {/* {showAll && (
+                                    }`}></div>
+                                  <span className="text-sm truncate">
+                                    {item.name}
+                                    {item.count > 0 && (
+                                      <span className="text-gray-500 ml-1 text-xs">
+                                        ({item.count})
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ))}
+
+                              {/* {showAll && (
                               <div className="mt-2 pt-2 border-t border-gray-100">
                                 <button
                                   onClick={() => setShowAllFiltersDialog(true)}
@@ -2064,21 +2101,24 @@ const SearchResults = () => {
                                 </button>
                               </div>
                             )} */}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })}
 
                   return null;
                 })}
               
              
+
             </div>
           </div>
-          </div>
         </div>
-        
+
         {/* Products Grid with InfiniteScroll */}
         <div className="lg:col-span-3 xl:col-span-4">
           {products.length > 0 ? (

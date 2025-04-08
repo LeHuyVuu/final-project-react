@@ -20,11 +20,11 @@ export default function Home() {
     <div className=''>
       <div className=" mx-28" >
 
-        <div className="my-10">
+        <div className="mt-10">
           <Banner />
         </div>
         <div className='px-4'>
-          <div className="my-10">
+          <div className="mb-10">
             <CategoryLinks />
           </div>
         </div>
