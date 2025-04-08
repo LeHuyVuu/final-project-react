@@ -13,3 +13,5 @@ export const sProductsToBuy = signify([
         current_seller: "" // Người bán sản phẩm
     }
 ]);
+
+export const sCoin = signify(JSON.parse(localStorage.getItem("point" + localStorage.getItem("LoginUser"))) || 0);

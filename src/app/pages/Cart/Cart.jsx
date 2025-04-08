@@ -201,12 +201,20 @@ const Cart = () => {
 
     const handleSelectAll = () => {
         if (selectAll) {
-            setSelectedItems([]);
+            setSelectedItems([]); // Nếu đã chọn hết, bỏ chọn tất cả
+            setSelectAllBySeller({}); // Bỏ chọn tất cả checkbox của seller
         } else {
-            setSelectedItems(cartItems);
+            setSelectedItems(cartItems); // Nếu chưa chọn hết, chọn tất cả sản phẩm
+            // Chọn tất cả các seller
+            const newSelectAllBySeller = cartItems.reduce((acc, item) => {
+                acc[item.current_seller] = true;
+                return acc;
+            }, {});
+            setSelectAllBySeller(newSelectAllBySeller); // Cập nhật chọn tất cả seller
         }
         setSelectAll(!selectAll);
     };
+
 
     const handleCheckout = () => {
         navigate("/step/checkout", { state: { productToBuy: selectedItems } });

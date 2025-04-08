@@ -18,7 +18,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Like from "../Home/Partial/Like";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { sCountItem, sProductsToBuy } from "../../context/store";
+import { sCoin, sCountItem, sProductsToBuy } from "../../context/store";
 import UserInfo from "../../components/LocationUser/UserInfo";
 const Payment = () => {
   const navigate = useNavigate();
@@ -28,6 +28,9 @@ const Payment = () => {
   sProductsToBuy.set(product); // Lưu sản phẩm vào store
   const [products, setProducts] = useState(Array.isArray(product) ? product : [product]);
   const toast = useRef(null);
+  const coin = sCoin.use(); // Lấy dữ liệu xu từ context
+  const [usePoints, setUsePoints] = useState(false); // Thêm state cho việc sử dụng xu
+
 
   // Hàm cập nhật số lượng và tính lại giá cho từng sản phẩm
   const handleQuantityChange = (id, newQuantity) => {
@@ -48,7 +51,11 @@ const Payment = () => {
 
   // Tính tổng giá trị trong Order Summary cho tất cả sản phẩm
   const calculateTotal = () => {
-    return products.reduce((total, item) => total + item?.totalPrice, 0);
+    let total = products.reduce((total, item) => total + item?.totalPrice, 0);
+    if (usePoints) {
+      total -= coin; // Giảm giá 50,000 VND khi sử dụng xu (có thể thay đổi số lượng xu)
+    }
+    return total;
   };
 
   const checkOut = () => {
@@ -190,6 +197,17 @@ const Payment = () => {
 
                 {/* Payment Buttons */}
                 <div className="mt-8 grid grid-cols-3 gap-4">
+                  {/* Add checkbox for using points */}
+                  <div className="col-span-3 flex items-center gap-2">
+                    <Checkbox
+                      inputId="usePoints"
+                      checked={usePoints}
+                      onChange={(e) => setUsePoints(e.checked)} // Toggle usePoints state
+                    />
+                    <label htmlFor="usePoints" className="text-sm font-medium">
+                      Sử dụng xu ({new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(coin)})
+                    </label>
+                  </div>
                   <Button onClick={checkOut} className="flex flex-col items-center justify-center rounded-xl p-4 shadow-lg bg-white hover:bg-[#e6e0f4] transition-all border border-[#c9bce9]">
                     <img
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"
