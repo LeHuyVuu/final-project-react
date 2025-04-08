@@ -17,12 +17,17 @@ export default function CouponCode(props) {
         setFormCode(e.target.value);
     };
 
+    const [Message, setMessage] = useState('');
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (FormCode == 'TIKISALE' && FormToggle == 'tiki') {
+        if (FormCode == LoginUser && localStorage.getItem(`couponcode${LoginUser}`) == 'true' && FormToggle == 'tiki') {
             console.log('Success');
             props.setPoint(Number(localStorage.getItem(`point${LoginUser}`)) + 200);
             localStorage.setItem(`point${LoginUser}`, Number(localStorage.getItem(`point${LoginUser}`)) + 200);
+            localStorage.setItem(`couponcode${LoginUser}`, 'false');
+            setMessage('Nhận xu thành công!');
+        } else {
+            setMessage('Mã không hợp lệ!');
         }
     }
 
@@ -57,6 +62,16 @@ export default function CouponCode(props) {
                             value={FormCode}
                             onChange={handleCodeChange} />
                         <button type='submit' className='btn'>Đổi Tiki Xu</button>
+                        {Message &&
+                            <div
+                                style={{
+                                    color: Message === 'Nhận xu thành công!' ? '#28a745' :
+                                        (Message === 'Mã không hợp lệ!' ? '#dc3545' : '')
+                                }}
+                            >
+                                {Message}
+                            </div>
+                        }
                     </div>
                 </form>
             </div>

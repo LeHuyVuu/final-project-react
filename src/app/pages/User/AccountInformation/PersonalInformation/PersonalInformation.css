@@ -109,13 +109,14 @@
     .btn-box {
         width: 100%;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
+        gap: 20px;
 
         .btn {
             display: block;
             align-self: center;
-            width: 160px;
+            flex: 1;
 
             height: fit-content;
             color: #fff;

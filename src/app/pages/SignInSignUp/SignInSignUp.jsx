@@ -205,6 +205,8 @@ export default function SignInSignUp() {
         localStorage.setItem(`address${SignUpPhoneNumber}-typeaddress-0`, '');
         localStorage.setItem(`address${SignUpPhoneNumber}-default-0`, '');
 
+        localStorage.setItem(`couponcode${SignUpPhoneNumber}`, 'true');
+
         setSuccessSignUp('Đăng kí thành công!');
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await sleep(1500);
@@ -357,6 +359,8 @@ export default function SignInSignUp() {
                                     localStorage.setItem(`address${sub}-address-0`, '');
                                     localStorage.setItem(`address${sub}-typeaddress-0`, '');
                                     localStorage.setItem(`address${sub}-default-0`, '');
+
+                                    localStorage.setItem(`couponcode${sub}`, 'true');
                                 }
 
                                 navigate('/');
@@ -434,8 +438,7 @@ export default function SignInSignUp() {
                             </div>
                         </form>
 
-                        <button className='mt-4 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
-                        <div className='accept-box mt-5 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
+                        <div className='accept-box mt-8 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
                             <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision text-blue-500' target='_blank'> Điều Khoản</a>
 
                             <div className='form-check  '>
@@ -445,6 +448,8 @@ export default function SignInSignUp() {
                                 </label>
                             </div>
                         </div>
+
+                        <button className='mt-8 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>

@@ -23,13 +23,13 @@ export default function PhoneNumberAndEmail() {
                 { icon: 'fa-solid fa-trash-can', label: 'Yêu cầu xóa tài khoản', value: null, button: 'Yêu cầu', link: 'delete-account' },
             ]
         },
-        {
-            heading: 'Liên kết mạng xã hội',
-            items: [
-                { icon: 'fa-brands fa-facebook', label: 'Facebook', value: null, button: 'Liên kết', link: '' },
-                { icon: 'fa-brands fa-google', label: 'Google', value: null, button: 'Liên kết', link: '' },
-            ]
-        },
+        // {
+        //     heading: 'Liên kết mạng xã hội',
+        //     items: [
+        //         { icon: 'fa-brands fa-facebook', label: 'Facebook', value: null, button: 'Liên kết', link: '' },
+        //         { icon: 'fa-brands fa-google', label: 'Google', value: null, button: 'Liên kết', link: '' },
+        //     ]
+        // },
     ];
 
     return (

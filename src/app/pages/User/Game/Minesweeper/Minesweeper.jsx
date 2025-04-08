@@ -194,8 +194,22 @@ export default function Minesweeper() {
     const addPoint = () => {
         localStorage.setItem(`point${LoginUser}`, Number(localStorage.getItem(`point${LoginUser}`)) + 200);
         localStorage.setItem(`gameplay${LoginUser}`, Number(localStorage.getItem(`gameplay${LoginUser}`)) - 1);
+        localStorage.setItem(`score${LoginUser}-${ListScore.length + 1}`, Time);
         setRefresh(p => p + 1);
     }
+    // let ListScore = ['ABC'];
+    // for (let i = 0; i < 100; i++) {
+    //     const item = localStorage.getItem(`score${LoginUser}-${i}`);
+    //     if (item !== null) {
+    //         ListScore.push(item);
+    //     }
+    // }
+    // localStorage.setItem(`score${LoginUser}-${0}`, 120);
+    const ListScore = Array.from({ length: 100 }, (_, i) =>
+        localStorage.getItem(`score${LoginUser}-${i}`)
+    ).filter(item => item !== null).sort((a, b) => {
+        return Number(a) - Number(b);
+    }).slice(0, 7);
 
 
 
@@ -301,51 +315,83 @@ export default function Minesweeper() {
                     </tbody>
                 </table>
 
-                <div className='detail'>
-                    <div className='support'>
-                        <div className='flag'><i className='fa-solid fa-flag' style={{ color: 'red' }}></i> {Flag}</div>
-                        {HasWon === 1 ?
-                            <button className='btn' onClick={() => { addPoint() }}>+200</button>
-                            :
-                            <button className='btn btn-reset' onClick={() => { setRefresh(p => p + 1) }}>CHƠI LẠI</button>
+                <div className='detail-container'>
+                    <div className='detail'>
+                        <div className='support'>
+                            <div className='flag'><i className='fa-solid fa-flag' style={{ color: 'red' }}></i> {Flag}</div>
+                            {HasWon === 1 ?
+                                <button className='btn' onClick={() => { addPoint() }}>+200</button>
+                                :
+                                <button className='btn btn-reset' onClick={() => { setRefresh(p => p + 1) }}>CHƠI LẠI</button>
+                            }
+                        </div>
+
+                        <div className='your-point'>
+                            <label>Xu của bạn: </label>
+                            <span>{Point}</span>
+                        </div>
+
+                        <div>
+                            <label>Lượt chơi của bạn: </label>
+                            <span>{GamePlay}</span>
+                        </div>
+
+                        {Time !== -1 &&
+                            <div className='runtime'>
+                                <label><i className='fa-solid fa-clock'></i>Thời gian: </label>
+                                <span>{Time}</span>
+                            </div>
+                        }
+
+                        {(HasWon === 1 || HasWon === 2) &&
+                            <div className='result'
+                                style={{
+                                    border:
+                                        HasWon === 1 ?
+                                            '4px solid #28a745'
+                                            :
+                                            (HasWon === 2 ?
+                                                '4px solid #dc3545'
+                                                :
+                                                'none'
+                                            )
+                                }}
+                            >
+                                {HasWon === 1 && <div style={{ color: '#28a745' }}>THẮNG RỒI!</div>}
+                                {HasWon === 2 && <div style={{ color: '#dc3545' }}>THUA RỒI...</div>}
+                            </div>
                         }
                     </div>
 
-                    <div className='your-point'>
-                        <label>Xu của bạn: </label>
-                        <span>{Point}</span>
+                    <div className='high-score'>
+                        <div className='title'>KỶ LỤC CÁ NHÂN</div>
+                        {/* <div className='item'>
+                            <div>TOP</div>
+                            <div>Điểm (Giây)</div>
+                        </div> */}
+                        {ListScore.map((score, index) => (
+                            <div key={index} className='item'>
+                                <div>
+                                    <i
+                                        className='fa-solid fa-star'
+                                        style={{
+                                            color: index === 0 ? '#ffd700' :
+                                                (index === 1 ? '#c0c0c0' :
+                                                    (index === 2 ? '#cd7f32' :
+                                                        'transparent'
+                                                    )
+                                                )
+                                        }}
+                                    ></i>
+                                    {index + 1}
+                                </div>
+                                <div className='score'>{score} (Giây)</div>
+                            </div>
+                        ))}
+                        {ListScore.length === 0 &&
+                            <div className='item no-score'>*Không có kỷ lục nào*</div>
+                        }
                     </div>
-
-                    <div>
-                        <label>Lượt chơi của bạn: </label>
-                        <span>{GamePlay}</span>
-                    </div>
-
-                    {Time !== -1 &&
-                        <div className='runtime'>
-                            <label><i className='fa-solid fa-clock'></i>Thời gian: </label>
-                            <span>{Time}</span>
-                        </div>
-                    }
-
-                    {(HasWon === 1 || HasWon === 2) &&
-                        <div className='result'
-                            style={{
-                                border:
-                                    HasWon === 1 ?
-                                        '4px solid #28a745'
-                                        :
-                                        (HasWon === 2 ?
-                                            '4px solid #dc3545'
-                                            :
-                                            'none'
-                                        )
-                            }}
-                        >
-                            {HasWon === 1 && <div style={{ color: '#28a745' }}>THẮNG RỒI!</div>}
-                            {HasWon === 2 && <div style={{ color: '#dc3545' }}>THUA RỒI...</div>}
-                        </div>
-                    }
                 </div>
             </div>
         </div>
