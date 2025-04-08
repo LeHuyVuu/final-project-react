@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
 import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
-import SignUpImage from './LeftImage.png';
-import SignInImage from './RightImage.png';
+import SignUpImage from '../../assets/TikiPics/LeftImage.png';
+import SignInImage from '../../assets/TikiPics/RightImage.png';
 import { jwtDecode } from 'jwt-decode';
 
 export default function SignInSignUp() {
