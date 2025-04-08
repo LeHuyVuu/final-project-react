@@ -96,7 +96,6 @@ const ProductDetail = () => {
     };
   });
 
-
   const breadcrumbHome = { icon: "pi pi-home", url: "/" };
   const lastItem = { label: productRes?.name };
   const increaseQuantity = () => setQuantity(quantity + 1);
@@ -110,7 +109,8 @@ const ProductDetail = () => {
 
   const prevImage = () => {
     setSelectedImage(
-      (prev) => (prev - 1 + productRes?.images?.length) % productRes?.images?.length
+      (prev) =>
+        (prev - 1 + productRes?.images?.length) % productRes?.images?.length
     );
   };
 
@@ -121,7 +121,9 @@ const ProductDetail = () => {
   const [review, setReview] = useState({});
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getData(`https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`);
+      const res = await getData(
+        `https://tiki.vn/api/v2/reviews?limit=5&include=comments,contribute_info,attribute_vote_summary&sort=score%7Cdesc,id%7Cdesc,stars%7Call&page=1&product_id=${id}`
+      );
       setReview(res.data);
     };
     fetchData();
@@ -138,7 +140,7 @@ const ProductDetail = () => {
         quantity: quantity,
         original_price: productRes?.original_price,
         thumbnail_url: productRes?.thumbnail_url,
-        totalPrice: productRes?.price * quantity,  // Make sure to calculate totalPrice
+        totalPrice: productRes?.price * quantity, // Make sure to calculate totalPrice
       };
       navigate("/step/checkout", { state: { productToBuy } });
     } else {
@@ -191,12 +193,14 @@ const ProductDetail = () => {
     return (
       <div className="bg-white text-black">
         <div className="p-2 mt-5 max-w-7xl mx-auto">
-          <SkeletonLoader type="text" width="50%" height={20} /> {/* Breadcrumb */}
+          <SkeletonLoader type="text" width="50%" height={20} />{" "}
+          {/* Breadcrumb */}
         </div>
         <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-7xl mx-auto">
           {/* Skeleton cho phần hình ảnh */}
           <div className="flex-1 max-w-lg lg:max-w-xl">
-            <SkeletonLoader type="image" width="100%" height={400} /> {/* Main image */}
+            <SkeletonLoader type="image" width="100%" height={400} />{" "}
+            {/* Main image */}
             <div className="flex gap-2 mt-4">
               {Array(5)
                 .fill(0)
@@ -212,14 +216,20 @@ const ProductDetail = () => {
           </div>
           {/* Skeleton cho phần chi tiết */}
           <div className="flex-1 flex flex-col gap-4">
-            <SkeletonLoader type="text" width="60%" height={20} /> {/* Thương hiệu */}
-            <SkeletonLoader type="text" width="80%" height={30} /> {/* Tiêu đề */}
-            <SkeletonLoader type="text" width="40%" height={20} /> {/* Rating */}
+            <SkeletonLoader type="text" width="60%" height={20} />{" "}
+            {/* Thương hiệu */}
+            <SkeletonLoader type="text" width="80%" height={30} />{" "}
+            {/* Tiêu đề */}
+            <SkeletonLoader type="text" width="40%" height={20} />{" "}
+            {/* Rating */}
             <SkeletonLoader type="text" width="70%" height={60} /> {/* Giá */}
-            <SkeletonLoader type="text" width="50%" height={20} /> {/* Số lượng */}
+            <SkeletonLoader type="text" width="50%" height={20} />{" "}
+            {/* Số lượng */}
             <div className="flex gap-4 mt-2">
-              <SkeletonLoader type="text" width="100%" height={40} /> {/* Nút Thêm vào giỏ */}
-              <SkeletonLoader type="text" width="100%" height={40} /> {/* Nút Mua ngay */}
+              <SkeletonLoader type="text" width="100%" height={40} />{" "}
+              {/* Nút Thêm vào giỏ */}
+              <SkeletonLoader type="text" width="100%" height={40} />{" "}
+              {/* Nút Mua ngay */}
             </div>
           </div>
         </div>
@@ -248,26 +258,30 @@ const ProductDetail = () => {
                 onClick={() => setImageModalVisible(true)}
               >
                 <img
-                  src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
+                  src={
+                    productRes?.images?.[selectedImage]?.large_url ||
+                    "fallback_image_url"
+                  }
                   alt={productRes?.name}
                   className="w-full h-auto object-contain transition-transform duration-300 rounded-lg"
                 />
 
-                {productRes?.badges_new && productRes?.badges_new.length > 0 && (
-                  <div className="absolute top-3 left-3 flex gap-2 z-10">
-                    {productRes?.badges_new.map(
-                      (badge, idx) =>
-                        badge.icon && (
-                          <img
-                            key={idx}
-                            src={badge.icon}
-                            alt={badge.text || "badge"}
-                            className="h-6 drop-shadow-md "
-                          />
-                        )
-                    )}
-                  </div>
-                )}
+                {productRes?.badges_new &&
+                  productRes?.badges_new.length > 0 && (
+                    <div className="absolute top-3 left-3 flex gap-2 z-10">
+                      {productRes?.badges_new.map(
+                        (badge, idx) =>
+                          badge.icon && (
+                            <img
+                              key={idx}
+                              src={badge.icon}
+                              alt={badge.text || "badge"}
+                              className="h-6 drop-shadow-md "
+                            />
+                          )
+                      )}
+                    </div>
+                  )}
 
                 {/* <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
                   <button
@@ -318,10 +332,11 @@ const ProductDetail = () => {
                     <img
                       src={image.base_url}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-16 h-16 object-cover rounded-lg transition-all duration-200 ${selectedImage === index
-                        ? "border-2 border-blue-500 opacity-100"
-                        : "border border-gray-300 opacity-80"
-                        }`}
+                      className={`w-16 h-16 object-cover rounded-lg transition-all duration-200 ${
+                        selectedImage === index
+                          ? "border-2 border-blue-500 opacity-100"
+                          : "border border-gray-300 opacity-80"
+                      }`}
                     />
                     {selectedImage === index && (
                       <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full" />
@@ -332,7 +347,6 @@ const ProductDetail = () => {
 
               <div className="mb-7">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
-              
                   <i className="pi pi-star text-blue-500"></i>
                   Điểm nổi bật:
                 </h3>
@@ -347,16 +361,10 @@ const ProductDetail = () => {
                         dangerouslySetInnerHTML={createMarkup(highlight)}
                         className="text-gray-900 text-sm leading-relaxed"
                       ></span>
-
                     </li>
-                  
                   ))}
-                
-
                 </ul>
-
               </div>
-
             </div>
           </div>
 
@@ -364,7 +372,9 @@ const ProductDetail = () => {
             <div className="flex items-center gap-3 mb-2">
               <div className="text-sm text-gray-700">
                 Thương hiệu:{" "}
-                <b className="text-blue-500 font-semibold">{productRes?.brand?.name}</b>
+                <b className="text-blue-500 font-semibold">
+                  {productRes?.brand?.name}
+                </b>
               </div>
               <div className="h-4 w-px bg-gray-300"></div>
               <span className="text-sm text-gray-600">
@@ -397,7 +407,8 @@ const ProductDetail = () => {
               <div className="h-4 w-px bg-gray-300"></div>
               <span className="text-sm text-gray-600 flex items-center gap-1">
                 <i className="pi pi-shopping-cart text-sm"></i>
-                Đã bán <b>{productRes?.all_time_quantity_sold?.toLocaleString()}</b>
+                Đã bán{" "}
+                <b>{productRes?.all_time_quantity_sold?.toLocaleString()}</b>
               </span>
             </div>
 
@@ -416,10 +427,14 @@ const ProductDetail = () => {
 
                 <Tag
                   value={
-                    productRes?.inventory_status === "available" ? "Còn hàng" : "Hết hàng"
+                    productRes?.inventory_status === "available"
+                      ? "Còn hàng"
+                      : "Hết hàng"
                   }
                   severity={
-                    productRes?.inventory_status === "available" ? "success" : "danger"
+                    productRes?.inventory_status === "available"
+                      ? "success"
+                      : "danger"
                   }
                   className="text-sm px-3 py-1.5 rounded-lg font-semibold"
                 />
@@ -466,13 +481,18 @@ const ProductDetail = () => {
             )}
 
             <div className="flex items-center gap-4 mb-7 p-4 bg-gray-50 rounded-xl">
-              <h3 className="text-gray-900 text-base font-semibold m-0">Số lượng:</h3>
+              <h3 className="text-gray-900 text-base font-semibold m-0">
+                Số lượng:
+              </h3>
               <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${quantity <= 1 ? "text-gray-300 cursor-not-allowed" : "text-gray-900 cursor-pointer"
-                    }`}
+                  className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${
+                    quantity <= 1
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-900 cursor-pointer"
+                  }`}
                 >
                   -
                 </button>
@@ -480,7 +500,8 @@ const ProductDetail = () => {
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                  className="w-[50px] text-center border-none outline-none text-base font-medium py-2"
+                  className="w-12 text-center border-none outline-none text-base font-medium py-2 pl-3"
+                  readOnly
                 />
                 <button
                   onClick={increaseQuantity}
@@ -578,7 +599,9 @@ const ProductDetail = () => {
             >
               <div className="p-8 pb-8 text-gray-900 leading-relaxed">
                 <div
-                  dangerouslySetInnerHTML={createMarkup(productRes?.description)}
+                  dangerouslySetInnerHTML={createMarkup(
+                    productRes?.description
+                  )}
                   className="text-[15px] text-gray-600"
                 ></div>
               </div>
@@ -592,35 +615,47 @@ const ProductDetail = () => {
                 </span>
               }
             >
-             <div className="py-8 pb-8">
-  <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
-    <table className="w-full text-left border-collapse">
-      <tbody>
-        {productRes?.specifications?.[0]?.attributes?.length > 0 ? (
-          productRes.specifications[0].attributes.map((attr, index) => (
-            <tr 
-              key={index} 
-              className={index !== productRes.specifications[0].attributes.length - 1 ? "border-b border-gray-200" : ""}
-            >
-              <td className="pl-4 py-3 w-[20%] bg-gray-50 font-semibold text-gray-900 border-r border-gray-200 text-[15px]">
-                {attr?.name}
-              </td>
-              <td className="pl-4 py-3 text-gray-900 text-[15px] leading-relaxed">
-                {attr?.value}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="2" className="text-center py-3 text-gray-500">
-              No specifications available
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
+              <div className="py-8 pb-8">
+                <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="w-full text-left border-collapse">
+                    <tbody>
+                      {productRes?.specifications?.[0]?.attributes?.length >
+                      0 ? (
+                        productRes.specifications[0].attributes.map(
+                          (attr, index) => (
+                            <tr
+                              key={index}
+                              className={
+                                index !==
+                                productRes.specifications[0].attributes.length -
+                                  1
+                                  ? "border-b border-gray-200"
+                                  : ""
+                              }
+                            >
+                              <td className="pl-4 py-3 w-[20%] bg-gray-50 font-semibold text-gray-900 border-r border-gray-200 text-[15px]">
+                                {attr?.name}
+                              </td>
+                              <td className="pl-4 py-3 text-gray-900 text-[15px] leading-relaxed">
+                                {attr?.value}
+                              </td>
+                            </tr>
+                          )
+                        )
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="2"
+                            className="text-center py-3 text-gray-500"
+                          >
+                            No specifications available
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </TabPanel>
 
             <TabPanel
@@ -671,7 +706,10 @@ const ProductDetail = () => {
 
           <div className="flex justify-center items-center flex-1">
             <img
-              src={productRes?.images?.[selectedImage]?.large_url || "fallback_image_url"}
+              src={
+                productRes?.images?.[selectedImage]?.large_url ||
+                "fallback_image_url"
+              }
               alt={productRes?.name || "Product Name"}
               className="max-w-[90%] max-h-[70vh] object-contain mx-auto shadow-lg transition-transform duration-300 rounded-lg"
             />
@@ -690,10 +728,11 @@ const ProductDetail = () => {
                 <div
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`w-[70px] h-[70px] rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${selectedImage === index
-                    ? "border-3 border-blue-500 opacity-100"
-                    : "border-3 border-transparent opacity-70"
-                    }`}
+                  className={`w-[70px] h-[70px] rounded-lg overflow-hidden cursor-pointer transition-all duration-200 flex-shrink-0 ${
+                    selectedImage === index
+                      ? "border-3 border-blue-500 opacity-100"
+                      : "border-3 border-transparent opacity-70"
+                  }`}
                 >
                   <img
                     src={image?.base_url}
