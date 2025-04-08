@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Notification.css';
-import TikiCharacterWithCap from './TikiCharacterWithCap.png'
+import TikiCharacterWithCap from '../../../assets/TikiPics/TikiCharacterWithCap.png'
 
 export default function Notification() {
 

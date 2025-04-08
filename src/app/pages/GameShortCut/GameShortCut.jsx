@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dice from '../User/Game/Dice/Dice';
 import Minesweeper from '../User/Game/Minesweeper/Minesweeper';
-import DiceLogo from './DiceLogo.png';
-import MinesweeperLogo from './MinesweeperLogo.png';
+import LogoDice from '../../assets/Game/LogoDice.png';
+import LogoMinesweeper from '../../assets/Game/LogoMinesweeper.png';
 import './GameShortCut.css';
 
 export default function GameShortCut() {
@@ -40,9 +40,9 @@ export default function GameShortCut() {
                     <div className='link-logo'>
                         <a href='#popup' onClick={() => { handleOpenPopup() }}>
                             {RandomNumber === 0 ?
-                                <img className='img-dice' src={DiceLogo} alt='DiceLogo' />
+                                <img className='img-dice' src={LogoDice} alt='LogoDice' />
                                 :
-                                <img className='img-minesweeper' src={MinesweeperLogo} alt='MinesweeperLogo' />
+                                <img className='img-minesweeper' src={LogoMinesweeper} alt='LogoMinesweeper' />
                             }
                         </a>
                     </div>
@@ -54,7 +54,7 @@ export default function GameShortCut() {
                 <div id='popup' className='overlay'>
                     <div className='popup'>
                         <button className='btn-close' onClick={() => { handleClosePopup() }}>CLOSE</button>
-                        {RandomNumber === 1 ?
+                        {RandomNumber === 0 ?
                             <Dice />
                             :
                             <Minesweeper />

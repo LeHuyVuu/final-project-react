@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import TikiTextLogo from '../../../assets/TikiPics/TikiTextLogo.png';
 import './AccountSideBar.css';
-
-import TikiText from './TikiText.png';
 
 export default function AccountSideBar() {
 
     console.log('AccountSideBar Render');
-    
+
 
     const [Option, setOption] = useState();
     const location = useLocation();
@@ -34,7 +33,7 @@ export default function AccountSideBar() {
     return (
         <div className='accountsidebar-container'>
             <div className='thisuser'>
-                <img src={TikiText} alt='TikiText' />
+                <img src={TikiTextLogo} alt='TikiTextLogo' />
                 <div>
                     <div>Tài khoản của</div>
                     <div className='user-name'>{User.name}</div>

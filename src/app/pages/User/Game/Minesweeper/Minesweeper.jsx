@@ -210,7 +210,7 @@ export default function Minesweeper() {
     return (
         <div className='minesweeper-container'>
             <div className='heading'>
-                <h1>Minesweeper</h1>
+                <h1>DÒ MÌN</h1>
             </div>
 
             <div className='content'>
@@ -307,7 +307,7 @@ export default function Minesweeper() {
                         {HasWon === 1 ?
                             <button className='btn' onClick={() => { addPoint() }}>+200</button>
                             :
-                            <button className='btn btn-reset' onClick={() => { setRefresh(p => p + 1) }}>RESET</button>
+                            <button className='btn btn-reset' onClick={() => { setRefresh(p => p + 1) }}>CHƠI LẠI</button>
                         }
                     </div>
 

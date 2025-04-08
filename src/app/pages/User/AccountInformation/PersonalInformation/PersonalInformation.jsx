@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PersonalInformation.css';
-import TikiDefaultAvatar from './TikiDefaultAvatar.png';
+import TikiDefaultAvatar from '../../../../assets/TikiPics/TikiDefaultAvatar.png';
 
 export default function PersonalInformation() {
 
