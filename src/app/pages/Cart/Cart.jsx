@@ -217,7 +217,11 @@ const Cart = () => {
 
 
     const handleCheckout = () => {
-        navigate("/step/checkout", { state: { productToBuy: selectedItems } });
+        if (selectedItems.length === 0) {
+            toast.current.show({ severity: "warn", summary: "Chưa có sản phẩm nào được chọn", detail: "Vui lòng chọn ít nhất một sản phẩm để thanh toán", life: 3000 });
+        } else {
+            navigate("/step/checkout", { state: { productToBuy: selectedItems } });
+        }
     };
 
     const groupedBySeller = cartItems.reduce((acc, item) => {
