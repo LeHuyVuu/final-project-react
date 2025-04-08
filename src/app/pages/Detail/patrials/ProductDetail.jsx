@@ -231,12 +231,12 @@ const ProductDetail = () => {
     <>
       <Toast ref={toast} />
       <div className="bg-white text-black">
-        <div className="p-2 mt-5 max-w-7xl mx-auto">
+        <div className="py-5 mt-5 container mx-auto flex justify-center items-center ">
           <BreadCrumb
             model={breadcrumbItems}
             home={breadcrumbHome}
             end={lastItem}
-            className="bg-transparent border-none p-1 text-[12px] max-w-7xl"
+            className="bg-transparent border-none p-1 text-[15px] max-w-7xl mr-44 "
           />
         </div>
 
@@ -244,7 +244,7 @@ const ProductDetail = () => {
           <div className="flex-1 max-w-lg lg:max-w-xl">
             <div className="flex flex-col w-full bg-white sticky top-3 gap-4 p-4 border border-gray-200 rounded-xl shadow-sm">
               <div
-                className="relative cursor-zoom-in overflow-hidden rounded-lg"
+                className="relative cursor-zoom-in overflow-hidden rounded-lg h-[542px]"
                 onClick={() => setImageModalVisible(true)}
               >
                 <img
@@ -262,14 +262,14 @@ const ProductDetail = () => {
                             key={idx}
                             src={badge.icon}
                             alt={badge.text || "badge"}
-                            className="h-6 drop-shadow-md"
+                            className="h-6 drop-shadow-md "
                           />
                         )
                     )}
                   </div>
                 )}
 
-                <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+                {/* <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
                   <button
                     aria-label="Share"
                     className="bg-white/90 border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-sm hover:bg-white transition-all duration-200"
@@ -282,7 +282,7 @@ const ProductDetail = () => {
                   >
                     <i className="pi pi-heart text-gray-800"></i>
                   </button>
-                </div>
+                </div> */}
 
                 <div className="absolute top-1/2 w-full flex justify-between transform -translate-y-1/2 px-2 pointer-events-none">
                   <button
@@ -332,13 +332,31 @@ const ProductDetail = () => {
 
               <div className="mb-7">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+              
                   <i className="pi pi-star text-blue-500"></i>
                   Điểm nổi bật:
                 </h3>
-                <ul className="pl-6 text-gray-900 flex flex-col gap-2.5">
-                  {productRes?.short_description}
+                <ul className="px-6 text-gray-900  gap-2.5 ">
+                  {productRes?.highlight?.items?.map((highlight, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-2 mb-2 text-sm font-semibold"
+                    >
+                      <i className="pi pi-check text-blue-500"></i>
+                      <span
+                        dangerouslySetInnerHTML={createMarkup(highlight)}
+                        className="text-gray-900 text-sm leading-relaxed"
+                      ></span>
+
+                    </li>
+                  
+                  ))}
+                
+
                 </ul>
+
               </div>
+
             </div>
           </div>
 
@@ -558,7 +576,7 @@ const ProductDetail = () => {
                 </span>
               }
             >
-              <div className="py-8 pb-8 text-gray-900 leading-relaxed">
+              <div className="p-8 pb-8 text-gray-900 leading-relaxed">
                 <div
                   dangerouslySetInnerHTML={createMarkup(productRes?.description)}
                   className="text-[15px] text-gray-600"
@@ -574,32 +592,35 @@ const ProductDetail = () => {
                 </span>
               }
             >
-              <div className="py-8 pb-8">
-                <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <tbody>
-                      {productRes?.specifications?.[0]?.attributes?.length > 0 ? (
-                        productRes.specifications[0].attributes.map((attr, index) => (
-                          <tr key={index}>
-                            <td className="p-5 w-[30%] bg-gray-50 font-semibold text-gray-900 border-r border-gray-200 text-[15px]">
-                              {attr?.name}
-                            </td>
-                            <td className="p-5 text-gray-900 text-[15px] leading-relaxed">
-                              {attr?.value}
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="2" className="text-center text-gray-500">
-                            No specifications available
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+             <div className="py-8 pb-8">
+  <div className="w-full border-collapse bg-white text-gray-900 border border-gray-200 rounded-lg overflow-hidden">
+    <table className="w-full text-left border-collapse">
+      <tbody>
+        {productRes?.specifications?.[0]?.attributes?.length > 0 ? (
+          productRes.specifications[0].attributes.map((attr, index) => (
+            <tr 
+              key={index} 
+              className={index !== productRes.specifications[0].attributes.length - 1 ? "border-b border-gray-200" : ""}
+            >
+              <td className="pl-4 py-3 w-[20%] bg-gray-50 font-semibold text-gray-900 border-r border-gray-200 text-[15px]">
+                {attr?.name}
+              </td>
+              <td className="pl-4 py-3 text-gray-900 text-[15px] leading-relaxed">
+                {attr?.value}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="2" className="text-center py-3 text-gray-500">
+              No specifications available
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
             </TabPanel>
 
             <TabPanel
@@ -628,19 +649,19 @@ const ProductDetail = () => {
       <Dialog
         visible={imageModalVisible}
         onHide={() => setImageModalVisible(false)}
-        className="w-[90vw] max-w-7xl max-h-[90vh]"
+        className="w-[90vw] max-w-7xl max-h-[90vh] "
         header={null}
         dismissableMask
         maximizable
         contentStyle={{
           padding: 0,
           overflow: "hidden",
-          borderRadius: "12px",
+          borderRadius: "0.5rem",
           backgroundColor: COLORS.background,
         }}
         showHeader={false}
       >
-        <div className="text-center relative bg-white min-h-[85vh] flex flex-col justify-center py-10">
+        <div className="text-center relative bg-white min-h-[85vh] flex flex-col justify-center pt-10">
           <button
             onClick={() => setImageModalVisible(false)}
             className="absolute top-5 right-5 bg-blue-500 border-none rounded-full w-11 h-11 flex items-center justify-center cursor-pointer z-10 shadow-lg transition-all duration-200"
@@ -691,7 +712,7 @@ const ProductDetail = () => {
             />
           </div>
 
-          <div className="absolute bottom-3 left-0 w-full text-center text-white font-semibold text-[15px] bg-blue-500 py-2.5 opacity-90">
+          <div className=" w-full  text-center text-white font-semibold text-[15px] bg-blue-500 rounded-b-lg py-2 mt-5">
             {selectedImage + 1} / {productRes?.images?.length}
           </div>
         </div>

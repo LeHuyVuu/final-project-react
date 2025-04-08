@@ -1003,7 +1003,7 @@ const ProductListing = () => {
       {/* Breadcrumb */}
       {categoryInfo && (
         <div className="mb-6">
-          <BreadCrumb model={getBreadcrumbItems()} home={breadcrumbHome} />
+          <BreadCrumb model={getBreadcrumbItems()} home={breadcrumbHome} className="bg-transparent" />
         </div>
       )}
       <CategoryBrowser categoryId={normalizedCategoryId} urlKey={urlKey} />
@@ -1901,7 +1901,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="nowShipping"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.fastDelivery}
                 onChange={(e) => handleCheckboxChange(e, "fastDelivery")}
               />
@@ -1922,7 +1922,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="topDeal"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.topDeal}
                 onChange={(e) => handleCheckboxChange(e, "topDeal")}
               />
@@ -1941,7 +1941,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="freeShip"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.freeShip}
                 onChange={(e) => handleCheckboxChange(e, "freeShip")}
               />
@@ -1958,13 +1958,13 @@ const ProductListing = () => {
               <div className="flex items-center">
                 <Checkbox
                   id="fourStar"
-                  className="border border-gray-300 rounded mr-2"
+                  className=" border-gray-300 rounded mr-2"
                   checked={checkboxFilters.fourPlusStar}
                   onChange={(e) => handleCheckboxChange(e, "fourPlusStar")}
                 />
                 <label
                   htmlFor="fourStar"
-                  className="text-xs text-gray-700 flex items-center"
+                  className="text-xs text-gray-700 flex  items-center "
                 >
                   <Rating
                     value={4}
@@ -1978,9 +1978,9 @@ const ProductListing = () => {
                       offIcon: { className: "text-gray-300 text-xs" },
                     }}
                   />
-                  {filterOptions.ratings.find((r) => r.key === "4")?.name ||
-                    "từ 4 sao"}
+                 
                 </label>
+                 <span className="text-gray-600">từ 4 sao</span>
               </div>
             )}
           </div>
