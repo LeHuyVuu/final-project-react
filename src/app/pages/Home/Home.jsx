@@ -17,7 +17,7 @@ export default function Home() {
 
 
   return (
-    <div classNam=''>
+    <div className=''>
       <div className=" mx-28" >
 
         <div className="mt-10">

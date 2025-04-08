@@ -11,6 +11,7 @@ import {
   faTag,
   faStar,
   faChevronDown,
+  faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Dialog } from "primereact/dialog";
@@ -1522,19 +1523,47 @@ const SearchResults = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {/* Sidebar Filters - Only visible on desktop */}
         <div className="hidden lg:block lg:col-span-1 ">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-40">
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium text-gray-800">Bộ lọc tìm kiếm</h3>
-                {filtersApplied > 0 && (
-                  <button
-                    onClick={resetFilters}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Xóa tất cả
-                  </button>
-                )}
+
+  <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-40">
+    <div className="p-4 border-b border-gray-100">
+      <div className="flex items-center justify-between">
+        <h3 className="font-medium text-gray-800">Bộ lọc tìm kiếm</h3>
+        {/* {filtersApplied > 0 && (
+          <button
+            onClick={resetFilters}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+          >
+            Xóa tất cả
+          </button>
+        )} */}
+         <div className="p-4">
+                <Button
+                  
+                  icon={<FontAwesomeIcon icon={faFilter} className="mr-2" />}
+                  className="p-button-outlined p-button-sm w-full"
+                  onClick={openFilterDialog}
+                />
               </div>
+      </div>
+      
+      {filtersApplied > 0 && (
+        <div className="mt-2 text-xs text-gray-500">
+          <span className="font-medium">{filtersApplied}</span> bộ lọc đã áp dụng
+        </div>
+      )}
+    </div>
+    <div className="max-h-[calc(100vh-180px)] overflow-y-auto custom-scrollbar ">
+            <div className="divide-y divide-gray-100">
+              {/* Sort options in sidebar */}
+             
+              
+              {/* Service filters - Collapsible */}
+              {Object.keys(filterOptions.serviceFilters || {}).length > 0 && (
+                <div className="border-t border-gray-100">
+                  <div 
+                    className="p-4 cursor-pointer" 
+                    onClick={() => toggleFilterSection('service')}
+                  >
 
               {filtersApplied > 0 && (
                 <div className="mt-2 text-xs text-gray-500">
@@ -2081,15 +2110,11 @@ const SearchResults = () => {
                     return null;
                   })}
 
-                {/* <div className="p-4">
-                <Button
-                  label="Xem tất cả bộ lọc"
-                  icon="pi pi-filter"
-                  className="p-button-outlined p-button-sm w-full"
-                  onClick={openFilterDialog}
-                />
-              </div> */}
-              </div>
+                  return null;
+                })}
+              
+             
+
             </div>
           </div>
         </div>
@@ -2141,7 +2166,7 @@ const SearchResults = () => {
         header="Bộ lọc"
         visible={showAllFiltersDialog}
         onHide={() => setShowAllFiltersDialog(false)}
-        className="w-full max-w-md"
+        className="w-full max-w-md lg:hidden"
         footer={
           <div className="flex justify-between">
             <Button
@@ -2159,6 +2184,514 @@ const SearchResults = () => {
         }
       >
         {/* ...existing code... */}
+      </Dialog>
+
+      {/* Comprehensive Filter Dialog */}
+      <Dialog
+        contentStyle={{ padding: "0px", overflowY: "hidden" }}
+        header={
+          <div className="flex justify-between items-center p-2 ">
+            <h2 className="text-xl font-medium text-gray-800 flex items-center">
+              <FontAwesomeIcon icon={faFilter} className="mr-3 text-primary" />
+              Tất cả bộ lọc
+              {Object.values(tempFilters).flat().filter(Boolean).length +
+                Object.values(tempDynamicFilters).flat().filter(Boolean)
+                  .length +
+                Object.values(tempCheckboxFilters).filter(Boolean).length >
+                0 && (
+                <Badge
+                  value={
+                    Object.values(tempFilters).flat().filter(Boolean).length +
+                    Object.values(tempDynamicFilters).flat().filter(Boolean)
+                      .length +
+                    Object.values(tempCheckboxFilters).filter(Boolean).length
+                  }
+                  severity="info"
+                  className="ml-2"
+                ></Badge>
+              )}
+            </h2>
+            {/* <Button
+              // icon="pi pi-times"
+              className="p-button-rounded p-button-text"
+              onClick={() => setShowAllFiltersDialog(false)}
+              // aria-label="Close"
+            /> */}
+          </div>
+        }
+        visible={showAllFiltersDialog}
+        style={{ width: "85vw", maxWidth: "1200px" }}
+        onHide={() => setShowAllFiltersDialog(false)}
+        footer={
+          <div className="flex justify-between border-t border-gray-200 pt-4 px-2 ">
+            <Button
+              label="Xóa bộ lọc"
+              icon="pi pi-filter-slash"
+              className="p-button-outlined p-button-danger"
+              onClick={resetTempFilters}
+              disabled={
+                Object.values(tempFilters).flat().filter(Boolean).length +
+                  Object.values(tempDynamicFilters).flat().filter(Boolean)
+                    .length +
+                  Object.values(tempCheckboxFilters).filter(Boolean).length ===
+                0
+              }
+            />
+            <Button
+              label="Áp dụng"
+              icon="pi pi-check"
+              className="p-button-primary"
+              onClick={applyFilters}
+            />
+          </div>
+        }
+        blockScroll
+        dismissableMask
+        closeOnEscape
+        className="filter-dialog"
+      >
+        <div className="flex flex-col md:flex-row gap-6 p-4">
+          {/* Sidebar với danh mục filter */}
+          <div className="md:w-1/4 lg:w-1/5">
+            <div className="sticky top-0 bg-white h-full shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+              <h3 className="text-sm font-medium p-3 border-b bg-gray-50">
+                Danh mục lọc
+              </h3>
+              <nav className="overflow-y-auto max-h-[64vh]">
+                <ul className="divide-y divide-gray-200">
+                  <li>
+                    <a
+                      href="#price-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Khoảng giá{" "}
+                      {tempFilters.price && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#color-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Màu sắc{" "}
+                      {tempFilters.colors?.length > 0 && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#brand-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Thương hiệu{" "}
+                      {tempFilters.brands?.length > 0 && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#pattern-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Họa tiết{" "}
+                      {tempFilters.patterns?.length > 0 && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#material-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Chất liệu{" "}
+                      {tempFilters.materials?.length > 0 && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                  {Object.keys(filterOptions.dynamicFilters || {}).map(
+                    (code) => (
+                      <li key={code}>
+                        <a
+                          href={`#${code}-filter`}
+                          className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                        >
+                          {filterOptions.dynamicFilters[code].display_name}
+                          {tempDynamicFilters[code]?.length > 0 && (
+                            <span className="float-right text-blue-600">●</span>
+                          )}
+                        </a>
+                      </li>
+                    )
+                  )}
+                  <li>
+                    <a
+                      href="#services-filter"
+                      className="block p-3 hover:bg-blue-50 text-sm transition-colors duration-200"
+                    >
+                      Dịch vụ & Khuyến mãi
+                      {(tempCheckboxFilters.fastDelivery ||
+                        tempCheckboxFilters.freeShip ||
+                        tempCheckboxFilters.topDeal ||
+                        tempCheckboxFilters.fourPlusStar) && (
+                        <span className="float-right text-blue-600">●</span>
+                      )}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+          {/* Vùng hiển thị filter */}
+          <div className="md:w-3/4 lg:w-4/5 overflow-y-auto max-h-[70vh] pr-2 custom-scrollbar">
+            <div className="space-y-8">
+              {/* Khoảng giá */}
+              {filterOptions?.priceRanges &&
+                filterOptions.priceRanges.length > 0 && (
+                  <div
+                    id="price-filter"
+                    className="border-b border-gray-200 pb-6 pt-2"
+                  >
+                    <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                      <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                        <i className="pi pi-dollar text-blue-600 text-xs"></i>
+                      </span>
+                      Khoảng giá
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {filterOptions.priceRanges.map((priceRange) => (
+                        <div key={priceRange.key} className="flex items-center">
+                          <Checkbox
+                            inputId={`price_${priceRange.key}`}
+                            checked={tempFilters.price === priceRange.key}
+                            onChange={() =>
+                              handleTempPriceChange(priceRange.key)
+                            }
+                            className="mr-2"
+                          />
+                          <label
+                            htmlFor={`price_${priceRange.key}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {priceRange.name}{" "}
+                            {priceRange.count > 0 && (
+                              <span className="text-gray-500">
+                                ({priceRange.count})
+                              </span>
+                            )}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Màu sắc */}
+              {filterOptions?.colors && filterOptions.colors.length > 0 && (
+                <div
+                  id="color-filter"
+                  className="border-b border-gray-200 pb-6 pt-2"
+                >
+                  <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                    <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                      <i className="pi pi-palette text-blue-600 text-xs"></i>
+                    </span>
+                    Màu sắc
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {filterOptions.colors.map((color) => (
+                      <div key={color.key} className="flex items-center">
+                        <Checkbox
+                          inputId={`color_${color.key}`}
+                          checked={tempFilters.colors?.includes(color.key)}
+                          onChange={() => toggleTempColorFilter(color.key)}
+                          className="mr-2"
+                        />
+                        <label
+                          htmlFor={`color_${color.key}`}
+                          className="text-sm cursor-pointer flex items-center"
+                        >
+                          <span
+                            className="w-4 h-4 rounded-full inline-block border border-gray-300"
+                            style={{ backgroundColor: color.hex }}
+                          ></span>
+                          <span className="ml-2">
+                            {color.name} {color.count > 0 && `(${color.count})`}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Thương hiệu */}
+              {filterOptions?.brands && filterOptions.brands.length > 0 && (
+                <div
+                  id="brand-filter"
+                  className="border-b border-gray-200 pb-6 pt-2"
+                >
+                  <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                    <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                      <i className="pi pi-tag text-blue-600 text-xs"></i>
+                    </span>
+                    Thương hiệu
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {filterOptions.brands.map((brand) => (
+                      <div key={brand.key} className="flex items-center">
+                        <Checkbox
+                          inputId={`brand_${brand.key}`}
+                          checked={tempFilters.brands?.includes(brand.key)}
+                          onChange={(e) =>
+                            onTempFilterChange(e, "brands", brand)
+                          }
+                          className="mr-2"
+                        />
+                        <label
+                          htmlFor={`brand_${brand.key}`}
+                          className="text-sm cursor-pointer truncate"
+                        >
+                          {brand.name} {brand.count > 0 && `(${brand.count})`}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Họa tiết */}
+              {filterOptions?.patterns && filterOptions.patterns.length > 0 && (
+                <div
+                  id="pattern-filter"
+                  className="border-b border-gray-200 pb-6 pt-2"
+                >
+                  <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                    <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                      <i className="pi pi-images text-blue-600 text-xs"></i>
+                    </span>
+                    Họa tiết
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {filterOptions.patterns.map((pattern) => (
+                      <div key={pattern.key} className="flex items-center">
+                        <Checkbox
+                          inputId={`pattern_${pattern.key}`}
+                          checked={tempFilters.patterns?.includes(pattern.key)}
+                          onChange={(e) =>
+                            onTempFilterChange(e, "patterns", pattern)
+                          }
+                          className="mr-2"
+                        />
+                        <label
+                          htmlFor={`pattern_${pattern.key}`}
+                          className="text-sm cursor-pointer"
+                        >
+                          {pattern.name}{" "}
+                          {pattern.count > 0 && `(${pattern.count})`}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Chất liệu */}
+              {filterOptions?.materials &&
+                filterOptions.materials.length > 0 && (
+                  <div
+                    id="material-filter"
+                    className="border-b border-gray-200 pb-6 pt-2"
+                  >
+                    <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                      <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                        <i className="pi pi-box text-blue-600 text-xs"></i>
+                      </span>
+                      Chất liệu
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                      {filterOptions.materials.map((material) => (
+                        <div key={material.key} className="flex items-center">
+                          <Checkbox
+                            inputId={`material_${material.key}`}
+                            checked={tempFilters.materials?.includes(
+                              material.key
+                            )}
+                            onChange={(e) =>
+                              onTempFilterChange(e, "materials", material)
+                            }
+                            className="mr-2"
+                          />
+                          <label
+                            htmlFor={`material_${material.key}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {material.name}{" "}
+                            {material.count > 0 && `(${material.count})`}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Filter động */}
+              {filterOptions.dynamicFilters &&
+                Object.entries(filterOptions.dynamicFilters).map(
+                  ([code, filterData]) => (
+                    <div
+                      id={`${code}-filter`}
+                      key={code}
+                      className="border-b border-gray-200 pb-6 pt-2"
+                    >
+                      <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                        <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                          <i className="pi pi-filter text-blue-600 text-xs"></i>
+                        </span>
+                        {filterData.display_name}
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        {filterData.values.map((item) => (
+                          <div key={item.key} className="flex items-center">
+                            <Checkbox
+                              inputId={`${code}_${item.key}`}
+                              checked={tempDynamicFilters[code]?.includes(
+                                item.key
+                              )}
+                              onChange={(e) =>
+                                handleTempDynamicFilterChange(
+                                  code,
+                                  e.checked,
+                                  item.key
+                                )
+                              }
+                              className="mr-2"
+                            />
+                            <label
+                              htmlFor={`${code}_${item.key}`}
+                              className="text-sm cursor-pointer"
+                            >
+                              {item.name} {item.count > 0 && `(${item.count})`}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                )}
+
+              {/* Dịch vụ */}
+              <div id="services-filter" className="pb-6 pt-2">
+                <h3 className="font-medium text-gray-800 mb-4 flex items-center">
+                  <span className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                    <i className="pi pi-truck text-blue-600 text-xs"></i>
+                  </span>
+                  Dịch vụ & Khuyến mãi
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="flex items-center p-3 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <Checkbox
+                      inputId="fastDelivery"
+                      checked={tempCheckboxFilters.fastDelivery}
+                      onChange={(e) =>
+                        handleTempCheckboxChange(e, "fastDelivery")
+                      }
+                      className="mr-3"
+                    />
+                    <label
+                      htmlFor="fastDelivery"
+                      className="text-sm cursor-pointer flex items-center"
+                    >
+                      <img
+                        src="https://salt.tikicdn.com/ts/tka/a8/31/b6/802e2c99dcce64c67aa2648edb15dd25.png"
+                        alt="Giao siêu tốc 2H"
+                        className="h-[25px] mr-2"
+                      />
+                      <span className="text-red-500 font-bold">
+                        Giao siêu tốc 2H
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center p-3 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <Checkbox
+                      inputId="topDeal"
+                      checked={tempCheckboxFilters.topDeal}
+                      onChange={(e) => handleTempCheckboxChange(e, "topDeal")}
+                      className="mr-3"
+                    />
+                    <label
+                      htmlFor="topDeal"
+                      className="text-sm cursor-pointer flex items-center"
+                    >
+                      <img
+                        src="https://salt.tikicdn.com/ts/upload/b5/aa/48/2305c5e08e536cfb840043df12818146.png"
+                        alt="Siêu rẻ"
+                        className="h-[25px] mr-2"
+                      />
+                      <span className="text-red-500 font-bold">Siêu rẻ</span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center p-3 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <Checkbox
+                      inputId="freeShip"
+                      checked={tempCheckboxFilters.freeShip}
+                      onChange={(e) => handleTempCheckboxChange(e, "freeShip")}
+                      className="mr-3"
+                    />
+                    <label
+                      htmlFor="freeShip"
+                      className="text-sm cursor-pointer flex items-center"
+                    >
+                      <img
+                        src="https://salt.tikicdn.com/ts/upload/2f/20/77/0f96cfafdf7855d5e7fe076dd4f34ce0.png"
+                        alt="Freeship"
+                        className="h-[25px] mr-2"
+                      />
+                      <span className="text-gray-700">FreeShip Xtra</span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center p-3 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <Checkbox
+                      inputId="fourStar"
+                      checked={tempCheckboxFilters.fourPlusStar}
+                      onChange={(e) =>
+                        handleTempCheckboxChange(e, "fourPlusStar")
+                      }
+                      className="mr-3"
+                    />
+                    <label
+                      htmlFor="fourStar"
+                      className="text-sm cursor-pointer flex items-center"
+                    >
+                      <Rating
+                        value={4}
+                        readOnly
+                        disabled
+                        stars={5}
+                        className="mr-1"
+                        cancel={false}
+                        pt={{
+                          onIcon: { className: "text-yellow-400 text-xs" },
+                          offIcon: { className: "text-gray-300 text-xs" },
+                        }}
+                      />
+                      <span className="ml-1">từ 4 sao</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </Dialog>
 
       {/* Color Overlay Panel */}
