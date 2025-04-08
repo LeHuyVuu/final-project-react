@@ -657,7 +657,7 @@ const ProductListing = () => {
         onMouseLeave={() => setHoverProduct(null)}
       >
         <Link to={`/detail/${product.id}`}>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full ">
             <div className="relative overflow-hidden">
               <img
                 src={product.thumbnail_url}
@@ -716,9 +716,11 @@ const ProductListing = () => {
                       {formatCurrency(product.original_price)}
                     </span>
                   )}
-                  <span className={`ml-2 mb-2 rounded-sm ${product.discount_rate ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
-                    -{product.discount_rate}%
-                  </span>
+                  {product.discount_rate > 0 && (
+                    <span className={`ml-2 mb-2 rounded-sm ${product.discount_rate ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
+                      -{product.discount_rate}%
+                    </span>
+                  )}
                 </div>
                 <span className="text-xl font-bold text-[#ff424e] my-2 mb-2">
                   {formatCurrency(product.price)}

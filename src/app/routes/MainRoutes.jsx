@@ -73,7 +73,7 @@ const MainRoutes = () => {
           <Route path='/step' element={<Step />} >
             <Route path='cart' element={<Cart />} />
             <Route path='checkout' element={<Payment />} />
-            <Route path='checkout/success' element={<CheckoutSuccess />} />
+            <Route path='success' element={<CheckoutSuccess />} />
           </Route>
         </Route>
       </Routes>
