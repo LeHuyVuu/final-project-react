@@ -22,7 +22,7 @@ const itemTemplate = (item) => {
                         <img src={item.image} alt={item.title} className=" h-full object-cover rounded-lg mb-2 " /> {/* Main image */}
                     </div>
                     <div className="text-left">
-                        <div className='max-w-60 min-h-12  line-clamp-2 overflow-hidden text-ellipsis mb-2'>
+                        <div className='max-w-60 min-h-10  line-clamp-2 text-sm  text-ellipsis hover:text-blue-600 transition-colors mb-2'>
                             {item.brand_name}</div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
