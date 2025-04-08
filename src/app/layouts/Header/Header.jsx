@@ -294,75 +294,87 @@ export default function Header() {
   const totalMenuPages = Math.ceil(menuItems.length / ITEMS_PER_PAGE);
 
   // Go to the next page of menu items with animation
-  const handleNextPage = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (currentMenuPage < totalMenuPages - 1 && !isAnimating) {
-      setIsAnimating(true);
-
-      // Apply exit animation to current items
-      if (menuContainerRef.current) {
-        menuContainerRef.current.classList.add("slide-out-left");
-      }
-
-      // Wait for exit animation to complete then change page
-      setTimeout(() => {
-        setCurrentMenuPage(currentMenuPage + 1);
-
-        // Apply entry animation for new items
-        if (menuContainerRef.current) {
-          menuContainerRef.current.classList.remove("slide-out-left");
-          menuContainerRef.current.classList.add("slide-in-right");
-
-          // Remove the entry animation class after it completes
-          setTimeout(() => {
-            if (menuContainerRef.current) {
-              menuContainerRef.current.classList.remove("slide-in-right");
-            }
-            setIsAnimating(false);
-          }, 300);
-        } else {
-          setIsAnimating(false);
-        }
-      }, 300);
-    }
-  };
-
-  // Go to the previous page of menu items with animation
-  const handlePrevPage = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (currentMenuPage > 0 && !isAnimating) {
-      setIsAnimating(true);
-
-      // Apply exit animation to current items
-      if (menuContainerRef.current) {
+ // Sửa hàm handlePrevPage
+const handlePrevPage = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (currentMenuPage > 0 && !isAnimating) {
+    setIsAnimating(true);
+    
+    // Xóa tất cả class animation cũ trước khi thêm class mới
+    if (menuContainerRef.current) {
+      menuContainerRef.current.classList.remove("slide-in-left", "slide-in-right");
+      menuContainerRef.current.classList.remove("slide-out-left", "slide-out-right");
+      // Đợi một frame để đảm bảo DOM đã được cập nhật
+      requestAnimationFrame(() => {
         menuContainerRef.current.classList.add("slide-out-right");
-      }
-
-      // Wait for exit animation to complete then change page
-      setTimeout(() => {
-        setCurrentMenuPage(currentMenuPage - 1);
-
-        // Apply entry animation for new items
-        if (menuContainerRef.current) {
-          menuContainerRef.current.classList.remove("slide-out-right");
-          menuContainerRef.current.classList.add("slide-in-left");
-
-          // Remove the entry animation class after it completes
-          setTimeout(() => {
-            if (menuContainerRef.current) {
-              menuContainerRef.current.classList.remove("slide-in-left");
-            }
-            setIsAnimating(false);
-          }, 300);
-        } else {
-          setIsAnimating(false);
-        }
-      }, 300);
+      });
     }
-  };
 
+    // Đợi animation hoàn tất
+    setTimeout(() => {
+      setCurrentMenuPage(currentMenuPage - 1);
+      
+      // Thêm animation mới sau khi thay đổi trang
+      if (menuContainerRef.current) {
+        menuContainerRef.current.classList.remove("slide-out-right");
+        // Đợi một frame để đảm bảo DOM đã được cập nhật
+        requestAnimationFrame(() => {
+          menuContainerRef.current.classList.add("slide-in-left");
+        });
+        
+        setTimeout(() => {
+          if (menuContainerRef.current) {
+            menuContainerRef.current.classList.remove("slide-in-left");
+          }
+          setIsAnimating(false);
+        }, 300);
+      } else {
+        setIsAnimating(false);
+      }
+    }, 250); // Giảm thời gian chờ giữa các animation
+  }
+};
+
+// Sửa hàm handleNextPage tương tự
+const handleNextPage = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (currentMenuPage < totalMenuPages - 1 && !isAnimating) {
+    setIsAnimating(true);
+    
+    // Xóa tất cả class animation cũ
+    if (menuContainerRef.current) {
+      menuContainerRef.current.classList.remove("slide-in-left", "slide-in-right");
+      menuContainerRef.current.classList.remove("slide-out-left", "slide-out-right");
+      
+      requestAnimationFrame(() => {
+        menuContainerRef.current.classList.add("slide-out-left");
+      });
+    }
+    
+    setTimeout(() => {
+      setCurrentMenuPage(currentMenuPage + 1);
+      
+      if (menuContainerRef.current) {
+        menuContainerRef.current.classList.remove("slide-out-left");
+        
+        requestAnimationFrame(() => {
+          menuContainerRef.current.classList.add("slide-in-right");
+        });
+        
+        setTimeout(() => {
+          if (menuContainerRef.current) {
+            menuContainerRef.current.classList.remove("slide-in-right");
+          }
+          setIsAnimating(false);
+        }, 300);
+      } else {
+        setIsAnimating(false);
+      }
+    }, 250);
+  }
+};
   // Function to handle direct page selection
   const goToPage = (pageIndex) => {
     if (pageIndex !== currentMenuPage && !isAnimating) {
@@ -530,7 +542,7 @@ export default function Header() {
             to { opacity: 0; transform: translateX(-10%); }
           }
           @keyframes slide-in-right {
-            from { opacity: 0; transform: translateX(-100%); }
+            from { opacity: 0; transform: translateX(10%); }
             to { opacity: 1; transform: translateX(0); }
           }
           @keyframes slide-out-right {
@@ -553,12 +565,6 @@ export default function Header() {
           .slide-in-left {
             animation: slide-in-left 0.3s ease forwards;
           }
-          .menu-items-enter {
-            animation: slide-in-right 0.3s ease forwards;
-          }
-          .menu-items-exit {
-            animation: slide-out-left 0.3s ease forwards;
-          }
           .page-indicator {
             transition: all 0.3s ease;
           }
@@ -569,23 +575,13 @@ export default function Header() {
           .page-indicator.active {
             width: 1rem;
           }
-          .categories-button-container {
-            transition: all 0.3s ease;
-          }
-          @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-          }
-          .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out forwards;
-          }
         `}</style>
         <div className="container mx-auto">
-          <nav
-            className="flex items-center justify-between py-2 relative"
-            ref={navRef}
-            onMouseLeave={handleNavMouseLeave}
-          >
+        <nav
+  className="flex items-center justify-between p-4 relative h-14"
+  ref={navRef}
+  onMouseLeave={handleNavMouseLeave}
+>
             {/* Previous page button */}
             {showMenuItems && menuItems.length > ITEMS_PER_PAGE && (
               console.log("menuItems", menuItems),
@@ -653,32 +649,32 @@ export default function Header() {
 
             {/* Menu items container with animation - only shown when showMenuItems is true */}
             {showMenuItems && (
-              <div
-                ref={menuContainerRef}
-                className="flex items-center flex-grow justify-start relative overflow-hidden menu-items-enter"
-                style={{ minHeight: "3rem" }}
-              >
-                {currentMenuItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="horizontal-nav-item relative mr-4 flex-shrink-0 pb-1"
-                    onMouseEnter={() => handleMenuItemHover(item)}
-                  >
-                    <Link
-                      to={`/category/${extractCategoryId(item.link) || ""}${
-                        item.link && item.link.includes("/")
-                          ? `?urlKey=${item.link.split("/c").pop()}`
-                          : ""
-                      }`}
-                      className="px-3 py-1 font-medium text-gray-700 hover:text-blue-500 transition duration-200 block whitespace-nowrap"
-                      onClick={handleLinkClick}
-                    >
-                      {item.text}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            )}
+    <div
+      ref={menuContainerRef}
+      className="flex items-center flex-grow justify-start relative overflow-hidden menu-items-enter"
+      style={{ height: "2.5rem" }}
+    >
+      {currentMenuItems.map((item, index) => (
+        <div
+          key={index}
+          className="horizontal-nav-item relative mr-4 flex-shrink-0"
+          onMouseEnter={() => handleMenuItemHover(item)}
+        >
+          <Link
+            to={`/category/${extractCategoryId(item.link) || ""}${
+              item.link && item.link.includes("/")
+                ? `?urlKey=${item.link.split("/c").pop()}`
+                : ""
+            }`}
+            className="px-3 py-1 font-medium text-gray-700 hover:text-blue-500 transition duration-200 block whitespace-nowrap"
+            onClick={handleLinkClick}
+          >
+            {item.text}
+          </Link>
+        </div>
+      ))}
+    </div>
+  )}
 
           {/* Next page button - Only show when menu items are visible */}
             {showMenuItems && menuItems.length > ITEMS_PER_PAGE && (
@@ -710,25 +706,30 @@ export default function Header() {
 
 
             {/* Pagination indicator */}
-            {showMenuItems&& menuItems.length > ITEMS_PER_PAGE && (
-              <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
-                {Array.from({ length: totalMenuPages }).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1.5 rounded-full page-indicator transition-all duration-300 ${
-                      index === currentMenuPage
-                        ? "w-4 bg-blue-500 active"
-                        : "w-2 bg-gray-300"
-                    }`}
-                    onClick={() => goToPage(index)}
-                    role="button"
-                    aria-label={`Go to page ${index + 1}`}
-                    aria-current={index === currentMenuPage ? "page" : "false"}
-                  />
-                ))}
-              </div>
-            )}
-          </nav>
+            {showMenuItems && menuItems.length > ITEMS_PER_PAGE && (
+    <div 
+      className="absolute left-1/2 transform -translate-x-1/2 bottom-0 flex space-x-1.5 items-center pointer-events-none"
+      aria-hidden="false"
+    >
+      <div className="flex space-x-1.5 items-center h-0 overflow-visible pointer-events-auto pb-2">
+        {Array.from({ length: totalMenuPages }).map((_, index) => (
+          <div
+            key={index}
+            className={`h-1.5 rounded-full page-indicator transition-all duration-300 ${
+              index === currentMenuPage
+                ? "w-4 bg-blue-500 active"
+                : "w-2 bg-gray-300 hover:bg-blue-200"
+            }`}
+            onClick={() => goToPage(index)}
+            role="button"
+            aria-label={`Go to page ${index + 1}`}
+            aria-current={index === currentMenuPage ? "page" : "false"}
+          />
+        ))}
+      </div>
+    </div>
+  )}
+</nav>
         </div>
 
         {/* Categories Dropdown Panel - now can be triggered by any menu item */}
@@ -748,78 +749,7 @@ export default function Header() {
               transformOrigin: "top center",
             }}
           >
-            <style>{`
-              @keyframes fadeDown {
-                from {
-                  opacity: 0;
-                  transform: translateY(-10px);
-                }
-                to {
-                  opacity: 1;
-                  transform: translateY(0);
-                }
-              }
-              .animate-fadeDown {
-                animation: fadeDown 0.2s ease-out forwards;
-              }
-              .category-item:hover {
-                background-color: #f5f8ff;
-                border-left-color: #1a6aff;
-              }
-              .subcategory-item {
-                transition: all 0.2s ease;
-              }
-              .subcategory-item:hover {
-                transform: translateY(-2px);
-              }
-              @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-              }
-              .animate-shimmer {
-                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-                background-size: 200% 100%;
-                animation: shimmer 1.5s infinite;
-              }
-                 @keyframes slide-out-left {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(-10%); }
-          }
-          @keyframes slide-in-right {
-            from { opacity: 0; transform: translateX(10%); }
-            to { opacity: 1; transform: translateX(0); }
-          }
-          @keyframes slide-out-right {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(10%); }
-          }
-          @keyframes slide-in-left {
-            from { opacity: 0; transform: translateX(-10%); }
-            to { opacity: 1; transform: translateX(0); }
-          }
-          .slide-out-left {
-            animation: slide-out-left 0.3s ease forwards;
-          }
-          .slide-in-right {
-            animation: slide-in-right 0.3s ease forwards;
-          }
-          .slide-out-right {
-            animation: slide-out-right 0.3s ease forwards;
-          }
-          .slide-in-left {
-            animation: slide-in-left 0.3s ease forwards;
-          }
-          .page-indicator {
-            transition: all 0.3s ease;
-          }
-          .page-indicator:hover {
-            background-color: #93c5fd;
-            cursor: pointer;
-          }
-          .page-indicator.active {
-            width: 1rem;
-          }
-            `}</style>
+
 
             <div className="container flex">
               {/* Left category sidebar */}
