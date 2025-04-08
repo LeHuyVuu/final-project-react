@@ -137,19 +137,31 @@ const UserInfo = () => {
                     <div className="text-sm text-gray-600">{newAddress}</div> */}
 
                     <div className='address-item-container item'>
-                        <div className='address-item'>
-                            <div className='option-name-1'><span>{newName}</span></div>
-                            <div>Địa chỉ: <span>{newAddress}</span></div>
-                            <div>Điện thoại: <span>{newPhone}</span></div>
-                            {newTypeAddress == 'home' ?
-                                <div className='typeaddress'><i className='fa-solid fa-house'></i>Nhà riêng / Chung cư</div>
-                                :
-                                <div className='typeaddress'><i className='fa-solid fa-building'></i>Cơ quan / Công ty</div>
-                            }
+                        <div className='address-item space-y-4'>
+                            <div className='option-name-1'>
+                                <span>{newName}</span>
+                            </div>
+                            <div>
+                              <span><i className="fas fa-map-marker-alt text-xl mr-4"></i>{newAddress}</span>
+                            </div>
+                            <div>
+                                <span><i className="fas fa-phone-alt mr-4"></i>  {newPhone}</span>
+                            </div>
+                            {newTypeAddress == 'home' ? (
+                                <div className='typeaddress flex items-center space-x-2'>
+                                    <i className="fas fa-house-user text-xl mr-2"></i>
+                                    <span>Nhà riêng / Chung cư</span>
+                                </div>
+                            ) : (
+                                <div className='typeaddress flex items-center space-x-2'>
+                                    <i className="fas fa-building text-xl"></i>
+                                    <span>Cơ quan / Công ty</span>
+                                </div>
+                            )}
                         </div>
                     </div>
+
                 </div>
-                <Divider className="my-4" />
             </Card>
 
             {/* Dialog để thay đổi thông tin */}

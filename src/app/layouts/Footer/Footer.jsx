@@ -68,7 +68,7 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} // Cập nhật email nhập vào
                 placeholder="Nhập Email của bạn"
-                className="p-2 w-60 rounded-l-lg text-gray-700"
+                className="p-2 w-60 rounded-l-lg text-gray-700 focus:outline-none"
               />
               <button
                 onClick={sendEmail} // Gọi hàm gửi email khi nhấn nút
