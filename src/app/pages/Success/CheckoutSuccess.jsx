@@ -111,6 +111,7 @@ const CheckoutSuccess = () => {
       detail: 'Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi.',
       life: 3000,
     });
+    sCoin.set(0); // Cập nhật số dư coin sau khi thanh toán
   }, []);
 
   const handleGoToHome = () => {

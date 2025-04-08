@@ -31,6 +31,9 @@ const Payment = () => {
   const coin = sCoin.use(); // Lấy dữ liệu xu từ context
   const [usePoints, setUsePoints] = useState(false); // Thêm state cho việc sử dụng xu
 
+    if (!product || (Array.isArray(product) && product.length === 0)) {
+      window.location.href = "/"; // Chuyển hướng về trang giỏ hàng nếu không có sản phẩm
+    }
 
   // Hàm cập nhật số lượng và tính lại giá cho từng sản phẩm
   const handleQuantityChange = (id, newQuantity) => {
@@ -102,7 +105,7 @@ const Payment = () => {
     <div className="min-h-screen">
       <Toast ref={toast} />
       <ConfirmDialog />
-      <sProductsToBuy.DevTool name="Products to Buy" />
+      {/* <sProductsToBuy.DevTool name="Products to Buy" /> */}
       <main className="pt-10 px-12">
         <div className="container mx-auto px-4">
           <div className="flex justify-between flex-col lg:flex-row gap-8">
@@ -239,7 +242,7 @@ const Payment = () => {
             </div>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-28">
             <Like />
           </div>
         </div>

@@ -416,13 +416,15 @@ const Cart = () => {
                                         {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateTotal())}
                                     </span>
                                 </div>
-                                <button className="mt-10 text-gray-800 font-semibold bg-blue-200 text-2xl p-4 w-full" onClick={handleCheckout}>
-                                    Thanh toán ngay
-                                </button>
+                                <Button
+                                    className="p-button-outlined flex-1 mt-10 w-full bg-blue-500 border-2 border-blue-500 text-white font-semibold rounded-lg px-5 py-3 text-base shadow-md transition-all duration-200"
+                                    label="Thanh toán ngay"   
+                                    onClick={handleCheckout}
+                                />
                             </Card>
                         </div>
                     </div>
-                    <div className="mt-10">
+                    <div className="mt-28">
                         <Like />
                     </div>
                 </div>
