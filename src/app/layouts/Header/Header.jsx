@@ -638,7 +638,7 @@ export default function Header() {
             )}
 
             {/* Pagination indicator */}
-            {menuItems.length > ITEMS_PER_PAGE && (
+            {/* {menuItems.length > ITEMS_PER_PAGE && (
               <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
                 {Array.from({ length: totalMenuPages }).map((_, index) => (
                   <div
@@ -655,7 +655,7 @@ export default function Header() {
                   />
                 ))}
               </div>
-            )}
+            )} */}
           </nav>
         </div>
 
@@ -697,7 +697,7 @@ export default function Header() {
               }
             `}</style>
 
-            <div className="container  flex">
+            <div className="  flex">
               {/* Left category sidebar */}
               <div
                 className="w-2/6 bg-gray-50 py-2  overflow-x-hidden"
