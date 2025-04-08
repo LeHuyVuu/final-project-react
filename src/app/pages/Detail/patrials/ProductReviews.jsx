@@ -20,176 +20,54 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
       "Seller Services": false,
       "Product Price": false,
       Shipment: false,
-
     },
   });
   const [first, setFirst] = useState(0);
   const [rows] = useState(4);
-
-  const reviewsData = {
-    averageRating: rating,
-    totalReviews: reviewCount,
-    ratingDistribution: [
-      { stars: 5, count: 25, percentage: 97 },
-      { stars: 4, count: 0, percentage: 0 },
-      { stars: 3, count: 1, percentage: 3 },
-      { stars: 2, count: 0, percentage: 0 },
-      { stars: 1, count: 0, percentage: 0 },
-    ],
-    photoCount: 3,
-    reviews: [
-      {
-        id: 19861487,
-        rating: 5,
-        title: "Cực kì hài lòng",
-        content: "Đã nhận được hàng và cả hàng khuyến mãi!",
-        date: formatDate(1714749701),
-        author: "Anh Ng",
-        authorImage: "//tiki.vn/assets/img/avatar.png",
-        hasPhoto: true,
-        hasVideo: false,
-        hasDescription: true,
-        likes: 0,
-        images: [
-          {
-            id: 4354382,
-            full_path:
-              "https://salt.tikicdn.com/ts/review/3a/42/36/240b08211c1f67d3bf5bb284e3f9014f.jpg",
-          },
-          {
-            id: 4354383,
-            full_path:
-              "https://salt.tikicdn.com/ts/review/9a/db/b9/67f0734b67e416a1a4a3db3efd123295.jpg",
-          },
-        ],
-        comments: [
-          {
-            id: 3189278,
-            fullname: "Tiki Trading",
-            avatar_url:
-              "https://vcdn.tikicdn.com/ts/seller/d1/3f/ae/13ce3d83ab6b6c5e77e6377ad61dc4a5.jpg",
-            content:
-              "Cảm ơn bạn đã tin tưởng Tiki và cho Tiki 5⭐️! Tiki yêu bạn nhiều ❤️",
-            create_at: 1714801888,
-          },
-        ],
-      },
-      {
-        id: 19869233,
-        rating: 5,
-        title: "Cực kì hài lòng",
-        content:
-          "Bộ bình ly được tặng rất đẹp , dày dặn , giá lại hợp lý, cảm ơn shop hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
-        date: formatDate(1715340176),
-        author: "Nguyễn Quyên",
-        authorImage: "//tiki.vn/assets/img/avatar.png",
-        hasPhoto: true,
-        hasVideo: false,
-        hasDescription: true,
-        likes: 0,
-        images: [
-          {
-            id: 4355784,
-            full_path:
-              "https://salt.tikicdn.com/ts/review/0e/62/df/1c590479ae6d9f7b04b1a7202a244c8a.jpg",
-          },
-        ],
-        comments: [
-          {
-            id: 3196065,
-            fullname: "Tiki Trading",
-            avatar_url:
-              "https://vcdn.tikicdn.com/ts/seller/d1/3f/ae/13ce3d83ab6b6c5e77e6377ad61dc4a5.jpg",
-            content:
-              "Cảm ơn chị Quyên đã tin tưởng dịch vụ và lựa chọn sản phẩm của Tiki. Tiki rất mong sẽ tiếp tục được đồng hành cùng chị trong thời gian tới ạ❤️.",
-            create_at: 1715411543,
-          },
-        ],
-      },
-      {
-        id: 19853262,
-        rating: 5,
-        title: "Cực kì hài lòng",
-        content:
-          "Rất vừa ý. Giao hàng rất nhanh đóng gói cẩn thận cà phê ngon còn được tặng thêm bộ ly bình nữa cảm thấy rất vừa ý anh shipper dễ thương",
-        date: formatDate(1713954843),
-        author: "Ngọc nguyên",
-        authorImage: "//tiki.vn/assets/img/avatar.png",
-        hasPhoto: false,
-        hasVideo: false,
-        hasDescription: true,
-        likes: 0,
-        comments: [
-          {
-            id: 3185781,
-            fullname: "Tiki Trading",
-            avatar_url:
-              "https://vcdn.tikicdn.com/ts/seller/d1/3f/ae/13ce3d83ab6b6c5e77e6377ad61dc4a5.jpg",
-            content:
-              "Tiki rất vui khi nhận được đánh giá 5⭐️ từ bạn Ngọc Nguyên. Sự hài lòng của bạn là động lực to lớn với Tiki đó ạ. Hy vọng bạn sẽ tiếp tục ủng hộ Tiki nha!",
-            create_at: 1714024815,
-          },
-        ],
-      },
-      {
-        id: 20029915,
-        rating: 5,
-        title: "Cực kì hài lòng",
-        content: "Hình ảnh mang tính chất minh họa\r\nNen mua nha moi nguoi",
-        date: formatDate(1731486458),
-        author: "Apple User",
-        authorImage: "//tiki.vn/assets/img/avatar.png",
-        hasPhoto: true,
-        hasVideo: false,
-        hasDescription: true,
-        likes: 0,
-        images: [
-          {
-            id: 4387650,
-            full_path:
-              "https://salt.tikicdn.com/ts/review/ae/31/70/4e9d18fe4df76ae28fd84f9f6b27c7c4.jpg",
-          },
-        ],
-        comments: [
-          {
-            id: 3281325,
-            fullname: "Tiki Trading",
-            avatar_url:
-              "https://vcdn.tikicdn.com/ts/seller/d1/3f/ae/13ce3d83ab6b6c5e77e6377ad61dc4a5.jpg",
-            content:
-              "Cảm ơn bạn đã tin tưởng Tiki và cho Tiki 5⭐️! Thật tuyệt vời khi Tiki có một khách hàng là bạn ❤️",
-            create_at: 1731575801,
-          },
-        ],
-      },
-    ],
-  };
+  const [filteredReviews, setFilteredReviews] = useState(review?.data || []);
 
   // Format date from timestamp
   function formatDate(timestamp) {
-    // Chuyển đổi chuỗi timestamp thành đối tượng Date
     const date = new Date(timestamp);
-
     const options = {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
-      second: "numeric", // Nếu bạn cần hiển thị cả giây
+      second: "numeric", // If you want to show seconds
     };
-
     return date.toLocaleDateString("en-US", options);
   }
 
   const handleFilterChange = (section, key) => {
-    setFilters((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: !prev[section][key],
-      },
-    }));
+    setFilters((prev) => {
+      const updatedFilters = {
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [key]: !prev[section][key],
+        },
+      };
+
+      // Apply rating filter when updated
+      if (section === "rating") {
+        // Check if any rating is selected
+        const selectedRatings = Object.keys(updatedFilters.rating).filter(
+          (rating) => updatedFilters.rating[rating]
+        );
+
+        // Filter reviews based on selected ratings
+        const filtered = review?.data.filter((review) => {
+          return selectedRatings.includes(review.rating.toString());
+        });
+
+        setFilteredReviews(filtered); // Update filtered reviews
+        setActiveFilter(selectedRatings.length ? "Filtered Reviews" : "All Reviews");
+      }
+
+      return updatedFilters;
+    });
   };
 
   const handleFilterButtonClick = (filter) => {
@@ -227,10 +105,7 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
               {review?.stars && (
                 <div className="mb-6">
                   {Object.entries(review.stars).reverse().map(([star, data]) => (
-                    <div
-                      key={star}
-                      className="flex items-center gap-2 mb-2"
-                    >
+                    <div key={star} className="flex items-center gap-2 mb-2">
                       <div className="flex items-center gap-1 w-16">
                         {star} <i className="pi pi-star-fill text-yellow-400"></i>
                       </div>
@@ -248,7 +123,8 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
                 </div>
               )}
             </div>
-            <div className="rounded-lg w-full">
+
+            <div className="rounded-lg w-full -mt-6">  {/* Giảm margin-top của phần Review Filter */}
               <h2 className="text-xl font-semibold mb-4">Reviews Filter</h2>
               {/* Rating Filter Section */}
               <div className="mb-4">
@@ -276,12 +152,11 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
                   ))}
                 </div>
               </div>
-              {/* Topics Filter Section */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-gray-800">Topics</h3>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {Object.keys(filters.topics).map((topic) => (
                     <div
                       key={topic}
@@ -305,12 +180,13 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* Reviews List Section */}
-          <div className="">
+          <div className="w-full">
             <div className="space-y-6">
-              {review?.data?.slice(first, first + rows).map((review) => (
+              {filteredReviews.slice(first, first + rows).map((review) => (
                 <div
                   key={review.id}
                   className="bg-white rounded-lg p-6 border border-gray-200"
@@ -396,7 +272,7 @@ const ProductReviews = ({ rating = 0, reviewCount = 0, id = "", review = {} }) =
                 <Paginator
                   first={first}
                   rows={rows}
-                  totalRecords={review?.data?.length}
+                  totalRecords={filteredReviews.length}
                   onPageChange={onPageChange}
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 />
