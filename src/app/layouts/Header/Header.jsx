@@ -14,6 +14,8 @@ export default function Header() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentMenuPage, setCurrentMenuPage] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showMenuItems, setShowMenuItems] = useState(false);
+  const [dropdownLoading, setDropdownLoading] = useState(true);
   const ITEMS_PER_PAGE = 8; // Number of menu items to show per page
   const dropdownRef = useRef(null);
   const navRef = useRef(null);
@@ -166,6 +168,15 @@ export default function Header() {
     // Only close if the mouse isn't over the dropdown
     if (!dropdownRef.current?.contains(document.activeElement)) {
       setShowCategoryDropdown(false);
+      
+      // Hide menu items with animation
+      if (menuContainerRef.current) {
+        menuContainerRef.current.classList.remove('menu-items-enter');
+        menuContainerRef.current.classList.add('menu-items-exit');
+        setTimeout(() => setShowMenuItems(false), 300);
+      } else {
+        setShowMenuItems(false);
+      }
     }
   };
 
@@ -175,6 +186,25 @@ export default function Header() {
     if (!showCategoryDropdown) {
       // Set default hovered category when opening
       setHoveredCategory(categories[0]?.id || null);
+      // Show menu items
+      setShowMenuItems(true);
+      // Start loading dropdown
+      setDropdownLoading(true);
+      // setTimeout(() => setDropdownLoading(false), 10000);
+      
+      if (menuContainerRef.current) {
+        menuContainerRef.current.classList.remove('menu-items-exit');
+        menuContainerRef.current.classList.add('menu-items-enter');
+      }
+    } else {
+      // Hide menu items with animation
+      if (menuContainerRef.current) {
+        menuContainerRef.current.classList.remove('menu-items-enter');
+        menuContainerRef.current.classList.add('menu-items-exit');
+        setTimeout(() => setShowMenuItems(false), 300);
+      } else {
+        setShowMenuItems(false);
+      }
     }
   };
 
@@ -382,6 +412,47 @@ export default function Header() {
     setShowCategoryDropdown(false);
   };
 
+  // Render skeleton for dropdown categories
+  const renderDropdownSkeleton = () => {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
+          <div className="h-7 bg-gray-200 rounded w-40 animate-pulse"></div>
+          <div className="h-5 bg-gray-200 rounded w-24 animate-pulse"></div>
+        </div>
+
+        <div className="grid grid-cols-6 gap-5 mb-8">
+          {Array(12).fill(0).map((_, index) => (
+            <div key={index} className="text-center">
+              <div className="flex flex-col items-center">
+                <div className="w-20 h-20 mb-2 rounded-full bg-gray-200 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 bg-gray-50 rounded-lg p-5">
+          <div className="h-6 bg-gray-200 rounded w-48 mb-4 animate-pulse"></div>
+          <div className="grid grid-cols-3 gap-6">
+            {Array(6).fill(0).map((_, index) => (
+              <div key={index} className="mb-4">
+                <div className="h-5 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
+                <ul className="space-y-1 pl-6">
+                  {Array(4).fill(0).map((_, i) => (
+                    <li key={i} className="relative">
+                      <div className="h-3 bg-gray-200 rounded w-24 animate-pulse"></div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <header
       className="bg-white shadow-sm sticky top-0 z-50"
@@ -403,35 +474,6 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* <div className="flex justify-center">
-          <div className="search relative group w-full">
-            <div className="header-search">
-              <input
-                type="search"
-                name="q"
-                id="HeaderSearchInput"
-                className="header-search__input input__field input__field--has-button border border-gray-300 rounded-full py-2 px-4 pl-10 w-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                placeholder="Search products..."
-              />
-              <div className="absolute left-2 top-2.5 text-gray-400 group-hover:text-blue-500 transition-colors duration-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div> */}
         <Search/>
 
         <div className="flex justify-end items-center space-x-5 pr-10">
@@ -482,8 +524,264 @@ export default function Header() {
 
       {/* Main navigation menu - top horizontal bar */}
       <div className="border-t border-b border-gray-200 mt-3">
-        <style>{`
+      <style>{`
           @keyframes slide-out-left {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-10%); }
+          }
+          @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(-100%); }
+            to { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes slide-out-right {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(10%); }
+          }
+          @keyframes slide-in-left {
+            from { opacity: 0; transform: translateX(-10%); }
+            to { opacity: 1; transform: translateX(0); }
+          }
+          .slide-out-left {
+            animation: slide-out-left 0.3s ease forwards;
+          }
+          .slide-in-right {
+            animation: slide-in-right 0.3s ease forwards;
+          }
+          .slide-out-right {
+            animation: slide-out-right 0.3s ease forwards;
+          }
+          .slide-in-left {
+            animation: slide-in-left 0.3s ease forwards;
+          }
+          .menu-items-enter {
+            animation: slide-in-right 0.3s ease forwards;
+          }
+          .menu-items-exit {
+            animation: slide-out-left 0.3s ease forwards;
+          }
+          .page-indicator {
+            transition: all 0.3s ease;
+          }
+          .page-indicator:hover {
+            background-color: #93c5fd;
+            cursor: pointer;
+          }
+          .page-indicator.active {
+            width: 1rem;
+          }
+          .categories-button-container {
+            transition: all 0.3s ease;
+          }
+          @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+          }
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
+          }
+        `}</style>
+        <div className="container mx-auto">
+          <nav
+            className="flex items-center justify-between py-2 relative"
+            ref={navRef}
+            onMouseLeave={handleNavMouseLeave}
+          >
+            {/* Previous page button */}
+            {showMenuItems && menuItems.length > ITEMS_PER_PAGE && (
+              console.log("menuItems", menuItems),
+              <button
+                onClick={handlePrevPage}
+                disabled={currentMenuPage === 0 || isAnimating}
+                className={`px-2 flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
+                  currentMenuPage === 0 || isAnimating
+                    ? "text-gray-300 cursor-not-allowed opacity-50"
+                    : "text-gray-700 hover:text-blue-500 hover:scale-110"
+                }`}
+                aria-label="Previous page"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+            )}
+
+            {/* Categories Dropdown Trigger - first item */}
+            <div className={`relative inline-block ${showMenuItems ? 'mr-4' : 'mr-auto'} flex-shrink-0 categories-button-container`}>
+              <button
+                className="category-trigger flex items-center space-x-1 px-3 py-1 font-medium text-gray-800 hover:text-blue-500 rounded-md transition duration-300"
+                onClick={toggleCategoryDropdown}
+                onMouseEnter={() => {
+                  setShowCategoryDropdown(true);
+                  setShowMenuItems(true);
+                  if (menuContainerRef.current) {
+                    menuContainerRef.current.classList.remove('menu-items-exit');
+                    menuContainerRef.current.classList.add('menu-items-enter');
+                  }
+                  setDropdownLoading(true);
+                  setTimeout(() => setDropdownLoading(false), 400);
+                }}
+              >
+                <span>Categories</span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-300 ${
+                    showCategoryDropdown ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+           
+
+            {/* Menu items container with animation - only shown when showMenuItems is true */}
+            {showMenuItems && (
+              <div
+                ref={menuContainerRef}
+                className="flex items-center flex-grow justify-start relative overflow-hidden menu-items-enter"
+                style={{ minHeight: "3rem" }}
+              >
+                {currentMenuItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="horizontal-nav-item relative mr-4 flex-shrink-0 pb-1"
+                    onMouseEnter={() => handleMenuItemHover(item)}
+                  >
+                    <Link
+                      to={`/category/${extractCategoryId(item.link) || ""}${
+                        item.link && item.link.includes("/")
+                          ? `?urlKey=${item.link.split("/c").pop()}`
+                          : ""
+                      }`}
+                      className="px-3 py-1 font-medium text-gray-700 hover:text-blue-500 transition duration-200 block whitespace-nowrap"
+                      onClick={handleLinkClick}
+                    >
+                      {item.text}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          {/* Next page button - Only show when menu items are visible */}
+            {showMenuItems && menuItems.length > ITEMS_PER_PAGE && (
+              <button
+                onClick={handleNextPage}
+                disabled={currentMenuPage >= totalMenuPages - 1 || isAnimating}
+                className={`px-2 flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
+                  currentMenuPage >= totalMenuPages - 1 || isAnimating
+                    ? "text-gray-300 cursor-not-allowed opacity-50"
+                    : "text-gray-700 hover:text-blue-500 hover:scale-110"
+                }`}
+                aria-label="Next page"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            )}
+
+
+            {/* Pagination indicator */}
+            {showMenuItems&& menuItems.length > ITEMS_PER_PAGE && (
+              <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
+                {Array.from({ length: totalMenuPages }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-1.5 rounded-full page-indicator transition-all duration-300 ${
+                      index === currentMenuPage
+                        ? "w-4 bg-blue-500 active"
+                        : "w-2 bg-gray-300"
+                    }`}
+                    onClick={() => goToPage(index)}
+                    role="button"
+                    aria-label={`Go to page ${index + 1}`}
+                    aria-current={index === currentMenuPage ? "page" : "false"}
+                  />
+                ))}
+              </div>
+            )}
+          </nav>
+        </div>
+
+        {/* Categories Dropdown Panel - now can be triggered by any menu item */}
+        {showCategoryDropdown && (
+          <div
+            ref={dropdownRef}
+            className="category-panel absolute left-28 right-28 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
+            onMouseEnter={() => {
+              setShowCategoryDropdown(true);
+              // Start with loading state, then turn it off after animation completes
+              setDropdownLoading(true);
+              setTimeout(() => setDropdownLoading(false), 500);
+            }}
+            onMouseLeave={() => setShowCategoryDropdown(false)}
+            style={{
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+              transformOrigin: "top center",
+            }}
+          >
+            <style>{`
+              @keyframes fadeDown {
+                from {
+                  opacity: 0;
+                  transform: translateY(-10px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+              }
+              .animate-fadeDown {
+                animation: fadeDown 0.2s ease-out forwards;
+              }
+              .category-item:hover {
+                background-color: #f5f8ff;
+                border-left-color: #1a6aff;
+              }
+              .subcategory-item {
+                transition: all 0.2s ease;
+              }
+              .subcategory-item:hover {
+                transform: translateY(-2px);
+              }
+              @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+              }
+              .animate-shimmer {
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+              }
+                 @keyframes slide-out-left {
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(-10%); }
           }
@@ -521,203 +819,17 @@ export default function Header() {
           .page-indicator.active {
             width: 1rem;
           }
-        `}</style>
-        <div className="container mx-auto">
-          <nav
-            className="flex items-center justify-between py-2 relative"
-            ref={navRef}
-            onMouseLeave={handleNavMouseLeave}
-          >
-            {/* Previous page button */}
-            {menuItems.length > ITEMS_PER_PAGE && (
-              <button
-                onClick={handlePrevPage}
-                disabled={currentMenuPage === 0 || isAnimating}
-                className={`px-2 flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
-                  currentMenuPage === 0 || isAnimating
-                    ? "text-gray-300 cursor-not-allowed opacity-50"
-                    : "text-gray-700 hover:text-blue-500 hover:scale-110"
-                }`}
-                aria-label="Previous page"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-            )}
-
-            {/* Categories Dropdown Trigger - first item */}
-            <div className="relative inline-block mr-4 flex-shrink-0">
-              <button
-                className="category-trigger flex items-center space-x-1 px-3 py-1 font-medium text-gray-800 hover:text-blue-500 rounded-md transition duration-300"
-                onClick={toggleCategoryDropdown}
-                onMouseEnter={() => setShowCategoryDropdown(true)}
-              >
-                <span>Categories</span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${
-                    showCategoryDropdown ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-
-            {/* Menu items container with animation */}
-            <div
-              ref={menuContainerRef}
-              className="flex items-center flex-grow justify-start relative overflow-hidden "
-              style={{ minHeight: "3rem" }}
-            >
-              {currentMenuItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="horizontal-nav-item relative mr-4 flex-shrink-0 pb-1"
-                  onMouseEnter={() => handleMenuItemHover(item)}
-                >
-                  <Link
-                    to={`/category/${extractCategoryId(item.link) || ""}${
-                      item.link && item.link.includes("/")
-                        ? `?urlKey=${item.link.split("/").pop()}`
-                        : ""
-                    }`}
-                    className="px-3 py-1 font-medium text-gray-700 hover:text-blue-500 transition duration-200 block whitespace-nowrap"
-                    onClick={handleLinkClick}
-                  >
-                    {item.text}
-                  </Link>
-                </div>
-              ))}
-            </div>
-
-            {/* Next page button */}
-            {menuItems.length > ITEMS_PER_PAGE && (
-              <button
-                onClick={handleNextPage}
-                disabled={currentMenuPage >= totalMenuPages - 1 || isAnimating}
-                className={`px-2  flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
-                  currentMenuPage >= totalMenuPages - 1 || isAnimating
-                    ? "text-gray-300 cursor-not-allowed opacity-50"
-                    : "text-gray-700 hover:text-blue-500 hover:scale-110"
-                }`}
-                aria-label="Next page"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            )}
-
-            {/* Pagination indicator */}
-            {menuItems.length > ITEMS_PER_PAGE && (
-              <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
-                {Array.from({ length: totalMenuPages }).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1.5 rounded-full page-indicator transition-all duration-300 ${
-                      index === currentMenuPage
-                        ? "w-4 bg-blue-500 active"
-                        : "w-2 bg-gray-300"
-                    }`}
-                    onClick={() => goToPage(index)}
-                    role="button"
-                    aria-label={`Go to page ${index + 1}`}
-                    aria-current={index === currentMenuPage ? "page" : "false"}
-                  />
-                ))}
-              </div>
-            )}
-          </nav>
-        </div>
-
-        {/* Categories Dropdown Panel - now can be triggered by any menu item */}
-        {showCategoryDropdown && (
-          <div
-            ref={dropdownRef}
-            className="category-panel absolute left-28 right-28 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
-            onMouseEnter={() => setShowCategoryDropdown(true)}
-            onMouseLeave={() => setShowCategoryDropdown(false)}
-            style={{
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-              transformOrigin: "top center",
-            }}
-          >
-            <style>{`
-              @keyframes fadeDown {
-                from {
-                  opacity: 0;
-                  transform: translateY(-10px);
-                }
-                to {
-                  opacity: 1;
-                  transform: translateY(0);
-                }
-              }
-              .animate-fadeDown {
-                animation: fadeDown 0.2s ease-out forwards;
-              }
-              .category-item:hover {
-                background-color: #f5f8ff;
-                border-left-color: #1a6aff;
-              }
-              .subcategory-item {
-                transition: all 0.2s ease;
-              }
-              .subcategory-item:hover {
-                transform: translateY(-2px);
-              }
             `}</style>
 
-            <div className="container  flex">
+            <div className="container flex">
               {/* Left category sidebar */}
               <div
-                className="w-2/6 bg-gray-50 py-2  overflow-x-hidden"
+                className="w-2/6 bg-gray-50 py-2 overflow-x-hidden"
                 style={{
                   borderRight: "1px solid #edf2f7",
                   height: "810px",
-
-                  // scrollbarWidth: "none" /* Firefox */,
                 }}
               >
-                <style>{`
-                  /* Hide scrollbar for Chrome, Safari and Opera */
-                  .overflow-y-auto::-webkit-scrollbar {
-                    display: none;
-                  }
-                  /* IE and Edge */
-                  .overflow-y-auto {
-                    -ms-overflow-style: none;
-                  }
-                `}</style>
                 {isLoading ? (
                   <div className="flex items-center justify-center h-20 p-4">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
@@ -775,8 +887,11 @@ export default function Header() {
                   scrollbarWidth: "none" /* Firefox */,
                 }}
               >
-                {hoveredCategory && getHoveredCategory() ? (
-                  <div>
+                {dropdownLoading ? (
+                  // Show skeleton while dropdown is loading
+                  renderDropdownSkeleton()
+                ) : hoveredCategory && getHoveredCategory() ? (
+                  <div className="animate-fadeIn">
                     <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
                       <h3 className="text-lg font-bold text-gray-800">
                         {getHoveredCategory().name}
@@ -877,17 +992,6 @@ export default function Header() {
                               .map((subCategory) => (
                                 <div key={subCategory.id} className="mb-4">
                                   <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                    {/* <svg
-                                      className="w-4 h-4 mr-1 text-blue-500"
-                                      fill="currentColor"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4zm2-1a1 1 0 00-1 1v14a1 1 0 001 1h6a1 1 0 001-1V4a1 1 0 00-1-1H7z"
-                                        clipRule="evenodd"
-                                      />
-                                    </svg> */}
                                     <Link
                                       to={
                                         subCategory.url_path
