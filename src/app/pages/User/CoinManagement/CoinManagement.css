@@ -64,7 +64,7 @@
                     width: 540px;
                     height: 330px;
                     color: #fff;
-                    background-color: #007bff;
+                    background: url('../../../assets/TikiPics/DepositCoin.png');
                     border-radius: 12px;
                     display: flex;
                     flex-direction: column;
@@ -115,6 +115,7 @@
                             font-size: 14px;
                             font-weight: bold;
                             border-radius: 8px;
+                            cursor: pointer;
                         }
 
                         .chosen {
@@ -140,12 +141,18 @@
                         margin: 0 0 12px;
                     }
 
+                    .message {
+                        height: 22px;
+                        font-size: 14px;
+                        color: #28a745;
+                    }
+
                     button {
                         width: 100%;
                         color: #007bff;
                         background-color: transparent;
                         padding: 6px 12px;
-                        margin: 24px 0;
+                        margin: 4px 0 24px;
                         font-size: 14px;
                         border: 1px solid #007bff;
                         border-radius: 8px;

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 export default function DepositCoin() {
     console.log('DepositCoin render');
 
-    const [FormPoint, setFormPoint] = useState(0);
-    const handleChange = (e) => {
+    const [FormPoint, setFormPoint] = useState('0');
+    const handleInputChange = (e) => {
         let rawValue = e.target.value.replace(/\./g, '');
         let numberValue = Number(rawValue);
         if (isNaN(numberValue)) {
@@ -14,7 +14,20 @@ export default function DepositCoin() {
         if (numberValue > 2000000) {
             numberValue = 2000000;
         }
+        setMessage('');
         setFormPoint(numberValue.toLocaleString('vi-VN'));
+    };
+
+    const handleDivChange = (value) => {
+        setMessage('');
+        setFormPoint(value);
+    }
+
+    const LoginUser = localStorage.getItem('LoginUser');
+    const [Message, setMessage] = useState('');
+    const handleDeposit = () => {
+        localStorage.setItem(`point${LoginUser}`, Number(localStorage.getItem(`point${LoginUser}`)) + Number(FormPoint?.replace(/\./g, '')));
+        setMessage('Thanh toán thành công!');
     };
 
     return (
@@ -31,7 +44,7 @@ export default function DepositCoin() {
                             <input type='text' id='point' name='point'
                                 placeholder='0'
                                 value={FormPoint?.toLocaleString('vi-VN')}
-                                onChange={handleChange}
+                                onChange={handleInputChange}
                             />
                         </div>
 
@@ -41,7 +54,7 @@ export default function DepositCoin() {
                                     key={index}
                                     className={`item ${value.toLocaleString('vi-VN') == FormPoint && 'chosen'}`}
                                     value={value}
-                                    onClick={() => { setFormPoint(value.toLocaleString('vi-VN')) }}
+                                    onClick={() => { handleDivChange(value.toLocaleString('vi-VN')) }}
                                 >
                                     {value.toLocaleString('vi-VN')}
                                 </div>
@@ -62,7 +75,12 @@ export default function DepositCoin() {
                             <div>Tổng tiền:</div>
                             <div>{FormPoint.toLocaleString('vi-VN')} VND</div>
                         </div>
-                        <button>Tiến hành thanh toán</button>
+                        {(Message && Message !== null && Message != '') ?
+                            <div className='message'>{Message}</div>
+                            :
+                            <div className='message'></div>
+                        }
+                        <button onClick={() => { handleDeposit() }}>Tiến hành thanh toán</button>
                     </div>
 
                     <div>

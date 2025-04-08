@@ -67,9 +67,10 @@
         border-radius: 12px;
         width: 1000px;
         height: 90vh;
-        overflow: scroll;
+        overflow: hidden;
+        /* overflow: scroll;
         scrollbar-width: none;
-        -ms-overflow-style: none;
+        -ms-overflow-style: none; */
         position: relative;
         transition: all 1s ease-in-out;
 
