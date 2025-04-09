@@ -361,14 +361,15 @@ const ProductListing = () => {
         filterParams.rating = "4";
       }
 
-      console.log("Filter Params:", filterParams);
+      // console.log("Filter Params:", filterParams);
+      // console.log("categoty info", categoryInfo);
 
       // Sử dụng API lọc sản phẩm
       const result = await getFilteredProducts(
         categoryId,
         urlKey,
         filterParams,
-        { page: currentPage, limit: 24 },
+        { page: currentPage, limit: 40},
         sortOption
       );
 
