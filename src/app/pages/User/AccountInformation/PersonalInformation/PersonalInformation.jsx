@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PersonalInformation.css';
-import TikiDefaultAvatar from './TikiDefaultAvatar.png';
+import TikiDefaultAvatar from '../../../../assets/TikiPics/TikiDefaultAvatar.png';
 
 export default function PersonalInformation() {
 
     const LoginUser = localStorage.getItem('LoginUser');
+    const avatarUrl = localStorage.getItem(`image${LoginUser}`);
+    const finalUrl = (avatarUrl != null && avatarUrl != '') ? avatarUrl : TikiDefaultAvatar;
 
     const [formData, setFormData] = useState({
         name: localStorage.getItem(`name${LoginUser}`),
@@ -57,12 +59,13 @@ export default function PersonalInformation() {
 
                 <div className='head-form'>
                     <div className='form-avatar'>
-                        <img src={TikiDefaultAvatar} alt='avatar'></img>
+                        <img src={finalUrl} alt='avatar' />
                     </div>
                     <div>
                         <div className='form-name form-group'>
                             <label htmlFor='name'>Họ và tên</label>
                             <input type='text' id='name' name='name'
+                                placeholder='Nhập họ tên'
                                 value={formData.name}
                                 onChange={handleChange}
                             />
@@ -70,6 +73,7 @@ export default function PersonalInformation() {
                         <div className='form-nickname form-group'>
                             <label htmlFor='nickname'>Nickname</label>
                             <input type='text' id='nickname' name='nickname'
+                                placeholder='Nhập nickname'
                                 value={formData.nickname}
                                 onChange={handleChange}
                             />

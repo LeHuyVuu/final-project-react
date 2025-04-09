@@ -12,15 +12,15 @@ import ProgressBar from '../FlashSaleComponent/ProgressBar.jsx';
 const itemTemplate = (item) => {
     return (
         <Link to={`/detail/${item.id}`} >
-            <div className="flex flex-col justify-center bg-white items-center rounded-lg shadow-lg p-3 m-1">
+            <div className="flex flex-col justify-center bg-white items-center rounded-lg p-3 m-1">
                 <div className="justify-center items-center">
                     <div className="relative">
                         <img src={item.image} alt={item.title} className="h-full object-cover rounded-lg mb-4" />
                     </div>
                     <div className="text-left">
-                        <h4 className='max-w-60 min-h-12  line-clamp-2 overflow-hidden text-ellipsis mb-2'>
-                            {item.brand_name}
-                        </h4>
+                    <div className='max-w-60 min-h-10  line-clamp-2 text-sm  text-ellipsis hover:text-blue-600 transition-colors mb-2'>
+                    {item.brand_name}
+                        </div>
                         <div className='min-h-[25px]'>
                             <span className="text-sm text-gray-500 line-through italic mb-2">{item.oldPrice}</span>
                             <span className={`ml-2 mb-2 rounded-sm ${item.discount ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
@@ -77,8 +77,8 @@ export default function FlashSale() {
 
     return (
         <div className=" ">
-                <div className='flex mb-2'>
-                    <h2 className="text-2xl font-bold text-center">Flash Sale</h2>
+                <div className='flex mb-2 '>
+                    <h2 className="text-2xl font-bold flex items-center">Flash Sale</h2>
                     {time > 0 && <CountTime targetTime={time} onExpire={fetchDataFlashSale} />}
                 </div>
                

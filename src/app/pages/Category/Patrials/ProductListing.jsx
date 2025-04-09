@@ -25,6 +25,7 @@ import {
   getPaginationInfo,
 } from "../../../context/api";
 import CategoryBrowser from "./CategoryBrowser";
+import FormattedSold from "../../Home/FormattedSold";
 // import CategoryExplore from "./CategoryExplore";
 // import { testCategoryDetail } from "../../../context/apiDebug";
 
@@ -360,14 +361,15 @@ const ProductListing = () => {
         filterParams.rating = "4";
       }
 
-      console.log("Filter Params:", filterParams);
+      // console.log("Filter Params:", filterParams);
+      // console.log("categoty info", categoryInfo);
 
       // Sử dụng API lọc sản phẩm
       const result = await getFilteredProducts(
         categoryId,
         urlKey,
         filterParams,
-        { page: currentPage, limit: 24 },
+        { page: currentPage, limit: 40},
         sortOption
       );
 
@@ -637,9 +639,8 @@ const ProductListing = () => {
 
     return categoryInfo.ancestors.map((ancestor) => ({
       label: ancestor.name,
-      url: `/category/${ancestor.id}${
-        ancestor.url_key ? `?urlKey=${ancestor.url_key}` : ""
-      }`,
+      url: `/category/${ancestor.id}${ancestor.url_key ? `?urlKey=${ancestor.url_key}` : ""
+        }`,
     }));
   };
 
@@ -657,7 +658,7 @@ const ProductListing = () => {
         onMouseLeave={() => setHoverProduct(null)}
       >
         <Link to={`/detail/${product.id}`}>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full ">
             <div className="relative overflow-hidden">
               <img
                 src={product.thumbnail_url}
@@ -666,9 +667,8 @@ const ProductListing = () => {
               />
 
               <div
-                className={`absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center gap-3 transition-opacity duration-300 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center gap-3 transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
+                  }`}
               >
                 {/* <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-gray-700 hover:bg-primary hover:text-white transition-colors duration-200">
                 <FontAwesomeIcon icon={faHeart} />
@@ -682,16 +682,16 @@ const ProductListing = () => {
               </div>
 
               {/* Labels */}
-              <div className="absolute top-2 left-2 flex flex-col gap-1">
+              {/* <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.discount_rate > 0 && (
                   <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded shadow-sm">
                     -{product.discount_rate}%
                   </span>
                 )}
-              </div>
+              </div> */}
 
               <div className="absolute bottom-0 left-0">
-                <img src={product.badges_v3[0]?.image || ""} alt="" />
+                <img className=" h-full object-cover rounded-lg mb-2 " src={product.badges_v3[0]?.image || ""} alt="" />
               </div>
 
               {/* {product.badges_new?.some(
@@ -706,39 +706,50 @@ const ProductListing = () => {
               )} */}
             </div>
 
-            <div className="p-3 flex flex-col flex-grow min-h-52">
+            <div className="p-3 m-1 flex flex-col flex-grow ">
+              <h3 className="text-gray-800 max-w-60 text-sm font-medium mb-2 line-clamp-2 h-10 hover:text-blue-600 transition-colors">
+                {product.name}
+              </h3>
               <div className="mb-1">
-                <div className="flex items-center mb-1">
-                  <span className="text-red-500 font-bold text-base">
-                    {formatCurrency(product.price)}
-                  </span>
+                <div className="  min-h-[25px] items-center ">
                   {product.original_price > product.price && (
-                    <span className="ml-2 text-gray-400 text-xs line-through">
+                    <span className="text-sm text-gray-500 line-through italic mb-2">
                       {formatCurrency(product.original_price)}
                     </span>
                   )}
+                  {product.discount_rate > 0 && (
+                    <span className={`ml-2 mb-2 rounded-sm ${product.discount_rate ? 'bg-[#ff424e] px-1 py-1 text-xs text-white' : 'bg-transparent'}`}>
+                      -{product.discount_rate}%
+                    </span>
+                  )}
                 </div>
+                <span className="text-xl font-bold text-[#ff424e] my-2 mb-2">
+                  {formatCurrency(product.price)}
+                </span>
 
-                <div className="flex justify-between items-center">
-                  <div className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+
+                {/* <div className="flex justify-between items-center"> */}
+                {/* <div className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                     {product.brand_name}
-                  </div>
-                  <div className="flex items-center">
+                  </div> */}
+                {/* <div className="flex items-center">
                     <span className="text-yellow-400 mr-1">
                       <FontAwesomeIcon icon={faStar} size="xs" />
                     </span>
                     <span className="text-xs text-gray-600">
                       {product.rating_average} ({product.review_count})
                     </span>
-                  </div>
+                  </div> */}
+                <div className="card flex justify-between">
+                  <Rating value={product.rating_average} disabled cancel={false} />
+                  <div className='text-sm text-gray-600'>Đã bán <FormattedSold sold={product.quantity_sold?.value} /></div>
                 </div>
+                {/* </div> */}
               </div>
 
-              <h3 className="text-gray-800 text-sm font-medium mb-2 line-clamp-2 h-10 hover:text-blue-600 transition-colors">
-                {product.name}
-              </h3>
 
-              <div className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]">
+
+              {/* <div className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]">
                 {product.badges_new
                   ?.find((badge) => badge.code === "variant_count")
                   ?.arr_text?.map((text, i) => (
@@ -749,9 +760,9 @@ const ProductListing = () => {
                       {text.value}
                     </span>
                   ))}
-              </div>
+              </div> */}
 
-              {product.discount_rate > 0 && (
+              {/* {product.discount_rate > 0 && (
                 <div className="flex items-center text-xs text-blue-600 mb-1">
                   <FontAwesomeIcon
                     icon={faTag}
@@ -760,9 +771,9 @@ const ProductListing = () => {
                   />
                   Giảm {formatCurrency(product.discount)}
                 </div>
-              )}
+              )} */}
 
-              <div className="flex justify-between items-center mt-auto">
+              {/* <div className="flex justify-between items-center mt-auto">
                 <div className="text-xs text-gray-500">
                   {product.badges_new?.find(
                     (badge) => badge.code === "delivery_info_badge"
@@ -772,11 +783,11 @@ const ProductListing = () => {
                 {product.badges_new?.some(
                   (badge) => badge.code === "tikinow"
                 ) && (
-                  <span className="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded-full border border-red-200">
-                    2H
-                  </span>
-                )}
-              </div>
+                    <span className="bg-red-50 text-red-600 text-xs px-2 py-0.5 rounded-full border border-red-200">
+                      2H
+                    </span>
+                  )}
+              </div> */}
             </div>
           </div>
         </Link>
@@ -995,7 +1006,7 @@ const ProductListing = () => {
       {/* Breadcrumb */}
       {categoryInfo && (
         <div className="mb-6">
-          <BreadCrumb model={getBreadcrumbItems()} home={breadcrumbHome} />
+          <BreadCrumb model={getBreadcrumbItems()} home={breadcrumbHome} className="bg-transparent" />
         </div>
       )}
       <CategoryBrowser categoryId={normalizedCategoryId} urlKey={urlKey} />
@@ -1039,11 +1050,10 @@ const ProductListing = () => {
                     {filterOptions.priceRanges.map((priceRange) => (
                       <div
                         key={priceRange.key}
-                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer border-gray-300 text-gray-700 hover:border-gray-400 ${
-                          filters.price === priceRange.key
-                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                            : ""
-                        }`}
+                        className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer border-gray-300 text-gray-700 hover:border-gray-400 ${filters.price === priceRange.key
+                          ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                          : ""
+                          }`}
                         onClick={() => handlePriceChange(priceRange.key)}
                       >
                         {priceRange.name}{" "}
@@ -1123,11 +1133,10 @@ const ProductListing = () => {
                       .map((brand) => (
                         <div
                           key={brand.key}
-                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                            filters.brands?.includes(brand.key)
-                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                              : "border-gray-300 text-gray-700 hover:border-gray-400"
-                          }`}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${filters.brands?.includes(brand.key)
+                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                            : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
                           onClick={() =>
                             onFilterChange(
                               { checked: !filters.brands?.includes(brand.key) },
@@ -1170,11 +1179,10 @@ const ProductListing = () => {
                       .map((material) => (
                         <div
                           key={material.key}
-                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                            filters.materials?.includes(material.key)
-                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                              : "border-gray-300 text-gray-700 hover:border-gray-400"
-                          }`}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${filters.materials?.includes(material.key)
+                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                            : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
                           onClick={() =>
                             onFilterChange(
                               {
@@ -1221,11 +1229,10 @@ const ProductListing = () => {
                       .map((pattern) => (
                         <div
                           key={pattern.key}
-                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                            filters.patterns?.includes(pattern.key)
-                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                              : "border-gray-300 text-gray-700 hover:border-gray-400"
-                          }`}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${filters.patterns?.includes(pattern.key)
+                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                            : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
                           onClick={() =>
                             onFilterChange(
                               {
@@ -1287,11 +1294,10 @@ const ProductListing = () => {
                       .map((item) => (
                         <div
                           key={item.key}
-                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${
-                            dynamicFilters[filterCode]?.includes(item.key)
-                              ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
-                              : "border-gray-300 text-gray-700 hover:border-gray-400"
-                          }`}
+                          className={`px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-all duration-200 ${dynamicFilters[filterCode]?.includes(item.key)
+                            ? "bg-blue-50 border-blue-400 text-blue-600 shadow-sm"
+                            : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
                           onClick={() => {
                             handleDynamicFilterChange(
                               filterCode,
@@ -1356,11 +1362,10 @@ const ProductListing = () => {
                     onClick={() => toggleColorFilter(color.key)}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full border ${
-                        filters.colors?.includes(color.key)
-                          ? "border-blue-600 ring-2 ring-blue-200"
-                          : "border-gray-300"
-                      } hover:shadow-md transition-shadow duration-200`}
+                      className={`w-8 h-8 rounded-full border ${filters.colors?.includes(color.key)
+                        ? "border-blue-600 ring-2 ring-blue-200"
+                        : "border-gray-300"
+                        } hover:shadow-md transition-shadow duration-200`}
                       style={{ backgroundColor: color.hex }}
                     >
                       {filters.colors?.includes(color.key) && (
@@ -1397,17 +1402,17 @@ const ProductListing = () => {
                   .length +
                 Object.values(tempCheckboxFilters).filter(Boolean).length >
                 0 && (
-                <Badge
-                  value={
-                    Object.values(tempFilters).flat().filter(Boolean).length +
-                    Object.values(tempDynamicFilters).flat().filter(Boolean)
-                      .length +
-                    Object.values(tempCheckboxFilters).filter(Boolean).length
-                  }
-                  severity="info"
-                  className="ml-2"
-                ></Badge>
-              )}
+                  <Badge
+                    value={
+                      Object.values(tempFilters).flat().filter(Boolean).length +
+                      Object.values(tempDynamicFilters).flat().filter(Boolean)
+                        .length +
+                      Object.values(tempCheckboxFilters).filter(Boolean).length
+                    }
+                    severity="info"
+                    className="ml-2"
+                  ></Badge>
+                )}
             </h2>
             {/* <Button
               // icon="pi pi-times"
@@ -1429,9 +1434,9 @@ const ProductListing = () => {
               onClick={resetTempFilters}
               disabled={
                 Object.values(tempFilters).flat().filter(Boolean).length +
-                  Object.values(tempDynamicFilters).flat().filter(Boolean)
-                    .length +
-                  Object.values(tempCheckboxFilters).filter(Boolean).length ===
+                Object.values(tempDynamicFilters).flat().filter(Boolean)
+                  .length +
+                Object.values(tempCheckboxFilters).filter(Boolean).length ===
                 0
               }
             />
@@ -1537,8 +1542,8 @@ const ProductListing = () => {
                         tempCheckboxFilters.freeShip ||
                         tempCheckboxFilters.topDeal ||
                         tempCheckboxFilters.fourPlusStar) && (
-                        <span className="float-right text-blue-600">●</span>
-                      )}
+                          <span className="float-right text-blue-600">●</span>
+                        )}
                     </a>
                   </li>
                 </ul>
@@ -1899,7 +1904,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="nowShipping"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.fastDelivery}
                 onChange={(e) => handleCheckboxChange(e, "fastDelivery")}
               />
@@ -1920,7 +1925,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="topDeal"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.topDeal}
                 onChange={(e) => handleCheckboxChange(e, "topDeal")}
               />
@@ -1939,7 +1944,7 @@ const ProductListing = () => {
             <div className="flex items-center">
               <Checkbox
                 id="freeShip"
-                className="border border-gray-300 rounded mr-2"
+                className=" border-gray-300 rounded mr-2"
                 checked={checkboxFilters.freeShip}
                 onChange={(e) => handleCheckboxChange(e, "freeShip")}
               />
@@ -1956,13 +1961,13 @@ const ProductListing = () => {
               <div className="flex items-center">
                 <Checkbox
                   id="fourStar"
-                  className="border border-gray-300 rounded mr-2"
+                  className=" border-gray-300 rounded mr-2"
                   checked={checkboxFilters.fourPlusStar}
                   onChange={(e) => handleCheckboxChange(e, "fourPlusStar")}
                 />
                 <label
                   htmlFor="fourStar"
-                  className="text-xs text-gray-700 flex items-center"
+                  className="text-xs text-gray-700 flex  items-center "
                 >
                   <Rating
                     value={4}
@@ -1976,9 +1981,9 @@ const ProductListing = () => {
                       offIcon: { className: "text-gray-300 text-xs" },
                     }}
                   />
-                  {filterOptions.ratings.find((r) => r.key === "4")?.name ||
-                    "từ 4 sao"}
+                 
                 </label>
+                 <span className="text-gray-600">từ 4 sao</span>
               </div>
             )}
           </div>

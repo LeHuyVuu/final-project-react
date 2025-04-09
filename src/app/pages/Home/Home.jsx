@@ -17,14 +17,14 @@ export default function Home() {
 
 
   return (
-    <div classNam=''>
+    <div className=''>
       <div className=" mx-28" >
 
-        <div className="my-10">
+        <div className="mt-10">
           <Banner />
         </div>
         <div className='px-4'>
-          <div className="my-10">
+          <div className="mb-10">
             <CategoryLinks />
           </div>
         </div>
@@ -32,7 +32,7 @@ export default function Home() {
           <TopDeal />
         </div>
         <div className='px-4' >
-          <div className="my-10 p-5 bg-red-200  ">
+          <div className="my-10 p-5 bg-blue-100 rounded-xl ">
             <FlashSale />
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function Home() {
           <Like />
         </div>
 
-        <div className="my-10">
+        <div className="my-10  ">
           <Trending />
         </div>
 

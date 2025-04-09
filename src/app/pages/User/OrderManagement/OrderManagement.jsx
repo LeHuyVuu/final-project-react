@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import NoOrder from './NoOrder.png';
+import NoOrder from '../../../assets/TikiPics/NoOrder.png';
 import { Paginator } from 'primereact/paginator'; // Import Paginator
 import './OrderManagement.css';
 import { Link } from 'react-router-dom';

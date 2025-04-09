@@ -10,12 +10,16 @@ export default function Footer() {
     e.preventDefault(); // Ngừng hành động mặc định của form (submit)
 
     const templateParams = {
-      email_to: email, // Email của người dùng nhập vào
-      // Thêm các tham số khác nếu cần
+      email_to: email, // Đây là email người dùng nhập
+      store_name: "TukuTiki", // Tên cửa hàng hoặc thông tin khác cần truyền vào
+      from_name: "TukuTiki Team", // Tên người gửi
+      reply_to: email, // Địa chỉ email để trả lời
     };
 
+    console.log(templateParams.email_to)
+
     emailjs.send(
-      'service_lptm90f', // Service ID của bạn
+      'service_8dd36os', // Service ID của bạn
       'template_8lnoa8h', // Template ID của bạn
       templateParams,
       'PL8gMYLSA7J6k-atS' // User ID của bạn
@@ -64,7 +68,7 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} // Cập nhật email nhập vào
                 placeholder="Nhập Email của bạn"
-                className="p-2 w-60 rounded-l-lg text-gray-700"
+                className="p-2 w-60 rounded-l-lg text-gray-700 focus:outline-none"
               />
               <button
                 onClick={sendEmail} // Gọi hàm gửi email khi nhấn nút
@@ -87,11 +91,9 @@ export default function Footer() {
         {/* Company Info */}
         <div>
           <h3 className="text-lg font-bold flex items-center">
-            <span className="mr-2 text-2xl">🛒</span> AlphaStore
+            <span className="mr-2 text-2xl">🛒</span> TukuTiki
           </h3>
-          <p className="mt-2 text-sm">
-            Chúng tôi cung cấp sản phẩm chất lượng, phục vụ tận tâm, đáp ứng nhu cầu mua sắm trực tuyến của bạn.
-          </p>
+
           <div className="flex space-x-4 mt-4 text-gray-600">
             <FaFacebook className="text-2xl cursor-pointer hover:text-blue-600" />
             <FaInstagram className="text-2xl cursor-pointer hover:text-pink-500" />
@@ -134,11 +136,11 @@ export default function Footer() {
         </div>
 
         {/* Contact Info */}
-       
+
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t py-4 text-center text-sm text-gray-500">
+      <div className="border-t py-4 text-center bg-gray-100  text-sm text-gray-500">
         <p>©Copyright 2025 by Leo-UI. All rights reserved</p>
         <div className="mt-2 flex justify-center space-x-6">
           <a href="#" className="hover:underline">Privacy Policy</a>

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './SignInSignUp.css';
 
 import { GoogleLogin } from '@react-oauth/google'; // Import GoogleLogin from @react-oauth/google
-import SignUpImage from './LeftImage.png';
-import SignInImage from './RightImage.png';
+import SignUpImage from '../../assets/TikiPics/LeftImage.png';
+import SignInImage from '../../assets/TikiPics/RightImage.png';
 import { jwtDecode } from 'jwt-decode';
 
 export default function SignInSignUp() {
@@ -163,13 +163,14 @@ export default function SignInSignUp() {
             birthday: '',
             sex: '',
             nationality: '',
-            image: 'https://i.pinimg.com/474x/46/7f/be/467fbe9b03913de9dcd39eb0ee1e06ab.jpg',
+            image: '',
             role: 'User',
             type: 'Regular',
             point: 0,
-            gameplay: 0,
+            gameplay: 10,
             voucher: '',
             description: 'Khách hàng mới',
+            pin: '',
             // address: 'Lô E3 Đ. Võ Chí Công, Long Thạnh Mỹ, Thủ Đức, Hồ Chí Minh 71216',
         };
         console.log('Sign Up Data:', signupData);
@@ -196,12 +197,15 @@ export default function SignInSignUp() {
         localStorage.setItem(`gameplay${SignUpPhoneNumber}`, signupData.gameplay);
         localStorage.setItem(`voucher${SignUpPhoneNumber}`, signupData.voucher);
         localStorage.setItem(`description${SignUpPhoneNumber}`, signupData.description);
+        localStorage.setItem(`pin${SignUpPhoneNumber}`, signupData.pin);
 
         localStorage.setItem(`address${SignUpPhoneNumber}-name-0`, signupData.name);
         localStorage.setItem(`address${SignUpPhoneNumber}-phone-0`, signupData.phoneNumber);
         localStorage.setItem(`address${SignUpPhoneNumber}-address-0`, '');
         localStorage.setItem(`address${SignUpPhoneNumber}-typeaddress-0`, '');
         localStorage.setItem(`address${SignUpPhoneNumber}-default-0`, '');
+
+        localStorage.setItem(`couponcode${SignUpPhoneNumber}`, 'true');
 
         setSuccessSignUp('Đăng kí thành công!');
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -328,6 +332,38 @@ export default function SignInSignUp() {
                                 console.log('Not Before Time (nbf):', nbf);
                                 console.log('Profile Picture URL:', picture);
                                 console.log('User ID (sub):', sub);
+
+                                localStorage.setItem('LoginUser', sub);
+
+                                if (localStorage.getItem(`id${sub}`) == null || localStorage.getItem(`id${sub}`) == '') {
+                                    localStorage.setItem(`id${sub}`, sub);
+                                    localStorage.setItem(`phoneNumber${sub}`, '');
+                                    localStorage.setItem(`password${sub}`, '');
+                                    localStorage.setItem(`name${sub}`, name);
+                                    localStorage.setItem(`email${sub}`, email);
+                                    localStorage.setItem(`nickname${sub}`, '');
+                                    localStorage.setItem(`birthday${sub}`, '');
+                                    localStorage.setItem(`sex${sub}`, '');
+                                    localStorage.setItem(`nationality${sub}`, '');
+                                    localStorage.setItem(`image${sub}`, picture);
+                                    localStorage.setItem(`role${sub}`, 'User');
+                                    localStorage.setItem(`type${sub}`, 'Regular');
+                                    localStorage.setItem(`point${sub}`, 0);
+                                    localStorage.setItem(`gameplay${sub}`, 10);
+                                    localStorage.setItem(`voucher${sub}`, '');
+                                    localStorage.setItem(`description${sub}`, 'Khách hàng mới');
+                                    localStorage.setItem(`pin${sub}`, '');
+
+                                    localStorage.setItem(`address${sub}-name-0`, name);
+                                    localStorage.setItem(`address${sub}-phone-0`, '');
+                                    localStorage.setItem(`address${sub}-address-0`, '');
+                                    localStorage.setItem(`address${sub}-typeaddress-0`, '');
+                                    localStorage.setItem(`address${sub}-default-0`, '');
+
+                                    localStorage.setItem(`couponcode${sub}`, 'true');
+                                }
+
+                                navigate('/');
                             }}
                             onError={(error) => {
                                 console.error('Google Login Error:', error);
@@ -402,8 +438,7 @@ export default function SignInSignUp() {
                             </div>
                         </form>
 
-                        <button className='mt-4 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
-                        <div className='accept-box mt-5 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
+                        <div className='accept-box mt-8 text-xs italic  '><b> Bằng việc đăng kí bạn đã đồng ý với </b>
                             <a href='https://hotro.tiki.vn/s/article/dieu-khoan-su-dung' className='provision text-blue-500' target='_blank'> Điều Khoản</a>
 
                             <div className='form-check  '>
@@ -413,6 +448,8 @@ export default function SignInSignUp() {
                                 </label>
                             </div>
                         </div>
+
+                        <button className='mt-8 text-left' onClick={moveImageBack}>Đã có tài khoản?<span className='text-blue-500 mx-2'>Đăng nhập</span></button>
                     </div>
 
                     <div className='movingImage' id='movingImage'></div>

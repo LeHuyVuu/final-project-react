@@ -4,6 +4,8 @@ import { sCountItem } from "../../context/store.js";
 import axios from "axios";
 import Search from "./Search.jsx";
 
+import GameShortCut from "../../pages/GameShortCut/GameShortCut.jsx";
+
 export default function Header() {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -385,10 +387,14 @@ export default function Header() {
       className="bg-white shadow-sm sticky top-0 z-50"
       onClick={handleOutsideClick}
     >
+      <div className="">
+      <GameShortCut />
+
+      </div>
       {/* Top header section */}
-      <div className="grid grid-cols-3 items-center w-full pt-2">
+      <div className=" px-32 grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
-          <div className="flex justify-center flex-col items-center group">
+          <div className="flex justify-center flex-col items-start group ml-10  pt-2">
             <img
               src="https://salt.tikicdn.com/ts/upload/0e/07/78/ee828743c9afa9792cf20d75995e134e.png"
               alt="Logo"
@@ -453,7 +459,7 @@ export default function Header() {
           </div>
 
           <div className="cart cursor-pointer relative group">
-            <Link to="/cart">
+            <Link to="/step/cart">
               <svg
                 className="icon icon--cart transition-transform duration-300 group-hover:scale-110"
                 aria-hidden="true"
@@ -582,13 +588,13 @@ export default function Header() {
             {/* Menu items container with animation */}
             <div
               ref={menuContainerRef}
-              className="flex items-center flex-grow justify-start relative overflow-hidden"
-              style={{ minHeight: "2.5rem" }}
+              className="flex items-center flex-grow justify-start relative overflow-hidden "
+              style={{ minHeight: "3rem" }}
             >
               {currentMenuItems.map((item, index) => (
                 <div
                   key={index}
-                  className="horizontal-nav-item relative mr-4 flex-shrink-0"
+                  className="horizontal-nav-item relative mr-4 flex-shrink-0 pb-1"
                   onMouseEnter={() => handleMenuItemHover(item)}
                 >
                   <Link
@@ -611,7 +617,7 @@ export default function Header() {
               <button
                 onClick={handleNextPage}
                 disabled={currentMenuPage >= totalMenuPages - 1 || isAnimating}
-                className={`px-2 flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
+                className={`px-2  flex-shrink-0 focus:outline-none transition-all duration-200 transform ${
                   currentMenuPage >= totalMenuPages - 1 || isAnimating
                     ? "text-gray-300 cursor-not-allowed opacity-50"
                     : "text-gray-700 hover:text-blue-500 hover:scale-110"
@@ -635,8 +641,8 @@ export default function Header() {
             )}
 
             {/* Pagination indicator */}
-            {menuItems.length > ITEMS_PER_PAGE && (
-              <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
+            {/* {menuItems.length > ITEMS_PER_PAGE && (
+              <div className="absolute -bottom-0 p-2 left-1/2 transform -translate-x-1/2 flex space-x-1 items-center">
                 {Array.from({ length: totalMenuPages }).map((_, index) => (
                   <div
                     key={index}
@@ -652,7 +658,7 @@ export default function Header() {
                   />
                 ))}
               </div>
-            )}
+            )} */}
           </nav>
         </div>
 
@@ -660,7 +666,7 @@ export default function Header() {
         {showCategoryDropdown && (
           <div
             ref={dropdownRef}
-            className="category-panel absolute left-28 right-28 right-0 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
+            className="category-panel absolute left-28 right-28 mt-0 bg-white shadow-xl z-50 border-t border-gray-200 animate-fadeDown"
             onMouseEnter={() => setShowCategoryDropdown(true)}
             onMouseLeave={() => setShowCategoryDropdown(false)}
             style={{
@@ -694,7 +700,7 @@ export default function Header() {
               }
             `}</style>
 
-            <div className="container  flex">
+            <div className="  flex">
               {/* Left category sidebar */}
               <div
                 className="w-2/6 bg-gray-50 py-2  overflow-x-hidden"

@@ -30,9 +30,11 @@ export default function CountTime({ targetTime, onExpire }) {
 
     return (
         <div className="flex mx-2 gap-1">
-            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime(timeLeft / 3600)}</span>:
-            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime((timeLeft % 3600) / 60)}</span>:
-            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded">{formatTime(timeLeft % 60)}</span>
+            <span className="bg-red-500 h-auto w-10  font-bold text-white p-2 rounded flex items-center">{formatTime(timeLeft / 3600)}</span>
+            <span className='flex items-center font-bold'>:</span>
+            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded flex items-center">{formatTime((timeLeft % 3600) / 60)}</span>
+            <span className='flex items-center font-bold'>:</span>
+            <span className="bg-red-500 h-auto w-10 text-center font-bold text-white p-2 rounded flex items-center">{formatTime(timeLeft % 60)}</span>
         </div>
     );
 }
