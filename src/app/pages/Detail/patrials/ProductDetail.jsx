@@ -16,6 +16,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { sCountItem } from "../../../context/store";
 import Like from "../../Home/Partial/Like";
 import SkeletonLoader from "../../../components/SkeletonLoader/SkeletonLoader.jsx";
+import { InputNumber } from "primereact/inputnumber";
 
 const COLORS = {
   background: "#ffffff",
@@ -485,7 +486,7 @@ const ProductDetail = () => {
                 Số lượng:
               </h3>
               <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
-                <button
+                {/* <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
                   className={`w-10 h-10 flex items-center justify-center bg-white border-r border-gray-200 text-lg font-bold transition-colors duration-200 ${
@@ -495,19 +496,31 @@ const ProductDetail = () => {
                   }`}
                 >
                   -
-                </button>
-                <input
+                </button> */}
+                {/* <input
                   type="number"
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
                   className="w-12 text-center border-none outline-none text-base font-medium py-2 pl-3"
                   readOnly
-                />
+                /> */}
+                 <InputNumber
+                                                                            value={quantity}
+                                                                            min={1}
+                                                                            max={1000}
+                                                                            showButtons
+                                                                            buttonLayout="horizontal"
+                                                                            incrementButtonIcon="pi pi-plus"
+                                                                            decrementButtonIcon="pi pi-minus"
+                                                                            inputClassName="w-14 text-center text-sm px-2 py-1 rounded-md border border-gray-300"
+                                                                            className="w-[120px]"
+                                                                            onValueChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                                                                        />
                 <button
                   onClick={increaseQuantity}
-                  className="w-10 h-10 flex items-center justify-center bg-white border-l border-gray-200 text-gray-900 text-lg font-bold cursor-pointer transition-colors duration-200"
+                  className="w-10 h-10 flex items-center justify-center bg-white  text-gray-900 text-lg font-bold cursor-pointer transition-colors duration-200"
                 >
-                  +
+                  
                 </button>
               </div>
             </div>
