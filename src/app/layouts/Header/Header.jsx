@@ -391,7 +391,7 @@ export default function Header() {
       {/* Top header section */}
       <div className="grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
-          <div className="flex justify-center flex-col items-center group">
+          <div className="flex justify-center flex-col items-start group ml-10  pt-2">
             <img
               src="https://salt.tikicdn.com/ts/upload/0e/07/78/ee828743c9afa9792cf20d75995e134e.png"
               alt="Logo"
