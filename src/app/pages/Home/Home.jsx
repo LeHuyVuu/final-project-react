@@ -32,7 +32,7 @@ export default function Home() {
           <TopDeal />
         </div>
         <div className='px-4' >
-          <div className="my-10 p-5 bg-red-200  ">
+          <div className="my-10 p-5 bg-blue-100  ">
             <FlashSale />
           </div>
         </div>
