@@ -11,8 +11,10 @@ const CheckoutSuccess = () => {
   const toast = React.useRef(null);
 
   const products = sProductsToBuy.use(); // Lấy dữ liệu từ context
-  const coin = sCoin.use(); // Lấy dữ liệu từ context
-  // Hàm tính tổng giá trị đơn hàng
+  const LoginUser = localStorage.getItem("LoginUser"); // Lấy thông tin người dùng từ localStorage
+  console.log("LoginUser", LoginUser);
+  const coin = localStorage.getItem("point" + LoginUser); // Lấy thông tin xu từ localStorage
+  console.log("coint", coin);
   const calculateTotal = () => {
     if (!Array.isArray(products)) {
       // Nếu products không phải là mảng, trả về 0
@@ -111,7 +113,7 @@ const CheckoutSuccess = () => {
       detail: 'Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi.',
       life: 3000,
     });
-    sCoin.set(0); // Cập nhật số dư coin sau khi thanh toán
+    localStorage.setItem("point" + LoginUser, 0); // Xóa giỏ hàng sau khi thanh toán thành công
   }, []);
 
   const handleGoToHome = () => {
