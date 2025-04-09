@@ -387,7 +387,10 @@ export default function Header() {
       className="bg-white shadow-sm sticky top-0 z-50"
       onClick={handleOutsideClick}
     >
+      <div className="">
       <GameShortCut />
+
+      </div>
       {/* Top header section */}
       <div className=" px-32 grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
