@@ -28,7 +28,10 @@ const Payment = () => {
   sProductsToBuy.set(product); // Lưu sản phẩm vào store
   const [products, setProducts] = useState(Array.isArray(product) ? product : [product]);
   const toast = useRef(null);
-  const coin = sCoin.use(); // Lấy dữ liệu xu từ context
+  const LoginUser = localStorage.getItem("LoginUser"); // Lấy thông tin người dùng từ localStorage
+  console.log("LoginUser", LoginUser);
+  const coin = localStorage.getItem("point" + LoginUser); // Lấy thông tin xu từ localStorage
+  console.log("coint", coin);
   const [usePoints, setUsePoints] = useState(false); // Thêm state cho việc sử dụng xu
 
     if (!product || (Array.isArray(product) && product.length === 0)) {
