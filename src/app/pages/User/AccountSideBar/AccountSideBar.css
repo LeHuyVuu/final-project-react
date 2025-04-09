@@ -1,11 +1,14 @@
 .accountsidebar-container {
     width: fit-content;
+    max-width: 280px;
     margin: 0 32px 0 0;
 
     .thisuser {
         display: flex;
         margin: 0 0 12px;
         padding: 0 0 0 7px;
+        width: 100%;
+        overflow: hidden;
 
         img {
             width: 51px;
@@ -15,6 +18,7 @@
         }
 
         .user-name {
+            width: 100%;
             font-size: 18px;
             font-weight: 600;
         }
