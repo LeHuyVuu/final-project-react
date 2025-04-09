@@ -23,11 +23,12 @@ export default function AccountSideBar() {
         { name: 'Quản lý xu', icon: 'fa-solid fa-coins', link: 'coin' },
         { name: 'Xúc xắc may mắn', icon: 'fa-solid fa-dice', link: '/dice' },
         { name: 'Dò mìn', icon: 'fa-solid fa-bomb', link: '/minesweeper' },
+        { name: 'Đoán mật khẩu', icon: 'fa-solid fa-key', link: '/whatisthepassword' },
     ];
 
+    const LoginUser = localStorage.getItem('LoginUser');
     const User = {
-        name: 'Đặng Ngọc Hải Triều',
-        image: null,
+        name: localStorage.getItem(`name${LoginUser}`),
     };
 
     return (

@@ -49,13 +49,17 @@ export default function PhoneNumberAndEmail() {
                                     <div className='value-text'>{item.value}</div>
                                 </div>
                             </div>
-                            <Link to={`${item.link}`}>
-                                {item.link == '' ?
-                                    <button className='unavailable'>SẮP CÓ</button>
-                                    :
-                                    <button>{item.button}</button>
-                                }
-                            </Link>
+                            {((item.label === 'Đổi mật khẩu' || item.label === 'Địa chỉ email') && LoginUser.length !== 10) ?
+                                <button className='unavailable'>{item.button}</button>
+                                :
+                                <Link to={`${item.link}`}>
+                                    {item.link == '' ?
+                                        <button className='unavailable'>SẮP CÓ</button>
+                                        :
+                                        <button>{item.button}</button>
+                                    }
+                                </Link>
+                            }
                         </div>
                     ))}
                 </div>
