@@ -142,7 +142,7 @@ const UserInfo = () => {
                                 <span>{newName}</span>
                             </div>
                             <div>
-                              <span><i className="fas fa-map-marker-alt text-xl mr-4"></i>{newAddress}</span>
+                                <span><i className="fas fa-map-marker-alt text-xl mr-4"></i>{newAddress}</span>
                             </div>
                             <div>
                                 <span><i className="fas fa-phone-alt mr-4"></i>  {newPhone}</span>
@@ -188,6 +188,8 @@ const UserInfo = () => {
                         <button onClick={() => { handleSetAddress(adr.name, adr.address, adr.phone, adr.typeaddress) }}>Chọn</button>
                     </div>
                 ))}
+
+                <Link to='/account/address'><button className='manage-btn'>Quản lý địa chỉ</button></Link>
 
                 {/* <div className="p-fluid">
                     <div className="field mb-4">
