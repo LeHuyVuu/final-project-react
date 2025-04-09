@@ -45,7 +45,9 @@ const CheckoutSuccess = () => {
 
     let orderTotal = calculateTotal();  // Tính tổng đơn hàng
     const keyUser = localStorage.getItem("LoginUser"); // Lấy email từ localStorage
-
+    if (productsArray.length === 1) {
+      orderTotal = productsArray[0].price * productsArray[0].quantity; // Đặt tổng đơn hàng = giá sản phẩm * số lượng nếu chỉ có một sản phẩm
+    }
     // Tạo templateParams chứa thông tin gửi email
     const templateParams = {
       email_to: localStorage.getItem("email" + keyUser), // Đây là email người dùng nhập
@@ -113,7 +115,6 @@ const CheckoutSuccess = () => {
       detail: 'Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi.',
       life: 3000,
     });
-    localStorage.setItem("point" + LoginUser, 0); // Xóa giỏ hàng sau khi thanh toán thành công
   }, []);
 
   const handleGoToHome = () => {

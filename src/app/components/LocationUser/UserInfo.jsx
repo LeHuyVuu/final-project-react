@@ -189,6 +189,8 @@ const UserInfo = () => {
                     </div>
                 ))}
 
+                <Link to='/account/address' style={{color: '#007bff'}}>Quản lý địa chỉ</Link>
+
                 {/* <div className="p-fluid">
                     <div className="field mb-4">
                         <label htmlFor="name">Tên</label>

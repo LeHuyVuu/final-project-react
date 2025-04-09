@@ -60,6 +60,7 @@ const Payment = () => {
     let total = products.reduce((total, item) => total + item?.totalPrice, 0);
     if (usePoints) {
       total -= coin; // Giảm giá 50,000 VND khi sử dụng xu (có thể thay đổi số lượng xu)
+      localStorage.setItem("point" + LoginUser, 0); // Xóa giỏ hàng sau khi thanh toán thành công
     }
     return total;
   };

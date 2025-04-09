@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getData } from "../../context/api"; // Giả sử đây là utility API của bạn
 import { useNavigate } from "react-router-dom";
+import { Button } from "primereact/button";
 
 const Search = () => {
 
@@ -11,6 +12,7 @@ const Search = () => {
     const [error, setError] = useState(null); // Lỗi khi gọi API
     const dropdownRef = useRef(null); // Ref cho dropdown để kiểm tra click ngoài
     const navigate = useNavigate();
+    const [isListening, setIsListening] = useState(false); // Kiểm tra trạng thái mic
 
     // Hàm lấy giá trị cookie
     const getCookie = (name) => {
@@ -68,13 +70,14 @@ const Search = () => {
             return;
         }
 
+        // Debounce
         const debounceTimeout = setTimeout(async () => {
             const results = await fetchSuggestions(keyword);
             setSuggestions(results);
             setIsDropdownOpen(results.length > 0);
-        }, 300);
+        }, 300); // 300ms debounce time
 
-        return () => clearTimeout(debounceTimeout);
+        return () => clearTimeout(debounceTimeout); // Clear previous timeout
     }, [keyword]);
 
     // Ẩn dropdown khi click ra ngoài
@@ -158,6 +161,37 @@ const Search = () => {
         }
     };
 
+    // Xử lý khi bật/tắt mic
+    const handleMicClick = () => {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("Trình duyệt của bạn không hỗ trợ nhận diện giọng nói");
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'vi-VN'; // Chọn ngôn ngữ là tiếng Việt
+        recognition.interimResults = true; // Cho phép kết quả tạm thời
+
+        recognition.onstart = () => {
+            setIsListening(true);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setKeyword(transcript); // Đặt từ khóa từ giọng nói
+
+            // Sau khi có kết quả, tự động gọi handleSearch để tìm kiếm
+            handleSearch();
+        };
+
+        recognition.start();
+    };
+
+
     return (
         <div className="relative flex justify-end items-center pr-4 md:pr-8">
             <div className="relative group w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
@@ -193,6 +227,13 @@ const Search = () => {
                 </div>
             </div>
 
+
+            <Button
+                onClick={handleMicClick}
+                icon="pi pi-microphone"
+                className="p-button-rounded p-button-info absolute -right-7 top-1/2 transform -translate-y-1/2 p-2 hover:bg-blue-300 transition-colors duration-200 focus:shadow-outline focus:ring-2 focus:ring-blue-300"
+                aria-label="Search by voice"
+            />
             {/* Loading state */}
             {isLoading && (
                 <div className="absolute top-full left-0 w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-20 text-gray-500 text-base">
@@ -246,7 +287,6 @@ const Search = () => {
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                     />
                                 </svg>
-
                             </button>
                         </div>
                     ))}
