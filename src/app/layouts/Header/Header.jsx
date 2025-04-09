@@ -389,7 +389,7 @@ export default function Header() {
     >
       <GameShortCut />
       {/* Top header section */}
-      <div className="grid grid-cols-3 items-center w-full pt-2">
+      <div className=" px-32 grid grid-cols-3 items-center w-full pt-2">
         <Link to="/">
           <div className="flex justify-center flex-col items-start group ml-10  pt-2">
             <img
